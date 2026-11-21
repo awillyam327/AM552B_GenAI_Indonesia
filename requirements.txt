@@ -19,6 +19,10 @@ seaborn>=0.13.0
 
 # Classical Machine Learning & Baseline Evaluation
 scikit-learn>=1.4.0
+joblib>=1.3.0
+
+# Interactive Web Prototype (Streamlit)
+streamlit>=1.35.0
 
 # Modeling Phase (CRISP-DM Fase 4 & 5)
 # Uncomment saat memulai training model lanjutan:
