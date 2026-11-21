@@ -1,6 +1,10 @@
 # Analisis Komparatif Sentimen Berbasis Aspek (ABSA) dan Pemodelan Topik Pengalaman Pengguna terhadap Ekosistem Aplikasi Mobile Generative AI di Indonesia
 
-> **Mata Kuliah**: Data Science (AM522B) — Proyek Akhir Kelompok  
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://genai-indonesia-am552b.streamlit.app)
+[![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-blue?logo=github)](https://github.com/awillyam327/AM552B_GenAI_Indonesia)
+
+> **Live Prototype**: [https://genai-indonesia-am552b.streamlit.app](https://genai-indonesia-am552b.streamlit.app)  
+> **Mata Kuliah**: Data Science of IS (AM552) — Proyek Akhir Kelompok  
 > **Komposisi Tim**: 3 Anggota (Member 1: Project Lead & Modeling/SHAP, Member 2: Data Engineering/Preprocessing/ABSA, Member 3: EDA/Topic Modeling/Reporting)  
 > **Aset Raw Data**: `71.221` Ulasan Unik Google Play Store Indonesia (`id_ID`) pada 8 Aplikasi Generative AI (`100% Real Scraped Data`, `0% Duplikasi reviewId`)
 

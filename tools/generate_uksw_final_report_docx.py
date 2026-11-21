@@ -136,8 +136,8 @@ def main():
             ["Anggota 2", "[NIM Anggota 2] — [Nama Lengkap Anggota 2]"],
             ["Anggota 3", "[NIM Anggota 3] — [Nama Lengkap Anggota 3]"],
             ["Nama & Sumber Dataset", "RAW_DATASET_GENAI_INDONESIA_AM522B.csv (71.221 Ulasan Unik Google Play Store Indonesia)"],
-            ["Link Repository Code (.ipynb)", "[Tempelkan Link GitHub / Google Drive Folder Notebooks .ipynb]"],
-            ["Link Live Prototype (Streamlit)", "[Tempelkan URL Streamlit Community Cloud: https://...streamlit.app]"],
+            ["Link Repository Code (.ipynb)", "https://github.com/awillyam327/AM552B_GenAI_Indonesia (Folder: notebooks/)"],
+            ["Link Live Prototype (Streamlit)", "https://genai-indonesia-am552b.streamlit.app"],
         ],
     )
 
@@ -576,7 +576,7 @@ def main():
 
     doc.add_heading("6.4 Cara Menggunakan Prototype", level=2)
     steps_use = [
-        "Buka tautan aplikasi Streamlit (atau jalankan perintah `streamlit run prototype/app.py` di terminal).",
+        "Buka tautan aplikasi Streamlit: https://genai-indonesia-am552b.streamlit.app (atau jalankan perintah `streamlit run prototype/app.py` di terminal lokal).",
         "Pada Tab 1, pilih nama aplikasi Generative AI, geser slider rating bintang (1–5), ketik teks ulasan pengguna pada kotak input (atau pilih contoh uji cepat), lalu klik tombol 'Jalankan Analisis Sentimen & ABSA'.",
         "Untuk analisis massal, buka Tab 2, unggah file CSV yang memiliki kolom teks ulasan, pilih nama kolom teks dan kolom rating, klik 'Proses Prediksi Batch Sekarang', lalu klik tombol 'Download Hasil Prediksi Lengkap (.csv)'.",
     ]
