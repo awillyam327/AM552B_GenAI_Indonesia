@@ -77,7 +77,7 @@ def main():
             "4. **A4**: Bahasa Indonesia & Lokal\n"
         )
         st.markdown("---")
-        st.caption("© 2026 Kelompok DS (682024046) — S1 Sistem Informasi FTI UKSW")
+        st.caption("© 2026 Arthur (682024046) • Brendan (682024016) • Tiara (682024059) — S1 Sistem Informasi FTI UKSW")
 
     tab1, tab2, tab3 = st.tabs(
         [

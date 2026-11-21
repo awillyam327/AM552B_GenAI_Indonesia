@@ -132,9 +132,9 @@ def main():
         ["Atribut Identitas Proyek", "Keterangan Lengkap"],
         [
             ["Kode & Nama Kelompok", "682024046_KEL_DS"],
-            ["Anggota 1 (Project Lead)", "682024046 — [Nama Lengkap Anggota 1]"],
-            ["Anggota 2", "[NIM Anggota 2] — [Nama Lengkap Anggota 2]"],
-            ["Anggota 3", "[NIM Anggota 3] — [Nama Lengkap Anggota 3]"],
+            ["Anggota 1 (Project Lead)", "682024046 — Arthur Willyam Liang"],
+            ["Anggota 2", "682024016 — Brendan Wilson Santoso"],
+            ["Anggota 3", "682024059 — Tiara Agustien Kusumawati"],
             ["Nama & Sumber Dataset", "RAW_DATASET_GENAI_INDONESIA_AM522B.csv (71.221 Ulasan Unik Google Play Store Indonesia)"],
             ["Link Repository Code (.ipynb)", "https://github.com/awillyam327/AM552B_GenAI_Indonesia (Folder: notebooks/)"],
             ["Link Live Prototype (Streamlit)", "https://genai-indonesia-am552b.streamlit.app"],
@@ -151,21 +151,21 @@ def main():
         ["NIM & Nama Anggota", "Peran Utama", "Bagian Kode (.ipynb & Prototype) yang Dikerjakan", "Bagian Laporan yang Dikerjakan", "Kontribusi (%)"],
         [
             [
-                "682024046\n[Nama Anggota 1]",
+                "682024046\nArthur Willyam Liang",
                 "Project Lead, Modeling & Backend Deployment",
                 "03_Modeling_Tuning_dan_Evaluasi.ipynb, metric_sanity_audit.py, ekspor genai_absa_pipeline.joblib, & deployment Streamlit Cloud",
                 "Bab 1 (Pendahuluan), Bab 4 (Pemodelan & Tuning), Bab 5 (Evaluasi & SHAP)",
                 "34%",
             ],
             [
-                "[NIM Anggota 2]\n[Nama Anggota 2]",
+                "682024016\nBrendan Wilson Santoso",
                 "Data Engineering, Preprocessing, ABSA & UI Testing",
                 "02_Data_Preparation_dan_ABSA.ipynb, slang_dictionary_id.json, UI prototype/app.py, & test_prototype_scenarios.py",
                 "Bab 2.1–2.3 (Kamus & Kondisi Data), Bab 3 (Persiapan Data), Bab 6.3–6.5 (Uji 3 Skenario)",
                 "33%",
             ],
             [
-                "[NIM Anggota 3]\n[Nama Anggota 3]",
+                "682024059\nTiara Agustien Kusumawati",
                 "EDA, Topic Discovery, Visualisasi & Laporan/Slide",
                 "01_Data_Understanding_dan_EDA.ipynb, visualisasi grafik Bab 2 & Tab 3 Dashboard Prototype",
                 "Abstrak, Bab 2.4–2.5 (Eksplorasi Data), Bab 6.1–6.2, Bab 7 (Penutup), & Daftar Pustaka APA",

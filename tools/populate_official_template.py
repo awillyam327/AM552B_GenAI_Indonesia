@@ -28,7 +28,7 @@ def build_populated_report():
     # -------------------------------------------------------------------------
     t0 = doc.tables[0]
     t0.rows[0].cells[1].text = "Kelompok [Nomor Kelompok]"
-    t0.rows[1].cells[1].text = "Arthur Willyam Liang (682024046) / [Nama Anggota 2 – NIM] / [Nama Anggota 3 – NIM]"
+    t0.rows[1].cells[1].text = "Arthur Willyam Liang (682024046) / Brendan Wilson Santoso (682024016) / Tiara Agustien Kusumawati (682024059)"
     t0.rows[2].cells[1].text = "RAW_DATASET_GENAI_INDONESIA_AM522B.csv (71.221 Ulasan Google Play Store Indonesia) – https://play.google.com/store/apps"
     t0.rows[3].cells[1].text = "https://github.com/awillyam327/AM552B_GenAI_Indonesia"
     t0.rows[4].cells[1].text = "https://genai-indonesia-am552b.streamlit.app"
@@ -39,9 +39,9 @@ def build_populated_report():
     t1 = doc.tables[1]
     t1.rows[1].cells[0].text = "Arthur Willyam Liang (682024046) [Project Lead]"
     t1.rows[1].cells[1].text = "Perancangan metodologi CRISP-DM, pemodelan ML (Baseline & Model Alternatif), hyperparameter tuning 5-fold CV, audit 6 forensik anti-leakage, ekspor pipeline .joblib, dan backend deployment Streamlit Cloud."
-    t1.rows[2].cells[0].text = "[Nama Anggota 2 – NIM] [Data & NLP Engineer]"
+    t1.rows[2].cells[0].text = "Brendan Wilson Santoso (682024016) [Data & NLP Engineer]"
     t1.rows[2].cells[1].text = "Audit integritas 71.221 baris data mentah, penyusunan kamus normalisasi slang Indonesia (slang_dictionary_id.json), preservasi negasi, pelabelan 4 aspek ABSA, deteksi discrepancy, dan pengujian skenario prototype."
-    t1.rows[3].cells[0].text = "[Nama Anggota 3 – NIM] [Data Analyst & Writer]"
+    t1.rows[3].cells[0].text = "Tiara Agustien Kusumawati (682024059) [Data Analyst & Writer]"
     t1.rows[3].cells[1].text = "Exploratory Data Analysis (EDA) dan visualisasi grafik Bab 2, analisis N-Gram, Topic Discovery lintas aplikasi AI, penyusunan draf narasi laporan 7 Bab, dan perancangan slide presentasi PDF."
 
     # -------------------------------------------------------------------------

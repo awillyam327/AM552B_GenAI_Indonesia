@@ -5,7 +5,7 @@
 
 > **Live Prototype**: [https://genai-indonesia-am552b.streamlit.app](https://genai-indonesia-am552b.streamlit.app)  
 > **Mata Kuliah**: Data Science of IS (AM552) — Proyek Akhir Kelompok  
-> **Komposisi Tim**: 3 Anggota (Member 1: Project Lead & Modeling/SHAP, Member 2: Data Engineering/Preprocessing/ABSA, Member 3: EDA/Topic Modeling/Reporting)  
+> **Komposisi Tim**: Arthur Willyam Liang (682024046 - Lead), Brendan Wilson Santoso (682024016 - Data Eng), Tiara Agustien Kusumawati (682024059 - Analyst & Reporting)  
 > **Aset Raw Data**: `71.221` Ulasan Unik Google Play Store Indonesia (`id_ID`) pada 8 Aplikasi Generative AI (`100% Real Scraped Data`, `0% Duplikasi reviewId`)
 
 ---
@@ -92,9 +92,9 @@ Project final/
 
 | Anggota Tim | Peran Utama | Fokus Fase CRISP-DM | Modul / Script Utama |
 | :--- | :--- | :--- | :--- |
-| **Member 1 (Project Lead)** | Predictive Modeling & SHAP Explainability | Fase 0, 1, 4 (Track A), 5 | `05_evaluation/metric_sanity_audit.py`<br>`04_modeling/` (CatBoost, XGBoost, IndoBERT) |
-| **Member 2** | Data Engineering, Preprocessing & ABSA | Fase 0, 2, 3, 4 (ABSA Matrix) | `03_data_preparation/preprocessing_pipeline_template.py`<br>`03_data_preparation/slang_dictionary_id.json` |
-| **Member 3** | EDA, Topic Modeling & Reporting | Fase 0, 2, 4 (Track B), 6 | `02_data_understanding/run_initial_eda.py`<br>`04_modeling/` (BERTopic & LDA) |
+| **Arthur Willyam Liang (682024046)**<br>*(Member 1 - Project Lead)* | Predictive Modeling, Anti-Leakage Audit & Backend Deployment | Fase 0, 1, 4 (Track A), 5, 6 | `05_evaluation/metric_sanity_audit.py`<br>`notebooks/03_Modeling_Tuning_dan_Evaluasi.ipynb`<br>`models/genai_absa_pipeline.joblib` |
+| **Brendan Wilson Santoso (682024016)**<br>*(Member 2 - Data Engineer)* | Data Engineering, Indonesian Preprocessing, Slang Dictionary & ABSA | Fase 0, 2, 3, 4 (ABSA Matrix), 6 | `notebooks/02_Data_Preparation_dan_ABSA.ipynb`<br>`03_data_preparation/slang_dictionary_id.json`<br>`prototype/test_prototype_scenarios.py` |
+| **Tiara Agustien Kusumawati (682024059)**<br>*(Member 3 - Analyst & Writer)* | EDA, Topic Modeling, Final Report & Presentation PDF | Fase 0, 2, 4 (Track B), 6 | `notebooks/01_Data_Understanding_dan_EDA.ipynb`<br>`Laporan_Project_Akhir_AM552_Terisi.docx`<br>`06_deployment_reporting/682024046_KEL_DS_Presentasi.pdf` |
 
 ---
 

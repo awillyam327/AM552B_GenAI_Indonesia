@@ -74,7 +74,7 @@ Agar waktu belajar efisien, kalian **tidak perlu mempelajari semua cabang ilmu D
 
 ### B. Kurikulum Spesifik Berdasarkan Peran Anggota
 
-#### 👨‍💻 Member 1 — Project Lead, Predictive Modeling & Explainability (XAI)
+#### 👨‍💻 Member 1 — Arthur Willyam Liang (682024046) [Project Lead, Predictive Modeling & Explainability]
 *Fokus*: Melatih model klasifikasi sentimen & *discrepancy*, membandingkan algoritma Ensemble vs. Transformer, serta menjelaskan model dengan SHAP.
 - [ ] **Konsep**: *Supervised Text Classification*, *Class Imbalance* (mengapa F1-Macro lebih adil daripada Accuracy saat Bintang 5 mendominasi 63,96% data), *Stratified K-Fold Cross-Validation*.
 - [ ] **Algoritma**:
@@ -87,7 +87,7 @@ Agar waktu belajar efisien, kalian **tidak perlu mempelajari semua cabang ilmu D
   - `transformers`, `torch` (HuggingFace fine-tuning / feature extraction)
   - `shap`
 
-#### 🛠️ Member 2 — Data Engineering, Indonesian Text Preprocessing & ABSA
+#### 🛠️ Member 2 — Brendan Wilson Santoso (682024016) [Data Engineering, Indonesian Text Preprocessing & ABSA]
 *Fokus*: Membersihkan 71.221 teks ulasan Bahasa Indonesia yang penuh singkatan/slang, mengekstrak label 4 aspek layanan (ABSA), dan membuat fitur teks.
 - [ ] **Konsep**:
   - Tantangan teks media sosial/ulasan Indonesia: *typo*, singkatan (*"yg"*, *"gak"*, *"bgt"*, *"udh"*, *"apk"*), reduplikasi (*"tiba2"*), dan emoji.
@@ -99,7 +99,7 @@ Agar waktu belajar efisien, kalian **tidak perlu mempelajari semua cabang ilmu D
   - Kamus Slang Bahasa Indonesia (*Colloquial Indonesian Lexicon* / `slang_dictionary_id.json` di folder `03_data_preparation/`)
   - `scikit-learn` (`TfidfVectorizer`, *N-gram feature engineering*)
 
-#### 📊 Member 3 — Exploratory Data Analysis (EDA), Topic Modeling & Visualisasi/Laporan
+#### 📊 Member 3 — Tiara Agustien Kusumawati (682024059) [Exploratory Data Analysis (EDA), Topic Modeling & Visualisasi/Laporan]
 *Fokus*: Memvisualisasikan pola data lintas 8 aplikasi AI, menjalankan *Topic Modeling* (BERTopic & LDA), serta menyusun grafik publikasi dan narasi laporan akhir.
 - [ ] **Konsep**:
   - *Time-Series Trend Analysis*: Melihat lonjakan ulasan (*review surge*) per bulan/minggu (misal saat DeepSeek rilis Januari 2025 atau update besar ChatGPT & Gemini).
@@ -116,7 +116,7 @@ Agar waktu belajar efisien, kalian **tidak perlu mempelajari semua cabang ilmu D
 
 Pembagian kerja dirancang mengikuti alur **CRISP-DM** agar ketiga anggota dapat bekerja secara paralel dengan beban kerja (*workload*) yang adil dan saling terhubung:
 
-| Dimensi Tugas | **Member 1 (Project Lead, Modeling & XAI)** | **Member 2 (Data Engineering, Preprocessing & ABSA)** | **Member 3 (EDA, Topic Modeling & Visualisasi)** |
+| Dimensi Tugas | **Member 1: Arthur Willyam Liang (682024046)** | **Member 2: Brendan Wilson Santoso (682024016)** | **Member 3: Tiara Agustien Kusumawati (682024059)** |
 | :--- | :--- | :--- | :--- |
 | **Fase CRISP-DM Utama** | Fase 1 (*Business Understanding*), Fase 4 (*Supervised Modeling*), Fase 5 (*Evaluation & SHAP*) | Fase 2 (*Data Audit*), Fase 3 (*Data Preparation, Normalization & ABSA Tagging*) | Fase 2 (*Exploratory Data Analysis*), Fase 4 (*Topic Modeling*), Fase 6 (*Reporting & Deck*) |
 | **Folder Kerja Utama** | `01_business_understanding/`<br>`04_modeling/`<br>`05_evaluation/` | `03_data_preparation/`<br>`04_modeling/` (fitur ABSA) | `02_data_understanding/`<br>`04_modeling/` (Topic Modeling)<br>`06_deployment_reporting/` |
