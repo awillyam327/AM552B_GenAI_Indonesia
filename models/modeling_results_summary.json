@@ -1,0 +1,144 @@
+{
+  "best_model_name": "Tuned Logistic Regression (TF-IDF 1-2 Gram, C=1.0, Balanced)",
+  "best_params": {
+    "clf__C": 1.0
+  },
+  "best_cv_macro_f1": 0.6448,
+  "train_rows_80pct": 56976,
+  "test_rows_20pct": 14245,
+  "best_test_metrics": {
+    "accuracy": 0.8471,
+    "balanced_accuracy": 0.693,
+    "macro_f1": 0.6512,
+    "weighted_f1": 0.8676,
+    "macro_precision": 0.6416,
+    "macro_recall": 0.693,
+    "mcc": 0.6822,
+    "roc_auc_ovr": 0.8751,
+    "pr_auc_macro": 0.6638
+  },
+  "model_comparison": [
+    {
+      "model_name": "0. DummyClassifier (Most Frequent Baseline)",
+      "role": "Batas Bawah Statistik",
+      "train_accuracy": 0.7134,
+      "test_accuracy": 0.7134,
+      "train_macro_f1": 0.2776,
+      "test_macro_f1": 0.2776,
+      "test_weighted_f1": 0.5941,
+      "test_balanced_acc": 0.3333,
+      "test_mcc": 0.0,
+      "test_roc_auc": 0.5
+    },
+    {
+      "model_name": "1. Logistic Regression (Tuned C=1.0)",
+      "role": "Model Pembanding Dasar (Baseline Bab 4.1)",
+      "train_accuracy": 0.8892,
+      "test_accuracy": 0.8471,
+      "train_macro_f1": 0.7617,
+      "test_macro_f1": 0.6512,
+      "test_weighted_f1": 0.8676,
+      "test_balanced_acc": 0.693,
+      "test_mcc": 0.6822,
+      "test_roc_auc": 0.8751
+    },
+    {
+      "model_name": "2. Complement Naive Bayes (Tuned alpha=0.2)",
+      "role": "Model Alternatif 1 (Probabilistic NLP)",
+      "train_accuracy": 0.8682,
+      "test_accuracy": 0.8546,
+      "train_macro_f1": 0.6357,
+      "test_macro_f1": 0.5818,
+      "test_weighted_f1": 0.8476,
+      "test_balanced_acc": 0.6121,
+      "test_mcc": 0.6901,
+      "test_roc_auc": 0.8713
+    },
+    {
+      "model_name": "3. Calibrated LinearSVC (C=0.5, Balanced Margin)",
+      "role": "Model Alternatif 2 (Large-Margin Classifier)",
+      "train_accuracy": 0.9245,
+      "test_accuracy": 0.9022,
+      "train_macro_f1": 0.6272,
+      "test_macro_f1": 0.5999,
+      "test_weighted_f1": 0.8847,
+      "test_balanced_acc": 0.6093,
+      "test_mcc": 0.7623,
+      "test_roc_auc": 0.8827
+    }
+  ],
+  "app_absa_matrix": [
+    {
+      "Nama Aplikasi": "ChatGPT (OpenAI)",
+      "Jumlah Ulasan": 22000,
+      "Rata-rata Bintang": 4.46,
+      "A1: Akurasi AI (Mention / NSS)": "3,942 (+80.7%)",
+      "A2: Harga/Kuota (Mention / NSS)": "1,038 (-14.1%)",
+      "A3: Performa/UI (Mention / NSS)": "944 (+0.1%)",
+      "A4: Bhs Indonesia (Mention / NSS)": "401 (+42.4%)"
+    },
+    {
+      "Nama Aplikasi": "Google Gemini",
+      "Jumlah Ulasan": 12600,
+      "Rata-rata Bintang": 4.29,
+      "A1: Akurasi AI (Mention / NSS)": "1,837 (+64.0%)",
+      "A2: Harga/Kuota (Mention / NSS)": "428 (-11.4%)",
+      "A3: Performa/UI (Mention / NSS)": "637 (+3.6%)",
+      "A4: Bhs Indonesia (Mention / NSS)": "206 (-3.9%)"
+    },
+    {
+      "Nama Aplikasi": "Character.AI",
+      "Jumlah Ulasan": 12000,
+      "Rata-rata Bintang": 1.58,
+      "A1: Akurasi AI (Mention / NSS)": "1,219 (-72.6%)",
+      "A2: Harga/Kuota (Mention / NSS)": "2,695 (-78.4%)",
+      "A3: Performa/UI (Mention / NSS)": "5,177 (-83.3%)",
+      "A4: Bhs Indonesia (Mention / NSS)": "764 (-58.8%)"
+    },
+    {
+      "Nama Aplikasi": "Perplexity - Ask Anything",
+      "Jumlah Ulasan": 8043,
+      "Rata-rata Bintang": 4.54,
+      "A1: Akurasi AI (Mention / NSS)": "1,843 (+85.1%)",
+      "A2: Harga/Kuota (Mention / NSS)": "301 (+11.6%)",
+      "A3: Performa/UI (Mention / NSS)": "383 (+55.4%)",
+      "A4: Bhs Indonesia (Mention / NSS)": "132 (+30.3%)"
+    },
+    {
+      "Nama Aplikasi": "Microsoft Copilot",
+      "Jumlah Ulasan": 5459,
+      "Rata-rata Bintang": 4.65,
+      "A1: Akurasi AI (Mention / NSS)": "1,239 (+89.3%)",
+      "A2: Harga/Kuota (Mention / NSS)": "120 (+76.7%)",
+      "A3: Performa/UI (Mention / NSS)": "353 (+39.4%)",
+      "A4: Bhs Indonesia (Mention / NSS)": "164 (+65.9%)"
+    },
+    {
+      "Nama Aplikasi": "DeepSeek - AI Assistant",
+      "Jumlah Ulasan": 5374,
+      "Rata-rata Bintang": 3.77,
+      "A1: Akurasi AI (Mention / NSS)": "1,034 (+46.6%)",
+      "A2: Harga/Kuota (Mention / NSS)": "504 (+56.2%)",
+      "A3: Performa/UI (Mention / NSS)": "1,500 (-1.8%)",
+      "A4: Bhs Indonesia (Mention / NSS)": "380 (+21.6%)"
+    },
+    {
+      "Nama Aplikasi": "Claude by Anthropic",
+      "Jumlah Ulasan": 4009,
+      "Rata-rata Bintang": 3.85,
+      "A1: Akurasi AI (Mention / NSS)": "797 (+62.4%)",
+      "A2: Harga/Kuota (Mention / NSS)": "610 (-4.8%)",
+      "A3: Performa/UI (Mention / NSS)": "693 (-33.2%)",
+      "A4: Bhs Indonesia (Mention / NSS)": "201 (+19.9%)"
+    },
+    {
+      "Nama Aplikasi": "Poe - Fast AI Chat",
+      "Jumlah Ulasan": 1736,
+      "Rata-rata Bintang": 4.66,
+      "A1: Akurasi AI (Mention / NSS)": "376 (+92.8%)",
+      "A2: Harga/Kuota (Mention / NSS)": "90 (+24.4%)",
+      "A3: Performa/UI (Mention / NSS)": "62 (+45.2%)",
+      "A4: Bhs Indonesia (Mention / NSS)": "49 (+57.1%)"
+    }
+  ]
+}

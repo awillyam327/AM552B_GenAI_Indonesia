@@ -1,0 +1,106 @@
+{
+  "total_rows": 71221,
+  "total_cols": 11,
+  "unique_review_ids": 71221,
+  "min_date": "2023-05-31 07:37:14",
+  "max_date": "2026-11-17 16:00:19",
+  "app_breakdown": [
+    {
+      "app_name": "ChatGPT (OpenAI)",
+      "app_id": "com.openai.chatgpt",
+      "count": 22000,
+      "pct": 30.89,
+      "avg_score": 4.46,
+      "min_date": "2026-09-25",
+      "max_date": "2026-11-17"
+    },
+    {
+      "app_name": "Google Gemini",
+      "app_id": "com.google.android.apps.bard",
+      "count": 12600,
+      "pct": 17.69,
+      "avg_score": 4.29,
+      "min_date": "2026-09-30",
+      "max_date": "2026-11-17"
+    },
+    {
+      "app_name": "Character.AI",
+      "app_id": "ai.character.app",
+      "count": 12000,
+      "pct": 16.85,
+      "avg_score": 1.58,
+      "min_date": "2026-04-29",
+      "max_date": "2026-11-17"
+    },
+    {
+      "app_name": "Perplexity - Ask Anything",
+      "app_id": "ai.perplexity.app.android",
+      "count": 8043,
+      "pct": 11.29,
+      "avg_score": 4.54,
+      "min_date": "2023-06-08",
+      "max_date": "2026-11-17"
+    },
+    {
+      "app_name": "Microsoft Copilot",
+      "app_id": "com.microsoft.copilot",
+      "count": 5459,
+      "pct": 7.66,
+      "avg_score": 4.65,
+      "min_date": "2023-12-27",
+      "max_date": "2026-11-04"
+    },
+    {
+      "app_name": "DeepSeek - AI Assistant",
+      "app_id": "com.deepseek.chat",
+      "count": 5374,
+      "pct": 7.55,
+      "avg_score": 3.77,
+      "min_date": "2025-01-14",
+      "max_date": "2026-11-15"
+    },
+    {
+      "app_name": "Claude by Anthropic",
+      "app_id": "com.anthropic.claude",
+      "count": 4009,
+      "pct": 5.63,
+      "avg_score": 3.85,
+      "min_date": "2024-07-18",
+      "max_date": "2026-11-17"
+    },
+    {
+      "app_name": "Poe - Fast AI Chat",
+      "app_id": "com.poe.android",
+      "count": 1736,
+      "pct": 2.44,
+      "avg_score": 4.66,
+      "min_date": "2023-05-31",
+      "max_date": "2026-11-17"
+    }
+  ],
+  "score_distribution": {
+    "1": {
+      "count": 15519,
+      "pct": 21.79
+    },
+    "2": {
+      "count": 2158,
+      "pct": 3.03
+    },
+    "3": {
+      "count": 2733,
+      "pct": 3.84
+    },
+    "4": {
+      "count": 5258,
+      "pct": 7.38
+    },
+    "5": {
+      "count": 45553,
+      "pct": 63.96
+    }
+  },
+  "language_region": {
+    "id_ID": 71221
+  }
+}

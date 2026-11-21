@@ -1,0 +1,258 @@
+{
+  "baseline_model": "TF-IDF (1-2 ngram) + LogisticRegression(class_weight='balanced') [Pure Text-Only]",
+  "overall_test_metrics": {
+    "accuracy": 0.8408,
+    "balanced_accuracy": 0.6837,
+    "macro_f1": 0.6438,
+    "weighted_f1": 0.8619,
+    "macro_precision": 0.6365,
+    "macro_recall": 0.6837,
+    "mcc": 0.6676,
+    "roc_auc_ovr": 0.8726,
+    "pr_auc_macro": 0.6551,
+    "triggered_high_score_alert": false
+  },
+  "audit_1_leakage": {
+    "audit_name": "AUDIT-1: Circular / Target Leakage Check",
+    "passed": true,
+    "leaked_forbidden_columns": [],
+    "suspicious_high_corr_features": []
+  },
+  "audit_2_imbalance_dummy": {
+    "audit_name": "AUDIT-2: Class Imbalance Illusion vs. Dummy Baseline",
+    "passed": true,
+    "dummy_most_frequent": {
+      "accuracy": 0.7136,
+      "balanced_accuracy": 0.3333,
+      "macro_f1": 0.2776,
+      "weighted_f1": 0.5943,
+      "macro_precision": 0.2379,
+      "macro_recall": 0.3333,
+      "mcc": 0.0,
+      "roc_auc_ovr": 0.5,
+      "pr_auc_macro": 0.3333,
+      "triggered_high_score_alert": false
+    },
+    "dummy_stratified": {
+      "accuracy": 0.5744,
+      "balanced_accuracy": 0.3337,
+      "macro_f1": 0.3337,
+      "weighted_f1": 0.5741,
+      "macro_precision": 0.3336,
+      "macro_recall": 0.3337,
+      "mcc": 0.0036,
+      "roc_auc_ovr": 0.5008,
+      "pr_auc_macro": 0.3338,
+      "triggered_high_score_alert": false
+    },
+    "model_macro_f1_gain_over_dummy": 0.3101,
+    "accuracy_minus_macro_f1_gap": 0.197,
+    "imbalance_illusion_warning": false
+  },
+  "audit_3_duplicate_and_length_slices": {
+    "audit_name": "AUDIT-3: Exact-Text Duplicate & Substantive Review (>=5 Words) Slice Audit",
+    "passed": true,
+    "train_test_exact_text_overlap_pct": 42.09,
+    "substantive_review_5w_pct": 43.28,
+    "macro_f1_drop_full_to_substantive": 0.0073,
+    "slices": {
+      "full_test": {
+        "slice_name": "1. Full Test Set (All Rows)",
+        "n_rows": 10684,
+        "pct_of_test": 100.0,
+        "metrics": {
+          "accuracy": 0.8408,
+          "balanced_accuracy": 0.6837,
+          "macro_f1": 0.6438,
+          "weighted_f1": 0.8619,
+          "macro_precision": 0.6365,
+          "macro_recall": 0.6837,
+          "mcc": 0.6676,
+          "roc_auc_ovr": 0.8726,
+          "pr_auc_macro": 0.6551,
+          "triggered_high_score_alert": false
+        }
+      },
+      "short_reviews_lt5w": {
+        "slice_name": "2. Short Generic Reviews (< 5 Words)",
+        "n_rows": 6060,
+        "pct_of_test": 56.72,
+        "metrics": {
+          "accuracy": 0.8865,
+          "balanced_accuracy": 0.6341,
+          "macro_f1": 0.6137,
+          "weighted_f1": 0.9018,
+          "macro_precision": 0.6192,
+          "macro_recall": 0.6341,
+          "mcc": 0.5483,
+          "roc_auc_ovr": 0.8408,
+          "pr_auc_macro": 0.6144,
+          "triggered_high_score_alert": true
+        }
+      },
+      "deduplicated_unseen_text": {
+        "slice_name": "3. Deduplicated Unseen-Text Test Set (0% Train Overlap)",
+        "n_rows": 6165,
+        "pct_of_test": 57.7,
+        "metrics": {
+          "accuracy": 0.7885,
+          "balanced_accuracy": 0.6712,
+          "macro_f1": 0.6337,
+          "weighted_f1": 0.8121,
+          "macro_precision": 0.6333,
+          "macro_recall": 0.6712,
+          "mcc": 0.6384,
+          "roc_auc_ovr": 0.865,
+          "pr_auc_macro": 0.6557,
+          "triggered_high_score_alert": false
+        }
+      },
+      "substantive_reviews_ge5w": {
+        "slice_name": "4. Substantive Complex Reviews (>= 5 Words)",
+        "n_rows": 4624,
+        "pct_of_test": 43.28,
+        "metrics": {
+          "accuracy": 0.7809,
+          "balanced_accuracy": 0.6739,
+          "macro_f1": 0.6365,
+          "weighted_f1": 0.8059,
+          "macro_precision": 0.6428,
+          "macro_recall": 0.6739,
+          "mcc": 0.636,
+          "roc_auc_ovr": 0.8701,
+          "pr_auc_macro": 0.6611,
+          "triggered_high_score_alert": false
+        }
+      }
+    }
+  },
+  "audit_4_leave_one_app_out": {
+    "audit_name": "AUDIT-4: Leave-One-App-Out (LOAO) Cross-Domain Generalization",
+    "passed": true,
+    "average_loao_macro_f1": 0.5991,
+    "per_app_loao_results": [
+      {
+        "held_out_app": "DeepSeek - AI Assistant",
+        "n_train": 65847,
+        "n_test_app": 5374,
+        "metrics": {
+          "accuracy": 0.6868,
+          "balanced_accuracy": 0.6318,
+          "macro_f1": 0.5717,
+          "weighted_f1": 0.7314,
+          "macro_precision": 0.5867,
+          "macro_recall": 0.6318,
+          "mcc": 0.479,
+          "roc_auc_ovr": 0.836,
+          "pr_auc_macro": 0.6046,
+          "triggered_high_score_alert": false
+        }
+      },
+      {
+        "held_out_app": "Claude by Anthropic",
+        "n_train": 67212,
+        "n_test_app": 4009,
+        "metrics": {
+          "accuracy": 0.7952,
+          "balanced_accuracy": 0.6759,
+          "macro_f1": 0.6274,
+          "weighted_f1": 0.8225,
+          "macro_precision": 0.6196,
+          "macro_recall": 0.6759,
+          "mcc": 0.6116,
+          "roc_auc_ovr": 0.8638,
+          "pr_auc_macro": 0.6331,
+          "triggered_high_score_alert": false
+        }
+      },
+      {
+        "held_out_app": "Google Gemini",
+        "n_train": 58621,
+        "n_test_app": 12600,
+        "metrics": {
+          "accuracy": 0.8345,
+          "balanced_accuracy": 0.6247,
+          "macro_f1": 0.5983,
+          "weighted_f1": 0.8562,
+          "macro_precision": 0.5997,
+          "macro_recall": 0.6247,
+          "mcc": 0.5373,
+          "roc_auc_ovr": 0.8338,
+          "pr_auc_macro": 0.6054,
+          "triggered_high_score_alert": false
+        }
+      }
+    ]
+  },
+  "audit_5_split_hygiene": {
+    "audit_name": "AUDIT-5: Pipeline Split Hygiene & Zero-ID Overlap Check",
+    "passed": true,
+    "n_train": 49854,
+    "n_val": 10683,
+    "n_test": 10684,
+    "overlap_train_val": 0,
+    "overlap_train_test": 0,
+    "overlap_val_test": 0,
+    "is_encapsulated_sklearn_pipeline": true
+  },
+  "audit_6_permutation_sanity": {
+    "audit_name": "AUDIT-6A: Randomized-Label Permutation Sanity Test (y_shuffled)",
+    "passed": true,
+    "shuffled_label_metrics": {
+      "accuracy": 0.437,
+      "balanced_accuracy": 0.3284,
+      "macro_f1": 0.308,
+      "weighted_f1": 0.484,
+      "macro_precision": 0.331,
+      "macro_recall": 0.3284,
+      "mcc": -0.0078,
+      "roc_auc_ovr": 0.4559,
+      "pr_auc_macro": 0.327,
+      "triggered_high_score_alert": false
+    }
+  },
+  "top_features_per_class": {
+    "0_Negative (Star 1-2)": [
+      "jelek (+5.08)",
+      "kecewa (+3.74)",
+      "tidak (+3.48)",
+      "verifikasi (+3.24)",
+      "update (+2.96)",
+      "lebih suka (+2.86)",
+      "18 (+2.85)",
+      "age (+2.81)",
+      "bad (+2.78)",
+      "kikir (+2.77)",
+      "mending (+2.68)",
+      "buruk (+2.64)"
+    ],
+    "1_Neutral (Star 3)": [
+      "not bad (+2.99)",
+      "kembaliin (+2.74)",
+      "terkadang (+2.66)",
+      "menjengkelkan (+2.59)",
+      "tiga (+2.53)",
+      "kadang (+2.51)",
+      "server (+2.48)",
+      "jadi kaku (+2.46)",
+      "why (+2.42)",
+      "masih (+2.33)",
+      "jngn (+2.28)",
+      "loginnya (+2.27)"
+    ],
+    "2_Positive (Star 4-5)": [
+      "nice (+2.59)",
+      "bermanfaat (+2.57)",
+      "top (+2.41)",
+      "best (+2.39)",
+      "the best (+2.20)",
+      "jos (+2.10)",
+      "amazing (+2.07)",
+      "mantab (+2.05)",
+      "bagus kok (+1.99)",
+      "bagus aplikasi (+1.98)",
+      "joss (+1.96)",
+      "dan (+1.88)"
+    ]
+  }
+}
