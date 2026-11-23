@@ -14,7 +14,7 @@
   {
     "skenario": "2A. Input Ekstrem (Slang Berat, Huruf Kapital & Paradoks Rating-Text Discrepancy)",
     "input_yang_diuji": "Teks: \"GUE KASIH BINTANG 5 BIAR DIBACA DEVELOPER!! Tolong dong apk makin update makin lemot bgt, mode live sering macet eror sendiri dan jawabannya ngawur ga nyambung!!\" | Rating: Bintang 5",
-    "hasil_yang_keluar": "Normalisasi Slang: \"gue kasih bintang 5 biar dibaca developer tolong dong aplikasi makin update makin lambat banget mode live sering macet error sendiri dan jawabannya acau tidak tersambung\" | Prediksi Sentimen Teks: Negatif (Confidence: 87.0%) | Aspek: [A1: Akurasi & Kecerdasan AI, A3: Performa, UI/UX & Server] | Deteksi Anomali: ⚠️ DISCREPANCY TYPE-I TERDETEKSI: Rating Tinggi (⭐ 5), tetapi isi teks mengandung keluhan/sentimen negatif.",
+    "hasil_yang_keluar": "Normalisasi Slang: \"saya kasih bintang 5 biar dibaca developer tolong dong aplikasi makin update makin lambat banget mode live sering macet error sendiri dan jawabannya acau tidak tersambung\" | Prediksi Sentimen Teks: Negatif (Confidence: 86.5%) | Aspek: [A1: Akurasi & Kecerdasan AI, A3: Performa, UI/UX & Server] | Deteksi Anomali: ⚠️ DISCREPANCY TYPE-I TERDETEKSI: Rating Tinggi (⭐ 5), tetapi isi teks mengandung keluhan/sentimen negatif.",
     "sesuai_harapan": "Ya (Berhasil mendeteksi sentimen negatif sejati & memberi peringatan Discrepancy Type-I)"
   },
   {
