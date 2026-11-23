@@ -18,6 +18,8 @@ import joblib
 import numpy as np
 import pandas as pd
 
+from typing import Any, Dict, List, Optional, Tuple, Union
+
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 MODEL_PATH = os.path.join(ROOT_DIR, "models", "genai_absa_pipeline.joblib")
 SLANG_PATH = os.path.join(ROOT_DIR, "03_data_preparation", "slang_dictionary_id.json")
@@ -91,12 +93,14 @@ def load_slang_dictionary():
 SLANG_DICT = load_slang_dictionary()
 
 
-def load_trained_artifact():
+def load_trained_artifact() -> Dict[str, Any]:
     if not os.path.exists(MODEL_PATH):
         raise FileNotFoundError(
             f"Model artifact belum ditemukan di {MODEL_PATH}. Jalankan tools/build_models_and_notebooks.py terlebih dahulu."
         )
-    return joblib.load(MODEL_PATH)
+    res = joblib.load(MODEL_PATH)
+    assert isinstance(res, dict)
+    return res
 
 
 def validate_review_input(raw_text):
@@ -246,7 +250,12 @@ def explain_prediction_keywords(pipeline, clean_text, predicted_class_idx, top_k
         return []
 
 
-def predict_single_review(raw_text, star_rating=None, app_name="ChatGPT (OpenAI)", artifact=None):
+def predict_single_review(
+    raw_text: str,
+    star_rating: Optional[int] = None,
+    app_name: str = "ChatGPT (OpenAI)",
+    artifact: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
     """Fungsi end-to-end untuk memprediksi satu ulasan pengguna."""
     is_valid, msg, validated_text = validate_review_input(raw_text)
     if not is_valid:
@@ -258,6 +267,7 @@ def predict_single_review(raw_text, star_rating=None, app_name="ChatGPT (OpenAI)
 
     if artifact is None:
         artifact = load_trained_artifact()
+    assert artifact is not None
 
     pipeline = artifact["pipeline"]
     classes = artifact["classes"]
@@ -322,6 +332,7 @@ def predict_batch_dataframe(df_input, text_col="content", score_col=None, artifa
 
     if artifact is None:
         artifact = load_trained_artifact()
+    assert artifact is not None
 
     pipeline = artifact["pipeline"]
     classes = artifact["classes"]

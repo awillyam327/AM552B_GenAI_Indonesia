@@ -9,6 +9,7 @@ Cara Menjalankan Lokal: streamlit run prototype/app.py
 import json
 import os
 import sys
+from typing import Any, Dict, List
 import pandas as pd
 import streamlit as st
 
@@ -151,7 +152,7 @@ def main():
             analyze_btn = st.button("🚀 Jalankan Analisis Sentimen & ABSA", type="primary", use_container_width=True)
 
         if analyze_btn:
-            res = predict_single_review(
+            res: Dict[str, Any] = predict_single_review(
                 raw_text=user_text,
                 star_rating=star_input,
                 app_name=selected_app,
@@ -182,9 +183,10 @@ def main():
                 c_left, c_right = st.columns(2)
                 with c_left:
                     st.markdown("#### 🎯 Deteksi Dimensi Aspek Layanan (ABSA)")
-                    for asp in res["detected_aspects"]:
-                        kw_str = ", ".join(f"`{k}`" for k in asp["matched_keywords"]) if asp["matched_keywords"] else "*ekspresi umum*"
-                        st.markdown(f"- **{asp['aspect_label']}** — Kata pemicu: {kw_str}")
+                    detected_aspects: List[Dict[str, Any]] = res.get("detected_aspects", [])
+                    for asp in detected_aspects:
+                        kw_str = ", ".join(f"`{k}`" for k in asp.get("matched_keywords", [])) if asp.get("matched_keywords") else "*ekspresi umum*"
+                        st.markdown(f"- **{asp.get('aspect_label', '')}** — Kata pemicu: {kw_str}")
 
                     st.markdown("#### 🧹 Hasil Normalisasi Teks Bahasa Indonesia")
                     st.code(res["clean_text"], language="text")
@@ -198,8 +200,9 @@ def main():
                         st.caption("Tidak ada token yang masuk dalam kosakata TF-IDF utama.")
 
                     st.markdown("#### 📈 Distribusi Probabilitas Kelas")
+                    class_probs: Dict[str, float] = res.get("class_probabilities", {})
                     df_prob = pd.DataFrame(
-                        list(res["class_probabilities"].items()),
+                        list(class_probs.items()),
                         columns=["Kelas Sentimen", "Probabilitas"],
                     )
                     st.bar_chart(df_prob.set_index("Kelas Sentimen"))
@@ -250,9 +253,9 @@ def main():
                     score_col_choice = st.selectbox("Pilih Kolom Skor Bintang (Opsional):", score_options, index=score_options.index(default_scol))
 
                 if st.button("⚡ Proses Prediksi Batch Sekarang", type="primary"):
-                    scol = None if score_col_choice == "-- Tidak Ada Kolom Rating --" else score_col_choice
+                    scol = None if score_col_choice == "-- Tidak Ada Kolom Rating --" else str(score_col_choice)
                     df_res, err_msg = predict_batch_dataframe(
-                        df_up.head(5000), text_col=text_col_choice, score_col=scol, artifact=artifact
+                        df_up.head(5000), text_col=str(text_col_choice), score_col=scol, artifact=artifact
                     )
                     if err_msg or df_res is None:
                         st.error(f"❌ {err_msg}")
