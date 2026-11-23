@@ -356,8 +356,9 @@ def build_three_notebooks(summary):
         "nbformat_minor": 5,
     }
     nb1_path = os.path.join(NOTEBOOKS_DIR, "01_Data_Understanding_dan_EDA.ipynb")
-    with open(nb1_path, "w", encoding="utf-8") as f:
-        json.dump(nb1, f, indent=2, ensure_ascii=False)
+    if not os.path.exists(nb1_path):
+        with open(nb1_path, "w", encoding="utf-8") as f:
+            json.dump(nb1, f, indent=2, ensure_ascii=False)
 
     # =========================================================================
     # NOTEBOOK 2: 02_Data_Preparation_dan_ABSA.ipynb (Bab 3)
@@ -427,8 +428,9 @@ def build_three_notebooks(summary):
         "nbformat_minor": 5,
     }
     nb2_path = os.path.join(NOTEBOOKS_DIR, "02_Data_Preparation_dan_ABSA.ipynb")
-    with open(nb2_path, "w", encoding="utf-8") as f:
-        json.dump(nb2, f, indent=2, ensure_ascii=False)
+    if not os.path.exists(nb2_path):
+        with open(nb2_path, "w", encoding="utf-8") as f:
+            json.dump(nb2, f, indent=2, ensure_ascii=False)
 
     # =========================================================================
     # NOTEBOOK 3: 03_Modeling_Tuning_dan_Evaluasi.ipynb (Bab 4 & Bab 5)
@@ -528,8 +530,9 @@ def build_three_notebooks(summary):
         "nbformat_minor": 5,
     }
     nb3_path = os.path.join(NOTEBOOKS_DIR, "03_Modeling_Tuning_dan_Evaluasi.ipynb")
-    with open(nb3_path, "w", encoding="utf-8") as f:
-        json.dump(nb3, f, indent=2, ensure_ascii=False)
+    if not os.path.exists(nb3_path):
+        with open(nb3_path, "w", encoding="utf-8") as f:
+            json.dump(nb3, f, indent=2, ensure_ascii=False)
 
     print(f"[OK] 3 Jupyter Notebooks (.ipynb) berhasil dibuat di: {NOTEBOOKS_DIR}")
 
@@ -580,13 +583,17 @@ def main():
         app_absa_matrix.append(row_dict)
 
     # 80:20 Stratified Split SEBELUM TF-IDF FIT
-    X_train, X_test, y_train, y_test = train_test_split(
-        df["clean_content"].values,
-        df["sentiment_3class"].values,
+    X_train_list, X_test_list, y_train_list, y_test_list = train_test_split(
+        df["clean_content"].tolist(),
+        df["sentiment_3class"].tolist(),
         test_size=0.20,
-        stratify=df["strat_key"].values,
+        stratify=df["strat_key"].tolist(),
         random_state=RANDOM_SEED,
     )
+    X_train = np.array(X_train_list, dtype=object)
+    X_test = np.array(X_test_list, dtype=object)
+    y_train = np.array(y_train_list)
+    y_test = np.array(y_test_list)
 
     model_comparison = []
 
