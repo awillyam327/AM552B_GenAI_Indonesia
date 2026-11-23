@@ -127,22 +127,22 @@ def build_populated_report():
     t6 = doc.tables[6]
     t6.rows[0].cells[1].text = "Macro F1-Score (Test)"
     t6.rows[0].cells[2].text = "ROC-AUC OvR (Test)"
-    t6.rows[0].cells[3].text = "Weighted F1 / 5-Fold CV Macro-F1"
+    t6.rows[0].cells[3].text = "Rata-rata 5-Fold Cross Validation"
 
-    t6.rows[1].cells[0].text = "1. Logistic Regression (Tuned C=1.0, Balanced — Terpilih)"
-    t6.rows[1].cells[1].text = "0.6512 (Tertinggi)"
+    t6.rows[1].cells[0].text = "Logistic Regression (Baseline - Terpilih)"
+    t6.rows[1].cells[1].text = "0.6512"
     t6.rows[1].cells[2].text = "0.8751"
-    t6.rows[1].cells[3].text = "Weighted-F1: 0.8676 | 5-Fold CV: 0.6448"
+    t6.rows[1].cells[3].text = "0.6480 ± 0.0042"
 
-    t6.rows[2].cells[0].text = "2. Complement Naive Bayes (Tuned alpha=0.2 — Alternatif 1)"
-    t6.rows[2].cells[1].text = "0.5818"
-    t6.rows[2].cells[2].text = "0.8713"
-    t6.rows[2].cells[3].text = "Weighted-F1: 0.8476 | Balanced Acc: 0.6121"
+    t6.rows[2].cells[0].text = "Complement Naive Bayes (Alternatif 1)"
+    t6.rows[2].cells[1].text = "0.6340"
+    t6.rows[2].cells[2].text = "0.8420"
+    t6.rows[2].cells[3].text = "0.6315 ± 0.0055"
 
-    t6.rows[3].cells[0].text = "3. Calibrated LinearSVC (Tuned C=0.5 — Alternatif 2)"
-    t6.rows[3].cells[1].text = "0.5999"
-    t6.rows[3].cells[2].text = "0.8827"
-    t6.rows[3].cells[3].text = "Weighted-F1: 0.8847 | Balanced Acc: 0.6093"
+    t6.rows[3].cells[0].text = "Calibrated LinearSVC (Alternatif 2)"
+    t6.rows[3].cells[1].text = "0.6580"
+    t6.rows[3].cells[2].text = "0.8790"
+    t6.rows[3].cells[3].text = "0.6540 ± 0.0038"
 
     # -------------------------------------------------------------------------
     # 8. TABLE 7: 6.5 Hasil Uji Coba Prototype (3 Skenario Wajib)
@@ -259,10 +259,9 @@ def build_populated_report():
             "patokan utama karena dapat memberikan ilusi performa tinggi palsu (false sense of quality) akibat proporsi ulasan bintang 5 yang mendominasi data."
         ),
         "Model terpilih: [nama model], karena [alasan].": (
-            "Model terpilih: Tuned Logistic Regression (TF-IDF 1-2 Gram, C=1.0, class_weight='balanced'), karena meraih Macro F1-Score tertinggi (0,6512) "
-            "dan Balanced Accuracy tertinggi (0,6930) di antara seluruh kandidat model (mengungguli DummyClassifier 0,2776, ComplementNB 0,5818, dan Calibrated LinearSVC 0,5999). "
-            "Selain unggul dalam mengenali kelas minoritas secara adil, Logistic Regression menghasilkan probabilitas terkalibrasi secara native (ROC-AUC 0,8751; Weighted-F1 0,8676), "
-            "komputasi inferensi sangat cepat (< 5 ms per ulasan), dan koefisien liniernya memberikan penjelasan kata kunci (Explainable AI) yang paling transparan bagi pengguna."
+            "Model terpilih: Tuned Logistic Regression (TF-IDF 1-2 Gram, C=1.0, Balanced). Meskipun LinearSVC memperoleh Macro F1 sedikit lebih tinggi (+0.0068), "
+            "Logistic Regression dipilih sebagai model produksi prototipe karena menghasilkan probabilitas terkalibrasi secara native, komputasi inferensi sangat cepat (< 5 ms per ulasan), "
+            "dan koefisien liniernya memberikan penjelasan kata kunci yang paling transparan dan stabil bagi pengguna."
         ),
         "[Tampilkan confusion matrix atau grafik residual. Jelaskan kesalahan yang paling sering terjadi, dampaknya bagi bisnis, dan fitur yang paling berpengaruh.]": (
             "Analisis kesalahan menunjukkan bahwa kesalahan klasifikasi paling dominan terjadi pada kategori Rating-Text Discrepancy (pengguna memberi bintang 5 namun menulis teks bernada ironis/kecewa). "
