@@ -1,136 +1,118 @@
 # Analisis Komparatif Sentimen Berbasis Aspek (ABSA) dan Pemodelan Topik Pengalaman Pengguna terhadap Ekosistem Aplikasi Mobile Generative AI di Indonesia
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://genai-indonesia-am552b.streamlit.app)
-[![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-blue?logo=github)](https://github.com/awillyam327/AM552B_GenAI_Indonesia)
+Repositori ini berisi kode program, dataset, eksperimen pemodelan, dan prototipe aplikasi web untuk Tugas Akhir mata kuliah **AM552 - Data Science of IS** (Program Studi S1 Sistem Informasi, Fakultas Teknologi Informasi, Universitas Kristen Satya Wacana).
 
-> **Live Prototype**: [https://genai-indonesia-am552b.streamlit.app](https://genai-indonesia-am552b.streamlit.app)  
-> **Mata Kuliah**: Data Science of IS (AM552) — Proyek Akhir Kelompok  
-> **Komposisi Tim**: Arthur Willyam Liang (682024046 - Lead), Brendan Wilson Santoso (682024016 - Data Eng), Tiara Agustien Kusumawati (682024059 - Analyst & Reporting)  
-> **Aset Raw Data**: `71.221` Ulasan Unik Google Play Store Indonesia (`id_ID`) pada 8 Aplikasi Generative AI (`100% Real Scraped Data`, `0% Duplikasi reviewId`)
+- **Aplikasi Web (Streamlit)**: [https://genai-indonesia-am552b.streamlit.app](https://genai-indonesia-am552b.streamlit.app)
+- **Repositori GitHub**: [https://github.com/awillyam327/AM552B_GenAI_Indonesia](https://github.com/awillyam327/AM552B_GenAI_Indonesia)
 
 ---
 
-## 📌 1. Gambaran Umum Proyek (Project Overview)
+## Anggota Kelompok
 
-Proyek ini mengevaluasi pengalaman pengguna (*User Experience*) nyata masyarakat Indonesia terhadap 8 aplikasi mobile Generative AI terpopuler di Google Play Store:
-1. **ChatGPT (OpenAI)** (`22.000` ulasan, rating rata-rata `4.46`)
-2. **Google Gemini** (`12.600` ulasan, rating rata-rata `4.29`)
-3. **Character.AI** (`12.000` ulasan, rating rata-rata `1.58`)
-4. **Perplexity - Ask Anything** (`8.043` ulasan, rating rata-rata `4.54`)
-5. **Microsoft Copilot** (`5.459` ulasan, rating rata-rata `4.65`)
-6. **DeepSeek - AI Assistant** (`5.374` ulasan, rating rata-rata `3.77`)
-7. **Claude by Anthropic** (`4.009` ulasan, rating rata-rata `3.85`)
-8. **Poe - Fast AI Chat** (`1.736` ulasan, rating rata-rata `4.66`)
-
-Penelitian ini membedah ulasan ke dalam **4 Dimensi Aspek Layanan (ABSA)**:
-- **A1 — Akurasi & Kecerdasan AI** (*Reasoning, Task Assistance vs. Hallucination/Ngawur*)
-- **A2 — Harga & Limitasi Kuota Gratis** (*Rate Limit, Subscription Plus/Pro, Paywall, Ads*)
-- **A3 — Performa, UI/UX & Kecepatan Server** (*Server Busy/Down, Force Close, Login, Live Voice*)
-- **A4 — Dukungan Bahasa Indonesia** (*Indonesian Fluency, Local Slang vs. Kaku/Inggris*)
-
-Serta meneliti anomali **Rating-Text Discrepancy** (pengguna memberi Bintang 5 tetapi isi teks mengeluh kritis, atau sebaliknya).
+| Nama Mahasiswa | NIM | Pembagian Tugas |
+| :--- | :---: | :--- |
+| **Arthur Willyam Liang** | 682024046 | Pemodelan klasifikasi sentimen, *hyperparameter tuning* 5-fold CV, evaluasi model, dan deployment Streamlit |
+| **Brendan Wilson Santoso** | 682024016 | *Data preprocessing*, kamus normalisasi slang bahasa Indonesia, pelabelan aspek ABSA, dan pengujian aplikasi |
+| **Tiara Agustien Kusumawati** | 682024059 | *Exploratory Data Analysis* (EDA), pemodelan topik (*Latent Dirichlet Allocation*), penyusunan laporan dan slide presentasi |
 
 ---
 
-## 📂 2. Struktur Direktori Berbasis Standar CRISP-DM
+## Ringkasan Penelitian
+
+Penelitian ini menganalisis **71.221 ulasan pengguna** berbahasa Indonesia di Google Play Store pada 8 aplikasi mobile Generative AI:
+1. **ChatGPT (OpenAI)** — 22.000 ulasan (rata-rata rating 4,46)
+2. **Google Gemini** — 12.600 ulasan (rata-rata rating 4,29)
+3. **Character.AI** — 12.000 ulasan (rata-rata rating 1,58)
+4. **Perplexity - Ask Anything** — 8.043 ulasan (rata-rata rating 4,54)
+5. **Microsoft Copilot** — 5.459 ulasan (rata-rata rating 4,65)
+6. **DeepSeek - AI Assistant** — 5.374 ulasan (rata-rata rating 3,77)
+7. **Claude by Anthropic** — 4.009 ulasan (rata-rata rating 3,85)
+8. **Poe - Fast AI Chat** — 1.736 ulasan (rata-rata rating 4,66)
+
+Ulasan diklasifikasikan ke dalam 3 kelas sentimen (**Positif**, **Netral**, **Negatif**) dan dipetakan ke dalam 4 dimensi aspek layanan (**ABSA**):
+- **A1 (Akurasi & Kecerdasan AI)**: kualitas jawaban, penalaran, bantuan tugas/koding, atau masalah halusinasi.
+- **A2 (Harga & Limitasi Kuota)**: batas kuota harian versi gratis dan harga langganan.
+- **A3 (Performa, UI/UX & Server)**: kecepatan aplikasi, kendala *server sibuk*, gagal *login*, atau bug antarmuka.
+- **A4 (Bahasa Indonesia)**: keluwesan bahasa Indonesia dan kualitas terjemahan.
+
+Selain itu, proyek ini mengidentifikasi fenomena **Rating-Text Discrepancy**, yaitu kondisi ketika pengguna memberikan rating bintang tinggi (Bintang 4–5) namun isi teks ulasannya berupa keluhan teknis.
+
+---
+
+## Struktur Folder
 
 ```text
-Project final/
-├── README.md                                   # Dokumentasi utama proyek & panduan navigasi
-├── requirements.txt                            # Daftar dependensi Python terverifikasi
-├── .gitignore                                  # Aturan pengabaian file sementara & lock files
-├── MASTER_EXECUTION_PLAN.md                    # Master Plan 7 Fase & Protokol Anti-Leakage
-├── MASTER_EXECUTION_PLAN.docx                  # Master Plan versi Word siap cetak/sidang
-├── TEAM_ONBOARDING_GUIDE.md                    # Panduan onboarding & kurikulum kilat 3 anggota
-├── TEAM_ONBOARDING_GUIDE.docx                  # Panduan onboarding versi Word
-├── Sinopsis_GenerativeAI_Indonesia_682024046.docx # Dokumen sinopsis pengajuan proyek (NIM)
-├── Sinopsis_GenerativeAI_Indonesia_682024046.md   # Dokumen sinopsis pengajuan proyek (Markdown)
-│
-├── scrape_genai_indonesia.py                   # Script penarikan data Google Play Store (71.221 baris)
-├── verify_dataset.py                           # Script audit integritas dimensi, rating, & baris CSV
+├── README.md
+├── requirements.txt
+├── scrape_genai_indonesia.py                   # Script pengambilan data ulasan Google Play Store
+├── verify_dataset.py                           # Script pengecekan jumlah baris dan kolom dataset
 │
 ├── dataset/
-│   ├── RAW_DATASET_GENAI_INDONESIA_AM522B.csv  # Dataset mentah utama (71.221 baris unik, 11 kolom)
-│   ├── audit_summary.json                      # Ringkasan audit dimensi & distribusi dataset
-│   └── checkpoints/                            # Checkpoint CSV per aplikasi hasil scraping
+│   ├── RAW_DATASET_GENAI_INDONESIA_AM522B.csv  # Dataset utama (71.221 baris, 11 kolom)
+│   └── audit_summary.json                      # Ringkasan statistik dataset
+│
+├── notebooks/
+│   ├── 01_Data_Understanding_dan_EDA.ipynb     # Notebook Bab 2: Pemahaman Data & EDA
+│   ├── 02_Data_Preparation_dan_ABSA.ipynb      # Notebook Bab 3: Preprocessing Slang & Pelabelan ABSA
+│   └── 03_Modeling_Tuning_dan_Evaluasi.ipynb   # Notebook Bab 4 & 5: Pemodelan, Tuning 5-Fold & Evaluasi
 │
 ├── 01_business_understanding/
-│   └── project_charter_dan_definisi_aspek.md   # Rumusan masalah (RQ), hipotesis, & kamus 4 aspek ABSA
+│   └── project_charter_dan_definisi_aspek.md   # Rumusan masalah dan kamus kata kunci 4 aspek ABSA
 │
 ├── 02_data_understanding/
-│   ├── run_initial_eda.py                      # Script otomatisasi visualisasi EDA & audit missing
-│   ├── eda_summary_report.md                   # Laporan statistik panjang teks, rating, & unigram/bigram
-│   └── figures/                                # Grafik resolusi tinggi (distribusi, rating, discrepancy)
+│   ├── run_initial_eda.py                      # Script pembuatan grafik distribusi data
+│   ├── eda_summary_report.md                   # Ringkasan hasil eksplorasi data
+│   └── figures/                                # Grafik distribusi aplikasi, rating, dan discrepancy
 │
 ├── 03_data_preparation/
-│   ├── slang_dictionary_id.json                # Kamus pemetaan kata gaul/slang ke Bahasa Indonesia baku
-│   ├── preprocessing_pipeline_template.py      # Template pipeline normalisasi teks & tagging ABSA
-│   └── sample_preprocessed_absa_1000.csv       # Sampel 1.000 baris hasil uji pipeline
+│   ├── slang_dictionary_id.json                # Kamus normalisasi kata tidak baku/slang (145 entri)
+│   ├── preprocessing_pipeline_template.py      # Modul pembersihan teks dan ekstraksi aspek
+│   └── sample_preprocessed_absa_1000.csv       # Sampel 1.000 baris hasil preprocessing
 │
 ├── 04_modeling/
-│   └── README.md                               # Panduan Track A (Supervised) & Track B (Topic Modeling)
+│   ├── train_sentiment_models.py               # Script pelatihan model klasifikasi & ekspor .joblib
+│   ├── run_topic_modeling_experiment.py        # Script pemodelan topik LDA (5 klaster topik)
+│   ├── topic_modeling_report.md                # Ringkasan hasil klaster topik LDA
+│   └── figures/                                # Visualisasi kata kunci per topik LDA
 │
 ├── 05_evaluation/
-│   ├── metric_sanity_audit.py                  # Modul 6 pemeriksaan forensik metrik & anti-leakage
-│   ├── metric_sanity_audit_report.md           # Laporan audit komparasi Dummy vs Multi-Slice Test
-│   ├── audit_results.json                      # Metrik eksak komprehensif (Macro F1, MCC, PR-AUC)
-│   ├── confident_errors_fp_fn.csv              # Top 20 bukti nyata Rating-Text Discrepancy
-│   └── README.md                               # Panduan evaluasi & interpretasi SHAP
+│   ├── metric_sanity_audit.py                  # Script evaluasi model dan pengecekan data leakage
+│   ├── metric_sanity_audit_report.md           # Ringkasan hasil evaluasi metrik pada data uji
+│   ├── audit_results.json                      # Hasil metrik lengkap dalam format JSON
+│   ├── confident_errors_fp_fn.csv              # Contoh kasus kesalahan prediksi & discrepancy
+│   └── figures/                                # Plot Confusion Matrix dan Feature Attribution
 │
 ├── 06_deployment_reporting/
-│   └── README.md                               # Matriks komparasi akhir 8 aplikasi & materi laporan
+│   ├── 682024046_KEL_DS_Laporan.docx           # Laporan Akhir Proyek (Format 7 Bab FTI UKSW)
+│   ├── 682024046_KEL_DS_Presentasi.pdf         # Slide Presentasi Kelompok (PDF)
+│   ├── 682024046_KEL_DS_Presentasi.pptx        # Slide Presentasi Kelompok (PowerPoint)
+│   └── figures/                                # Tangkapan layar aplikasi prototype Streamlit
 │
-└── tools/
-    ├── generate_master_execution_plan_docx.py  # Generator konversi Master Execution Plan ke Word
-    ├── generate_team_onboarding.py             # Generator konversi Team Onboarding Guide ke Word
-    └── generate_synopsis_docs.py               # Generator konversi Dokumen Sinopsis ke Word
+├── models/
+│   ├── genai_absa_pipeline.joblib              # File model terbaik tersimpan (Logistic Regression + TF-IDF)
+│   └── modeling_results_summary.json           # Ringkasan perbandingan hasil model
+│
+└── prototype/
+    ├── app.py                                  # Aplikasi web interaktif Streamlit (3 Tab)
+    ├── core_predictor.py                       # Modul inferensi model, validasi input, dan ABSA
+    ├── test_prototype_scenarios.py             # Pengujian 3 skenario input (Normal, Ekstrem, Salah Format)
+    └── requirements.txt                        # Dependensi deployment Streamlit Cloud
 ```
 
 ---
 
-## 👥 3. Pembagian Tugas Tim (3 Anggota)
+## Cara Menjalankan Proyek secara Lokal
 
-| Anggota Tim | Peran Utama | Fokus Fase CRISP-DM | Modul / Script Utama |
-| :--- | :--- | :--- | :--- |
-| **Arthur Willyam Liang (682024046)**<br>*(Member 1 - Project Lead)* | Predictive Modeling, Anti-Leakage Audit & Backend Deployment | Fase 0, 1, 4 (Track A), 5, 6 | `05_evaluation/metric_sanity_audit.py`<br>`notebooks/03_Modeling_Tuning_dan_Evaluasi.ipynb`<br>`models/genai_absa_pipeline.joblib` |
-| **Brendan Wilson Santoso (682024016)**<br>*(Member 2 - Data Engineer)* | Data Engineering, Indonesian Preprocessing, Slang Dictionary & ABSA | Fase 0, 2, 3, 4 (ABSA Matrix), 6 | `notebooks/02_Data_Preparation_dan_ABSA.ipynb`<br>`03_data_preparation/slang_dictionary_id.json`<br>`prototype/test_prototype_scenarios.py` |
-| **Tiara Agustien Kusumawati (682024059)**<br>*(Member 3 - Analyst & Writer)* | EDA, Topic Modeling, Final Report & Presentation PDF | Fase 0, 2, 4 (Track B), 6 | `notebooks/01_Data_Understanding_dan_EDA.ipynb`<br>`06_deployment_reporting/682024046_KEL_DS_Laporan.docx`<br>`06_deployment_reporting/682024046_KEL_DS_Presentasi.pdf` |
+1. **Instalasi pustaka Python**:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
----
+2. **Menjalankan Jupyter Notebook**:
+   Buka folder `notebooks/` menggunakan VS Code atau Jupyter Lab, lalu jalankan berurutan dari `01_Data_Understanding_dan_EDA.ipynb`, `02_Data_Preparation_dan_ABSA.ipynb`, hingga `03_Modeling_Tuning_dan_Evaluasi.ipynb`.
 
-## 🚀 4. Panduan Eksekusi Cepat (Quickstart)
-
-### A. Instalasi Dependensi
-```bash
-pip install -r requirements.txt
-```
-
-### B. Verifikasi Dataset Utama (71.221 Baris)
-```bash
-python verify_dataset.py
-```
-
-### C. Menjalankan Exploratory Data Analysis (EDA) & Membuat Grafik
-```bash
-python 02_data_understanding/run_initial_eda.py
-```
-*Hasil grafik disimpan di folder `02_data_understanding/figures/`.*
-
-### D. Menguji Pipeline Preprocessing & Multi-Label ABSA Tagging
-```bash
-python 03_data_preparation/preprocessing_pipeline_template.py
-```
-
-### E. Menjalankan 6 Pemeriksaan Forensik Audit Metrik & Anti-Leakage
-```bash
-python 05_evaluation/metric_sanity_audit.py
-```
-*Hasil evaluasi dan laporan forensik disimpan di `05_evaluation/metric_sanity_audit_report.md`.*
-
----
-
-## 📄 5. Dokumen Indeks Utama
-
-1. **[MASTER_EXECUTION_PLAN.md](MASTER_EXECUTION_PLAN.md)** / **[MASTER_EXECUTION_PLAN.docx](MASTER_EXECUTION_PLAN.docx)**: Rencana induk 7 fase pengerjaan, matriks dependensi tugas, dan protokol audit "angka terlalu tinggi".
-2. **[TEAM_ONBOARDING_GUIDE.md](TEAM_ONBOARDING_GUIDE.md)** / **[TEAM_ONBOARDING_GUIDE.docx](TEAM_ONBOARDING_GUIDE.docx)**: Panduan konsep intuitif tanpa jargon rumit dan kurikulum belajar kilat per peran.
-3. **[Sinopsis_GenerativeAI_Indonesia_682024046.docx](Sinopsis_GenerativeAI_Indonesia_682024046.docx)**: Proposal formal pengajuan proyek tugas akhir AM522B.
+3. **Menjalankan Aplikasi Prototype Streamlit**:
+   ```bash
+   streamlit run prototype/app.py
+   ```
+   Aplikasi akan berjalan di `http://localhost:8501`.

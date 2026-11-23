@@ -35,3 +35,6 @@ Thumbs.db
 
 # Scraper temporary checkpoints (consolidated into RAW_DATASET_GENAI_INDONESIA_AM522B.csv)
 dataset/checkpoints/
+
+ROADMAP_KERJA_KELOMPOK_100_PERSEN.docx
+

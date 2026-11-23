@@ -1,18 +1,13 @@
-# CRISP-DM FASE 4: MODELING (DUAL-STAGE EXPERIMENT)
+# Bab 4: Pemodelan (Modeling)
 
-Folder ini digunakan oleh **Member 1**, **Member 2**, dan **Member 3** untuk menjalankan dua eksperimen pemodelan utama proyek akhir AM522B:
+Folder ini berisi skrip pelatihan model klasifikasi sentimen dan eksperimen pemodelan topik:
 
-## 1. Experiment 1: Supervised Sentiment & Rating-Text Discrepancy Classification
-- **Penanggung Jawab**: Member 1 (Project Lead, Modeling & XAI) & Member 2 (Feature Engineering)
-- **Model yang Dibandingkan**:
-  1. **Ensemble Gradient Boosting**: `CatBoost`, `XGBoost`, `LightGBM` (menggunakan fitur *TF-IDF Unigram-Trigram* + *Lexicon Score* + *Review Metadata* `char_length`, `thumbsUpCount`).
-  2. **Pre-trained Language Model**: **IndoBERT** (`indobenchmark/indobert-base-p1`).
-- **Target Klasifikasi**:
-  - `Task 1A`: Polaritas Sentimen 3-Kelas (Positif, Netral, Negatif) & Skor Aspek (ABSA).
-  - `Task 1B`: Deteksi *Rating-Text Discrepancy* (`Consistent` vs. `Discrepancy`).
+1. **Klasifikasi Sentimen 3-Kelas (`train_sentiment_models.py`)**:
+   - **Baseline**: `LogisticRegression(class_weight='balanced')` dengan fitur `TfidfVectorizer(ngram_range=(1, 2), max_features=15000, sublinear_tf=True)`.
+   - **Model Alternatif 1**: `ComplementNB` (Multinomial Naive Bayes untuk data teks dengan kelas tidak seimbang).
+   - **Model Alternatif 2**: `CalibratedClassifierCV(LinearSVC(class_weight='balanced'))`.
+   - Penalaan parameter dilakukan menggunakan `GridSearchCV` 5-fold cross validation pada data latih (80%). Model terbaik disimpan ke `../models/genai_absa_pipeline.joblib`.
 
-## 2. Experiment 2: Unsupervised Topic Modeling & Aspect Discovery
-- **Penanggung Jawab**: Member 3 (EDA & Topic Modeling)
-- **Model yang Dibandingkan**:
-  1. **Probabilistic Topic Model**: `Latent Dirichlet Allocation (LDA)` via `scikit-learn` / `gensim`.
-  2. **Neural Topic Model**: `BERTopic` (Multilingual Sentence-Transformer Embeddings + UMAP + HDBSCAN + c-TF-IDF).
+2. **Pemodelan Topik Keluhan & Pujian (`run_topic_modeling_experiment.py`)**:
+   - Menggunakan algoritma *Latent Dirichlet Allocation* (LDA) untuk mengelompokkan topik bahasan utama pengguna ke dalam 5 klaster topik.
+   - Hasil visualisasi kata kunci per topik disimpan pada `figures/01_topic_keywords_lda.png`.

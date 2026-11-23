@@ -1,9 +1,7 @@
 """
-=========================================================================================
-PROTOTYPE WEB APP INTERAKTIF — AM552 DATA SCIENCE OF IS (FTI UKSW)
-File: prototype/app.py
-Cara Menjalankan Lokal: streamlit run prototype/app.py
-=========================================================================================
+Aplikasi Web Prototype — Analisis Sentimen Berbasis Aspek (ABSA) & Deteksi Discrepancy
+Mata Kuliah: AM552 - Data Science of IS (S1 Sistem Informasi, FTI UKSW)
+Cara Menjalankan: streamlit run prototype/app.py
 """
 
 import json

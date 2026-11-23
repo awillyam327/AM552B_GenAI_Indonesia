@@ -1,8 +1,7 @@
-# CRISP-DM FASE 6: DEPLOYMENT, VISUALIZATION DASHBOARD & FINAL REPORTING
+# Bab 6 & 7: Laporan Akhir dan Materi Presentasi
 
-Folder ini digunakan oleh seluruh anggota tim (dikoordinasikan oleh **Member 3** & **Member 1**) untuk menyimpan artefak publikasi akhir:
+Folder ini menyimpan dokumen hasil akhir kelompok (`682024046_KEL_DS`):
 
-1. **Matriks Benchmarking Pengalaman Pengguna 8 Aplikasi Generative AI**:
-   - Grafik radar / heatmap perbandingan skor sentimen 4 aspek (**Akurasi/Kecerdasan**, **Harga/Kuota Gratis**, **Performa/Bug/UI**, **Bahasa Indonesia**) antara ChatGPT, Google Gemini, Character.AI, Perplexity, Microsoft Copilot, DeepSeek, Claude, dan Poe.
-2. **Laporan Akhir Proyek Data Science (AM522B)** (`.docx` & `.pdf`).
-3. **Slide Presentasi Kelompok (Pitch Deck)** (`.pptx` / `.pdf`).
+1. `682024046_KEL_DS_Laporan.docx`: Laporan lengkap proyek akhir mengikuti template 7 Bab mata kuliah AM552 - Data Science of IS.
+2. `682024046_KEL_DS_Presentasi.pdf` & `682024046_KEL_DS_Presentasi.pptx`: Slide presentasi kelompok.
+3. `figures/`: Tangkapan layar pengujian aplikasi web Streamlit.

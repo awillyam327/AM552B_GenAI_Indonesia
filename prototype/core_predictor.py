@@ -1,14 +1,6 @@
 """
-=========================================================================================
-CORE INFERENCE, PREPROCESSING, ABSA & INPUT VALIDATION ENGINE
-File: prototype/core_predictor.py
-=========================================================================================
-Modul ini digunakan bersama oleh:
-  1. prototype/app.py (Web App Interaktif Streamlit)
-  2. prototype/test_prototype_scenarios.py (Pengujian Otomatis 3 Skenario Bab 6.5)
-Memastikan 100% konsistensi preprocessing, ekstraksi 4 aspek ABSA, deteksi Rating-Text
-Discrepancy, serta atribusi kata kunci pendorong prediksi dengan Jupyter Notebook (.ipynb).
-=========================================================================================
+Modul Preprocessing Teks, Inferensi Model, Ekstraksi 4 Aspek ABSA & Validasi Input
+Digunakan oleh prototype/app.py dan prototype/test_prototype_scenarios.py
 """
 
 import json
