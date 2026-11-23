@@ -196,8 +196,9 @@ def analyze_aspects_and_discrepancy(raw_text, clean_text, star_rating=None, pred
         )
 
     # Deteksi Rating-Text Discrepancy
+    has_negated_complain = any(p in clean_text for p in NEGATED_COMPLAIN_PHRASES)
     has_complaint = (
-        len(token_set.intersection(NEG_COMPLAIN_WORDS)) > 0
+        (len(token_set.intersection(NEG_COMPLAIN_WORDS)) > 0 and not has_negated_complain)
         or ("tidak bisa" in clean_text)
         or ("tidak tersambung" in clean_text)
     )
