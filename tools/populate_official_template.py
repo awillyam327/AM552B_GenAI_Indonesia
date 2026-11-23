@@ -17,7 +17,6 @@ from docx.enum.table import WD_TABLE_ALIGNMENT
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 TEMPLATE_PATH = os.path.join(ROOT_DIR, "Template Laporan Project Akhir – AM552 Data Science of IS.docx")
 OUTPUT_PATH_REPORT = os.path.join(ROOT_DIR, "06_deployment_reporting", "682024046_KEL_DS_Laporan.docx")
-OUTPUT_PATH_ROOT = os.path.join(ROOT_DIR, "Laporan_Project_Akhir_AM552_Terisi.docx")
 
 def build_populated_report():
     print(f"Loading template: {TEMPLATE_PATH}")
@@ -397,12 +396,10 @@ def build_populated_report():
                 p_cap_sc2 = p.insert_paragraph_before()
                 p_cap_sc2.text = "Gambar 6.2: Antarmuka Fitur Batch Processing (Tab 2: Unggah File CSV dan Pemrosesan Massal 1.000 Ulasan Sekaligus)."
 
-    # Save to both destinations
+    # Save to canonical destination
     os.makedirs(os.path.dirname(OUTPUT_PATH_REPORT), exist_ok=True)
     doc.save(OUTPUT_PATH_REPORT)
     print(f"[SUCCESS] Laporan Resmi Tersimpan: {OUTPUT_PATH_REPORT}")
-    doc.save(OUTPUT_PATH_ROOT)
-    print(f"[SUCCESS] Salinan Root Tersimpan: {OUTPUT_PATH_ROOT}")
 
 if __name__ == "__main__":
     build_populated_report()

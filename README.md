@@ -94,7 +94,7 @@ Project final/
 | :--- | :--- | :--- | :--- |
 | **Arthur Willyam Liang (682024046)**<br>*(Member 1 - Project Lead)* | Predictive Modeling, Anti-Leakage Audit & Backend Deployment | Fase 0, 1, 4 (Track A), 5, 6 | `05_evaluation/metric_sanity_audit.py`<br>`notebooks/03_Modeling_Tuning_dan_Evaluasi.ipynb`<br>`models/genai_absa_pipeline.joblib` |
 | **Brendan Wilson Santoso (682024016)**<br>*(Member 2 - Data Engineer)* | Data Engineering, Indonesian Preprocessing, Slang Dictionary & ABSA | Fase 0, 2, 3, 4 (ABSA Matrix), 6 | `notebooks/02_Data_Preparation_dan_ABSA.ipynb`<br>`03_data_preparation/slang_dictionary_id.json`<br>`prototype/test_prototype_scenarios.py` |
-| **Tiara Agustien Kusumawati (682024059)**<br>*(Member 3 - Analyst & Writer)* | EDA, Topic Modeling, Final Report & Presentation PDF | Fase 0, 2, 4 (Track B), 6 | `notebooks/01_Data_Understanding_dan_EDA.ipynb`<br>`Laporan_Project_Akhir_AM552_Terisi.docx`<br>`06_deployment_reporting/682024046_KEL_DS_Presentasi.pdf` |
+| **Tiara Agustien Kusumawati (682024059)**<br>*(Member 3 - Analyst & Writer)* | EDA, Topic Modeling, Final Report & Presentation PDF | Fase 0, 2, 4 (Track B), 6 | `notebooks/01_Data_Understanding_dan_EDA.ipynb`<br>`06_deployment_reporting/682024046_KEL_DS_Laporan.docx`<br>`06_deployment_reporting/682024046_KEL_DS_Presentasi.pdf` |
 
 ---
 

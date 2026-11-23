@@ -17,7 +17,7 @@ Agar tidak pernah terjadi bentrok kode (*merge conflict*) di GitHub, setiap angg
 | :---: | :--- | :--- | :--- | :---: |
 | **Member 1** | **682024046**<br>Arthur Willyam Liang | **Project Lead, ML Modeling, Tuning 5-Fold, Anti-Leakage Audit & Deployment** | - `notebooks/03_Modeling_Tuning_dan_Evaluasi.ipynb`<br>- `05_evaluation/metric_sanity_audit.py`<br>- `models/genai_absa_pipeline.joblib` | **34%** |
 | **Member 2** | **682024016**<br>Brendan Wilson Santoso | **Data Engineering, Text Preprocessing, Kamus Slang, ABSA & Testing Prototype** | - `notebooks/02_Data_Preparation_dan_ABSA.ipynb`<br>- `03_data_preparation/slang_dictionary_id.json`<br>- `prototype/test_prototype_scenarios.py` | **33%** |
-| **Member 3** | **682024059**<br>Tiara Agustien Kusumawati | **Exploratory Data Analysis (EDA), Topic Discovery, Laporan 7 Bab & Slide PDF** | - `notebooks/01_Data_Understanding_dan_EDA.ipynb`<br>- `Laporan_Project_Akhir_AM552_Terisi.docx`<br>- `06_deployment_reporting/682024046_KEL_DS_Presentasi.pdf` | **33%** |
+| **Member 3** | **682024059**<br>Tiara Agustien Kusumawati | **Exploratory Data Analysis (EDA), Topic Discovery, Laporan 7 Bab & Slide PDF** | - `notebooks/01_Data_Understanding_dan_EDA.ipynb`<br>- `06_deployment_reporting/682024046_KEL_DS_Laporan.docx`<br>- `06_deployment_reporting/682024046_KEL_DS_Presentasi.pdf` | **33%** |
 
 ---
 
@@ -131,7 +131,7 @@ Saat ini pondasi teknis (*Starter Kit & Baseline Architecture*) sudah berada di 
 
 #### Checklist Langkah Kerja Tahap 5:
 - [ ] **5.1 (Tiara — Pemeriksaan & Pemolesan Laporan Word 7 Bab)**:
-  - Buka file `Laporan_Project_Akhir_AM552_Terisi.docx` (atau `06_deployment_reporting/682024046_KEL_DS_Laporan.docx`).
+  - Buka file laporan resmi `06_deployment_reporting/682024046_KEL_DS_Laporan.docx`.
   - Pastikan **Nomor Kelompok** sudah diisi pada Tabel 0 Halaman Judul.
   - Periksa kelengkapan seluruh **8 Tabel Baku (Tabel 0 s/d Tabel 7)** agar tidak ada teks placeholder `[...]` yang tertinggal.
   - Pastikan di bawah **setiap grafik pada Bab 2.4** terdapat tepat **1–2 kalimat penjelasan** (apa yang terlihat pada grafik dan apa artinya bagi pemodelan).

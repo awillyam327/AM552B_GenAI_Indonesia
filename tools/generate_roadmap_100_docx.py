@@ -113,7 +113,7 @@ def generate_roadmap_docx():
                 "Member 3",
                 "682024059\nTiara Agustien Kusumawati",
                 "Exploratory Data Analysis (EDA), Topic Discovery, Laporan 7 Bab & Slide PDF",
-                "1. notebooks/01_Data_Understanding_dan_EDA.ipynb\n2. Laporan_Project_Akhir_AM552_Terisi.docx\n3. 06_deployment_reporting/682024046_KEL_DS_Presentasi.pdf",
+                "1. notebooks/01_Data_Understanding_dan_EDA.ipynb\n2. 06_deployment_reporting/682024046_KEL_DS_Laporan.docx\n3. 06_deployment_reporting/682024046_KEL_DS_Presentasi.pdf",
                 "33%",
             ],
         ],
@@ -214,7 +214,7 @@ def generate_roadmap_docx():
         (
             "TAHAP 5: Finalisasi Laporan Word 7 Bab (.docx) & Pembuatan Slide Presentasi (.pdf) (28 – 29 Nov 2026)",
             [
-                "[Tiara] Membuka Laporan_Project_Akhir_AM552_Terisi.docx, mengisi Nomor Kelompok pada Tabel 0 Halaman Judul, dan memeriksa kerapian seluruh 8 Tabel Baku (Tabel 0 s/d Tabel 7).",
+                "[Tiara] Membuka 06_deployment_reporting/682024046_KEL_DS_Laporan.docx, mengisi Nomor Kelompok pada Tabel 0 Halaman Judul, dan memeriksa kerapian seluruh 8 Tabel Baku (Tabel 0 s/d Tabel 7).",
                 "[Tiara] Memastikan setiap grafik di Bab 2.4 memiliki tepat 1–2 kalimat interpretasi di bawahnya dan Daftar Pustaka menggunakan format APA yang konsisten.",
                 "[Tiara, Brendan, Arthur] Menyusun slide presentasi PowerPoint / Canva (10–12 slide) yang merangkum Bab 1 s/d Bab 7 beserta tangkapan layar prototype.",
                 "[Tiara] Mengekspor slide presentasi ke format PDF (682024046_[NomorKelompok]_DS.pdf) dan menyimpan laporan final Word (682024046_[NomorKelompok]_DS.docx).",
