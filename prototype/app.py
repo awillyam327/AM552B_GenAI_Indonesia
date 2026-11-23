@@ -4,6 +4,7 @@ Mata Kuliah: AM552 - Data Science of IS (S1 Sistem Informasi, FTI UKSW)
 Cara Menjalankan: streamlit run prototype/app.py
 """
 
+import importlib
 import json
 import os
 import sys
@@ -19,6 +20,8 @@ if CURRENT_DIR not in sys.path:
 if ROOT_DIR not in sys.path:
     sys.path.insert(0, ROOT_DIR)
 
+import core_predictor
+importlib.reload(core_predictor)
 from core_predictor import (
     BENCHMARK_JSON_PATH,
     load_trained_artifact,
