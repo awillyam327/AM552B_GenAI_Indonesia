@@ -1,0 +1,24 @@
+{
+  "include": [
+    ".",
+    "notebooks",
+    "05_evaluation",
+    "04_modeling",
+    "03_data_preparation",
+    "02_data_understanding",
+    "01_business_understanding",
+    "prototype",
+    "tools"
+  ],
+  "extraPaths": [
+    ".",
+    "05_evaluation",
+    "04_modeling",
+    "03_data_preparation",
+    "02_data_understanding",
+    "01_business_understanding",
+    "prototype",
+    "tools"
+  ],
+  "reportMissingImports": "none"
+}
