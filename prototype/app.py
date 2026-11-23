@@ -62,6 +62,7 @@ def main():
     except Exception as e:
         st.error(f"Gagal memuat artefak model: {e}")
         st.stop()
+        return
 
     with st.sidebar:
         st.header("📌 Informasi Model & Proyek")
@@ -253,7 +254,7 @@ def main():
                     df_res, err_msg = predict_batch_dataframe(
                         df_up.head(5000), text_col=text_col_choice, score_col=scol, artifact=artifact
                     )
-                    if err_msg:
+                    if err_msg or df_res is None:
                         st.error(f"❌ {err_msg}")
                     else:
                         st.success(f"✅ Berhasil memproses **{len(df_res):,} baris** ulasan!")

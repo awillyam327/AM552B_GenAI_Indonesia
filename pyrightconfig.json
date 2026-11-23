@@ -1,4 +1,6 @@
 {
+  "venvPath": ".",
+  "venv": ".venv",
   "include": [
     ".",
     "notebooks",
@@ -20,5 +22,6 @@
     "prototype",
     "tools"
   ],
-  "reportMissingImports": "none"
+  "reportMissingImports": "none",
+  "reportMissingModuleSource": "none"
 }
