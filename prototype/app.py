@@ -295,15 +295,72 @@ def main():
     # TAB 3: DASHBOARD KOMPARASI EKOSISTEM AI INDONESIA (N = 71.221)
     # =========================================================================
     with tab3:
-        st.subheader("Matriks Benchmarking 8 Aplikasi Generative AI di Google Play Store Indonesia")
+        st.subheader("Dashboard Komparasi 8 Aplikasi Generative AI di Google Play Store Indonesia")
         bench = get_benchmark_summary()
         if bench and "app_absa_matrix" in bench:
+            # 1. Perbandingan Rating Play Store vs Rating Aktual (Koreksi Discrepancy)
+            if "rating_comparison" in bench:
+                st.markdown("#### 1. Perbandingan Rating Bintang Play Store vs Rating Aktual (Setelah Koreksi Discrepancy)")
+                st.caption(
+                    "Mengoreksi bias penilaian bintang ketika pengguna memberi Bintang 4–5 tetapi isi teksnya mengeluh negatif "
+                    "(atau memberi Bintang 1–2 tetapi isi teksnya memuji positif)."
+                )
+                df_rc = pd.DataFrame(bench["rating_comparison"])
+                c_rc1, c_rc2 = st.columns([1.15, 1.35])
+                with c_rc1:
+                    df_rc_chart = df_rc.set_index("Nama Aplikasi")[["Rating Play Store", "Rating Aktual (Terkoreksi)"]]
+                    st.bar_chart(df_rc_chart)
+                with c_rc2:
+                    st.dataframe(df_rc, use_container_width=True, hide_index=True)
+
+            st.markdown("---")
+            # 2. Visualisasi Skor Kepuasan Bersih (Net Sentiment Score) 4 Aspek ABSA
+            st.markdown("#### 2. Peta Kepuasan 4 Aspek Layanan (ABSA) Lintas 8 Aplikasi")
+            if "aspect_numeric_matrix" in bench:
+                df_asp_num = pd.DataFrame(bench["aspect_numeric_matrix"])
+                asp_col_choice = st.selectbox(
+                    "Pilih Dimensi Aspek Layanan untuk Dibandingkan pada Grafik:",
+                    ["Semua Aspek (A1 - A4)", "A1: Akurasi AI", "A2: Harga & Kuota", "A3: Performa & Server", "A4: Bahasa Indonesia"],
+                )
+                if asp_col_choice == "Semua Aspek (A1 - A4)":
+                    st.bar_chart(df_asp_num.set_index("Nama Aplikasi"))
+                else:
+                    st.bar_chart(df_asp_num.set_index("Nama Aplikasi")[[str(asp_col_choice)]])
+
             df_bench = pd.DataFrame(bench["app_absa_matrix"])
             st.dataframe(df_bench, use_container_width=True, hide_index=True)
 
-            st.markdown("#### Perbandingan Model Klasifikasi pada Data Uji (80:20 Stratified Split)")
+            # 3. Keluhan Paling Banyak Disetujui Pengguna (Thumbs Up Tertinggi) & Penyebutan Kompetitor
+            if "top_thumbs_complaints" in bench:
+                st.markdown("---")
+                c_b1, c_b2 = st.columns([1.45, 1.0])
+                with c_b1:
+                    st.markdown("#### 3. Ulasan Keluhan dengan Dukungan (Thumbs Up / Like) Tertinggi")
+                    st.caption("Daftar keluhan pengguna yang paling banyak disetujui pengguna lain di Google Play Store.")
+                    df_thumbs = pd.DataFrame(bench["top_thumbs_complaints"])
+                    app_filter = st.selectbox(
+                        "Filter Berdasarkan Aplikasi:",
+                        ["Semua Aplikasi"] + list(df_thumbs["Aplikasi"].unique()),
+                    )
+                    if app_filter != "Semua Aplikasi":
+                        df_thumbs = df_thumbs[df_thumbs["Aplikasi"] == app_filter]
+                    st.dataframe(df_thumbs, use_container_width=True, hide_index=True)
+
+                with c_b2:
+                    st.markdown("#### 4. Perbandingan Penyebutan Aplikasi Kompetitor")
+                    st.caption("Frekuensi pengguna menyebut aplikasi AI pesaing di dalam ulasan suatu aplikasi.")
+                    if "competitor_mentions" in bench:
+                        df_comp_m = pd.DataFrame(bench["competitor_mentions"])
+                        st.dataframe(df_comp_m, use_container_width=True, hide_index=True)
+
+            st.markdown("---")
+            st.markdown("#### 5. Perbandingan Performa Model Klasifikasi pada Data Uji (80:20 Stratified Split)")
             df_models = pd.DataFrame(bench["model_comparison"])
-            st.dataframe(df_models, use_container_width=True, hide_index=True)
+            c_m1, c_m2 = st.columns([1.0, 1.4])
+            with c_m1:
+                st.bar_chart(df_models.set_index("model_name")[["test_macro_f1", "test_roc_auc"]])
+            with c_m2:
+                st.dataframe(df_models, use_container_width=True, hide_index=True)
         else:
             st.info("Data ringkasan benchmark sedang dimuat dari hasil eksperimen notebook.")
 

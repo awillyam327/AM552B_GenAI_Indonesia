@@ -140,5 +140,321 @@
       "A3: Performa/UI (Mention / NSS)": "64 (+45.3%)",
       "A4: Bhs Indonesia (Mention / NSS)": "51 (+58.8%)"
     }
+  ],
+  "rating_comparison": [
+    {
+      "Nama Aplikasi": "ChatGPT (OpenAI)",
+      "Jumlah Ulasan": 22000,
+      "Rating Play Store": 4.46,
+      "Rating Aktual (Terkoreksi)": 4.43,
+      "Selisih Rating": -0.03,
+      "Total Discrepancy (%)": 3.13,
+      "Bintang 4-5 Teks Negatif": 437,
+      "Bintang 1-2 Teks Positif": 252
+    },
+    {
+      "Nama Aplikasi": "Google Gemini",
+      "Jumlah Ulasan": 12600,
+      "Rating Play Store": 4.29,
+      "Rating Aktual (Terkoreksi)": 4.27,
+      "Selisih Rating": -0.02,
+      "Total Discrepancy (%)": 4.17,
+      "Bintang 4-5 Teks Negatif": 302,
+      "Bintang 1-2 Teks Positif": 223
+    },
+    {
+      "Nama Aplikasi": "Character.AI",
+      "Jumlah Ulasan": 12000,
+      "Rating Play Store": 1.58,
+      "Rating Aktual (Terkoreksi)": 1.5,
+      "Selisih Rating": -0.08,
+      "Total Discrepancy (%)": 5.97,
+      "Bintang 4-5 Teks Negatif": 535,
+      "Bintang 1-2 Teks Positif": 181
+    },
+    {
+      "Nama Aplikasi": "Perplexity - Ask Anything",
+      "Jumlah Ulasan": 8043,
+      "Rating Play Store": 4.54,
+      "Rating Aktual (Terkoreksi)": 4.52,
+      "Selisih Rating": -0.02,
+      "Total Discrepancy (%)": 2.47,
+      "Bintang 4-5 Teks Negatif": 131,
+      "Bintang 1-2 Teks Positif": 68
+    },
+    {
+      "Nama Aplikasi": "Microsoft Copilot",
+      "Jumlah Ulasan": 5459,
+      "Rating Play Store": 4.65,
+      "Rating Aktual (Terkoreksi)": 4.62,
+      "Selisih Rating": -0.03,
+      "Total Discrepancy (%)": 2.95,
+      "Bintang 4-5 Teks Negatif": 116,
+      "Bintang 1-2 Teks Positif": 45
+    },
+    {
+      "Nama Aplikasi": "DeepSeek - AI Assistant",
+      "Jumlah Ulasan": 5374,
+      "Rating Play Store": 3.77,
+      "Rating Aktual (Terkoreksi)": 3.65,
+      "Selisih Rating": -0.12,
+      "Total Discrepancy (%)": 7.26,
+      "Bintang 4-5 Teks Negatif": 323,
+      "Bintang 1-2 Teks Positif": 67
+    },
+    {
+      "Nama Aplikasi": "Claude by Anthropic",
+      "Jumlah Ulasan": 4009,
+      "Rating Play Store": 3.85,
+      "Rating Aktual (Terkoreksi)": 3.74,
+      "Selisih Rating": -0.11,
+      "Total Discrepancy (%)": 5.84,
+      "Bintang 4-5 Teks Negatif": 199,
+      "Bintang 1-2 Teks Positif": 35
+    },
+    {
+      "Nama Aplikasi": "Poe - Fast AI Chat",
+      "Jumlah Ulasan": 1736,
+      "Rating Play Store": 4.66,
+      "Rating Aktual (Terkoreksi)": 4.58,
+      "Selisih Rating": -0.08,
+      "Total Discrepancy (%)": 4.67,
+      "Bintang 4-5 Teks Negatif": 66,
+      "Bintang 1-2 Teks Positif": 15
+    }
+  ],
+  "aspect_numeric_matrix": [
+    {
+      "Nama Aplikasi": "ChatGPT (OpenAI)",
+      "A1: Akurasi AI": 77.2,
+      "A2: Harga & Kuota": -30.4,
+      "A3: Performa & Server": -18.1,
+      "A4: Bahasa Indonesia": 22.2
+    },
+    {
+      "Nama Aplikasi": "Google Gemini",
+      "A1: Akurasi AI": 60.4,
+      "A2: Harga & Kuota": -30.7,
+      "A3: Performa & Server": -15.9,
+      "A4: Bahasa Indonesia": -16.0
+    },
+    {
+      "Nama Aplikasi": "Character.AI",
+      "A1: Akurasi AI": -81.3,
+      "A2: Harga & Kuota": -87.9,
+      "A3: Performa & Server": -91.1,
+      "A4: Bahasa Indonesia": -75.3
+    },
+    {
+      "Nama Aplikasi": "Perplexity - Ask Anything",
+      "A1: Akurasi AI": 82.9,
+      "A2: Harga & Kuota": -5.5,
+      "A3: Performa & Server": 40.0,
+      "A4: Bahasa Indonesia": 8.8
+    },
+    {
+      "Nama Aplikasi": "Microsoft Copilot",
+      "A1: Akurasi AI": 84.1,
+      "A2: Harga & Kuota": 42.4,
+      "A3: Performa & Server": 14.8,
+      "A4: Bahasa Indonesia": 45.0
+    },
+    {
+      "Nama Aplikasi": "DeepSeek - AI Assistant",
+      "A1: Akurasi AI": 33.1,
+      "A2: Harga & Kuota": 13.7,
+      "A3: Performa & Server": -24.6,
+      "A4: Bahasa Indonesia": -0.8
+    },
+    {
+      "Nama Aplikasi": "Claude by Anthropic",
+      "A1: Akurasi AI": 53.1,
+      "A2: Harga & Kuota": -25.8,
+      "A3: Performa & Server": -50.5,
+      "A4: Bahasa Indonesia": -2.0
+    },
+    {
+      "Nama Aplikasi": "Poe - Fast AI Chat",
+      "A1: Akurasi AI": 88.9,
+      "A2: Harga & Kuota": -21.1,
+      "A3: Performa & Server": 15.4,
+      "A4: Bahasa Indonesia": 23.5
+    }
+  ],
+  "top_thumbs_complaints": [
+    {
+      "Aplikasi": "ChatGPT (OpenAI)",
+      "Bintang": 3,
+      "Jumlah Like (Thumbs Up)": 1709,
+      "Aspek Terkait": "Kesan Umum",
+      "Cuplikan Keluhan Pengguna": "Apalah, ChatGPT ini makin lama makin pelit. Sekarang, ada yang namanya Jendela Konteks Penuh. Iya sih, bisa melanjutkan chat dengan rin..."
+    },
+    {
+      "Aplikasi": "ChatGPT (OpenAI)",
+      "Bintang": 1,
+      "Jumlah Like (Thumbs Up)": 329,
+      "Aspek Terkait": "A1: Akurasi, A2: Harga/Kuota, A4: Bahasa",
+      "Cuplikan Keluhan Pengguna": "apk chat gpt jadi buruk, baru chat 4/2 kali obrolan sama ai, langsung harus bayar plus? harus di tunggu 3/5/6 atau 4 jam, 2) ai rada ja..."
+    },
+    {
+      "Aplikasi": "Google Gemini",
+      "Bintang": 1,
+      "Jumlah Like (Thumbs Up)": 1016,
+      "Aspek Terkait": "A1: Akurasi, A3: Server/UI",
+      "Cuplikan Keluhan Pengguna": "Aplikasi sering error sendiri saat digunakan. Ada beberapa kendala utama yang sangat mengganggu performa: Bug Peringatan: Muncul bug be..."
+    },
+    {
+      "Aplikasi": "Google Gemini",
+      "Bintang": 1,
+      "Jumlah Like (Thumbs Up)": 662,
+      "Aspek Terkait": "A2: Harga/Kuota, A3: Server/UI",
+      "Cuplikan Keluhan Pengguna": "Saya udh sering pakai aplikasi ini dari hp masih baru sampai memori hp penuh sekalipun. Sudah beli langganan juga, tapi kenapa nih ya a..."
+    },
+    {
+      "Aplikasi": "Character.AI",
+      "Bintang": 2,
+      "Jumlah Like (Thumbs Up)": 2743,
+      "Aspek Terkait": "A1: Akurasi, A2: Harga/Kuota, A3: Server/UI, A4: Bahasa",
+      "Cuplikan Keluhan Pengguna": "udah 2 tahun main c.ai, tiap ada update selalu berusaha adaptasi walau nggak suka, tapi untuk update kali ini kayaknya udah ngga bisa d..."
+    },
+    {
+      "Aplikasi": "Character.AI",
+      "Bintang": 5,
+      "Jumlah Like (Thumbs Up)": 2389,
+      "Aspek Terkait": "A2: Harga/Kuota",
+      "Cuplikan Keluhan Pengguna": "edit: masalah iklan yang tidak bisa diskip sudah selesai. hanya perlu menekan tombol kembali🙏 aplikasinya baguss, aku suka🥰🥰💚cuma loadi..."
+    },
+    {
+      "Aplikasi": "Perplexity - Ask Anything",
+      "Bintang": 1,
+      "Jumlah Like (Thumbs Up)": 223,
+      "Aspek Terkait": "A1: Akurasi, A4: Bahasa",
+      "Cuplikan Keluhan Pengguna": "Percakapan/ chat antara pengguna dengan ai tidak bisa disimpan. Jadi tugas sekolah kemarin yang sudah ditanyakan & sudah dijawab kemari..."
+    },
+    {
+      "Aplikasi": "Perplexity - Ask Anything",
+      "Bintang": 1,
+      "Jumlah Like (Thumbs Up)": 208,
+      "Aspek Terkait": "A1: Akurasi, A4: Bahasa",
+      "Cuplikan Keluhan Pengguna": "jadi ini yang selalu dipromosikan? jawaban yang aplikasi ini kasih justru lebih kacau ke mana-mana.. aku sudah perbaiki kata sapaan, bu..."
+    },
+    {
+      "Aplikasi": "Microsoft Copilot",
+      "Bintang": 5,
+      "Jumlah Like (Thumbs Up)": 103,
+      "Aspek Terkait": "Kesan Umum",
+      "Cuplikan Keluhan Pengguna": "SUGGESTION/CRITICS: co-pilot ku sempet mengklaim gabisa bikin gambar. Padahal gambar yang kuminta buatkan saat itu gak aneh-aneh. aku m..."
+    },
+    {
+      "Aplikasi": "Microsoft Copilot",
+      "Bintang": 5,
+      "Jumlah Like (Thumbs Up)": 69,
+      "Aspek Terkait": "A1: Akurasi, A3: Server/UI",
+      "Cuplikan Keluhan Pengguna": "Ini AI Chatbot dari Microsoft mulai diluncurkan tahun 2023 seiring sejalan saat itu ada pembaharuan di Windows 11. Salah satu AI Chatbo..."
+    },
+    {
+      "Aplikasi": "DeepSeek - AI Assistant",
+      "Bintang": 1,
+      "Jumlah Like (Thumbs Up)": 525,
+      "Aspek Terkait": "A1: Akurasi, A3: Server/UI",
+      "Cuplikan Keluhan Pengguna": "Ai nya bagus, tapi terkadang dia selalu menampilkan pesan error/server busy , dan jawaban atau balasan nya agak lama, aku harap ini bis..."
+    },
+    {
+      "Aplikasi": "DeepSeek - AI Assistant",
+      "Bintang": 1,
+      "Jumlah Like (Thumbs Up)": 449,
+      "Aspek Terkait": "A2: Harga/Kuota, A3: Server/UI",
+      "Cuplikan Keluhan Pengguna": "Bagus sih bagus tapi kutang layak kalau kebutuhan mendesak, alasanya karena AI ini belum seutuhnya sempurna apalagi dibagian server yan..."
+    },
+    {
+      "Aplikasi": "Claude by Anthropic",
+      "Bintang": 1,
+      "Jumlah Like (Thumbs Up)": 122,
+      "Aspek Terkait": "A1: Akurasi, A3: Server/UI, A4: Bahasa",
+      "Cuplikan Keluhan Pengguna": "Ingin daftar selalu ada kendala tentang nomor indonesia yang tidak bisa masuk, keterangan bilang invalid number padahal mungkin ai ini ..."
+    },
+    {
+      "Aplikasi": "Claude by Anthropic",
+      "Bintang": 1,
+      "Jumlah Like (Thumbs Up)": 64,
+      "Aspek Terkait": "A3: Server/UI",
+      "Cuplikan Keluhan Pengguna": "Saya baru saja mendownload aplikasi ini, namun saat ingin login muncul tulisan \"Invalid number phone\" padahal sudah benar dan sudah di ..."
+    },
+    {
+      "Aplikasi": "Poe - Fast AI Chat",
+      "Bintang": 5,
+      "Jumlah Like (Thumbs Up)": 43,
+      "Aspek Terkait": "A1: Akurasi, A2: Harga/Kuota",
+      "Cuplikan Keluhan Pengguna": "enak banget enggak ada yang berbayar enggak ada filternya dan kalo ada pesan yang salah bisa di hapus dan kalo jawaban bot nya kurang m..."
+    },
+    {
+      "Aplikasi": "Poe - Fast AI Chat",
+      "Bintang": 4,
+      "Jumlah Like (Thumbs Up)": 40,
+      "Aspek Terkait": "A2: Harga/Kuota, A3: Server/UI",
+      "Cuplikan Keluhan Pengguna": "Aku udh main ni dari web lama banget dah berbulan bulan makin kesini makin di limit dulu gak ada kayak daily free message standart bots..."
+    }
+  ],
+  "competitor_mentions": [
+    {
+      "Ulasan pada Aplikasi": "DeepSeek - AI Assistant",
+      "Menyebut Kompetitor": "ChatGPT",
+      "Jumlah Ulasan": 330
+    },
+    {
+      "Ulasan pada Aplikasi": "Perplexity - Ask Anything",
+      "Menyebut Kompetitor": "ChatGPT",
+      "Jumlah Ulasan": 130
+    },
+    {
+      "Ulasan pada Aplikasi": "Claude by Anthropic",
+      "Menyebut Kompetitor": "ChatGPT",
+      "Jumlah Ulasan": 110
+    },
+    {
+      "Ulasan pada Aplikasi": "Microsoft Copilot",
+      "Menyebut Kompetitor": "ChatGPT",
+      "Jumlah Ulasan": 77
+    },
+    {
+      "Ulasan pada Aplikasi": "Google Gemini",
+      "Menyebut Kompetitor": "ChatGPT",
+      "Jumlah Ulasan": 65
+    },
+    {
+      "Ulasan pada Aplikasi": "DeepSeek - AI Assistant",
+      "Menyebut Kompetitor": "Gemini",
+      "Jumlah Ulasan": 59
+    },
+    {
+      "Ulasan pada Aplikasi": "ChatGPT (OpenAI)",
+      "Menyebut Kompetitor": "Gemini",
+      "Jumlah Ulasan": 44
+    },
+    {
+      "Ulasan pada Aplikasi": "Claude by Anthropic",
+      "Menyebut Kompetitor": "Gemini",
+      "Jumlah Ulasan": 31
+    },
+    {
+      "Ulasan pada Aplikasi": "Character.AI",
+      "Menyebut Kompetitor": "ChatGPT",
+      "Jumlah Ulasan": 20
+    },
+    {
+      "Ulasan pada Aplikasi": "Perplexity - Ask Anything",
+      "Menyebut Kompetitor": "Gemini",
+      "Jumlah Ulasan": 18
+    },
+    {
+      "Ulasan pada Aplikasi": "Microsoft Copilot",
+      "Menyebut Kompetitor": "Gemini",
+      "Jumlah Ulasan": 17
+    },
+    {
+      "Ulasan pada Aplikasi": "DeepSeek - AI Assistant",
+      "Menyebut Kompetitor": "Claude",
+      "Jumlah Ulasan": 17
+    }
   ]
 }
