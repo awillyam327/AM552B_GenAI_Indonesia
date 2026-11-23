@@ -1,0 +1,491 @@
+{
+  "author": "Tiara Agustien Kusumawati (682024059 - Member 3)",
+  "role": "EDA, Topic Discovery & Technical Writer",
+  "method": "Latent Dirichlet Allocation (LDA) with Slang Normalization & Indonesian Stopwords Removal",
+  "dataset_size": 71221,
+  "negative_reviews_count": 16648,
+  "positive_reviews_count": 34123,
+  "global_complaint_topics": [
+    {
+      "topic_id": 1,
+      "top_words": [
+        "makin",
+        "banyak",
+        "iklan",
+        "update",
+        "bug",
+        "lama",
+        "jelek",
+        "terus"
+      ],
+      "weights": [
+        2983.57645794615,
+        1854.1374120796986,
+        1761.0719559732756,
+        1282.3615372326358,
+        1092.651205228959,
+        1035.1806904419652,
+        925.1028117885804,
+        605.3040782532761
+      ],
+      "business_label": "Masalah Server, Koneksi Jaringan & Gagal Login"
+    },
+    {
+      "topic_id": 2,
+      "top_words": [
+        "tidak",
+        "verifikasi",
+        "update",
+        "harus",
+        "tapi",
+        "mengapa",
+        "sekarang",
+        "umur"
+      ],
+      "weights": [
+        3236.8772794119886,
+        1682.4948171244391,
+        1195.7918808360846,
+        1154.784452823213,
+        1048.3745976002467,
+        860.3751243332653,
+        789.7294270843483,
+        789.5010759054603
+      ],
+      "business_label": "Sensor/Filter Ketat, Perubahan Memori Bot & Protes Update (Character.AI)"
+    },
+    {
+      "topic_id": 3,
+      "top_words": [
+        "sekarang",
+        "tidak",
+        "dulu",
+        "tapi",
+        "suka",
+        "padahal",
+        "bagus",
+        "dikit"
+      ],
+      "weights": [
+        2342.93163419797,
+        2074.58070051892,
+        2003.380311017691,
+        1068.1136859160365,
+        1059.4363230080255,
+        906.0265741614738,
+        799.0717833098428,
+        763.950428980454
+      ],
+      "business_label": "Batasan Kuota / Limit Pesan Cepat Habis & Langganan Berbayar Mahal"
+    },
+    {
+      "topic_id": 4,
+      "top_words": [
+        "tidak",
+        "bagus",
+        "jelas",
+        "aneh",
+        "malah",
+        "sering",
+        "karakter",
+        "tidak jelas"
+      ],
+      "weights": [
+        3498.8204250455315,
+        734.9938038587918,
+        692.8324456574476,
+        637.6101133836131,
+        567.2148294358502,
+        512.5771562051598,
+        502.71546957205476,
+        497.2936779676905
+      ],
+      "business_label": "Bug Aplikasi, Layar Hitam, Crash & Keluar Sendiri"
+    },
+    {
+      "topic_id": 5,
+      "top_words": [
+        "tiba",
+        "you",
+        "please",
+        "update",
+        "old",
+        "age",
+        "but",
+        "back"
+      ],
+      "weights": [
+        987.9966185165314,
+        881.1016022607395,
+        749.3364946981083,
+        743.055052670356,
+        729.2462222821622,
+        582.2022614705423,
+        536.3076845768469,
+        527.3393572458139
+      ],
+      "business_label": "Penurunan Kualitas Jawaban, Halusinasi & Terjemahan Kaku"
+    }
+  ],
+  "global_praise_topics": [
+    {
+      "topic_id": 1,
+      "top_words": [
+        "membantu",
+        "mantap",
+        "cepat",
+        "gambar",
+        "dulu",
+        "bahasa",
+        "respon",
+        "coba"
+      ],
+      "weights": [
+        4832.068706471592,
+        3840.609092075175,
+        812.3604609480717,
+        592.1550106355115,
+        346.1080499931189,
+        326.18229600117076,
+        306.823707591493,
+        292.2138581698883
+      ],
+      "business_label": "Bantuan Tugas Akademik, Skripsi & Pembelajaran"
+    },
+    {
+      "topic_id": 2,
+      "top_words": [
+        "bagus",
+        "tidak",
+        "tapi",
+        "sekali",
+        "terbaik",
+        "bagus sekali",
+        "berguna",
+        "belajar"
+      ],
+      "weights": [
+        3671.6407473343424,
+        2752.516455801225,
+        2050.0013852539123,
+        953.3775056265903,
+        867.4246616530078,
+        754.2070271359763,
+        618.4367340946566,
+        598.0935755560998
+      ],
+      "business_label": "Kecepatan & Kemudahan Penggunaan Sehari-hari"
+    },
+    {
+      "topic_id": 3,
+      "top_words": [
+        "membantu",
+        "baik",
+        "sekali",
+        "good",
+        "tugas",
+        "mudah",
+        "membantu sekali",
+        "hal"
+      ],
+      "weights": [
+        2383.457620922564,
+        1107.4876974504284,
+        1079.9402672493852,
+        965.7087553703005,
+        804.4006268643549,
+        800.5231818391617,
+        519.3860697337519,
+        450.3002244894362
+      ],
+      "business_label": "Kemampuan Penalaran, Koding & Pemrograman"
+    },
+    {
+      "topic_id": 4,
+      "top_words": [
+        "bagus",
+        "chatgpt",
+        "bagus membantu",
+        "gpt",
+        "best",
+        "akurat",
+        "you",
+        "curhat"
+      ],
+      "weights": [
+        3457.069180067969,
+        957.2037607372694,
+        700.3845214925325,
+        673.9146482688299,
+        430.8726947108172,
+        395.0620190713958,
+        325.8038831489742,
+        288.21776432557107
+      ],
+      "business_label": "Kecerdasan Jawaban & Informasi Akurat"
+    },
+    {
+      "topic_id": 5,
+      "top_words": [
+        "kasih",
+        "terima",
+        "terima kasih",
+        "suka",
+        "keren",
+        "bagus",
+        "membuat",
+        "bermanfaat"
+      ],
+      "weights": [
+        1887.9081906446877,
+        1454.0361749131825,
+        1429.497705914683,
+        1390.6431015997887,
+        1336.1432923417194,
+        1231.3948187810918,
+        1110.9382300323898,
+        707.3324329153203
+      ],
+      "business_label": "Rekomendasi Layanan AI Terbaik & Fitur Gratis Bermanfaat"
+    }
+  ],
+  "app_specific_discovery": {
+    "Character.AI": {
+      "rating_avg": 1.58,
+      "complaint_topics": [
+        {
+          "topic_id": 1,
+          "top_words": [
+            "makin",
+            "tidak",
+            "sekarang",
+            "dulu",
+            "update",
+            "banyak",
+            "iklan"
+          ],
+          "weights": [
+            2493.9064587678786,
+            2391.0437943872016,
+            2070.4619306984123,
+            2031.713218458143,
+            1876.0858971487403,
+            1547.5636814516613,
+            1242.2633470015153
+          ],
+          "business_label": "Protes Sensor / Filter Terlalu Ketat & Dikebiri"
+        },
+        {
+          "topic_id": 2,
+          "top_words": [
+            "you",
+            "old",
+            "update",
+            "please",
+            "age",
+            "back",
+            "but"
+          ],
+          "weights": [
+            768.441971136537,
+            684.7941324752828,
+            683.1087973049229,
+            570.9449489993227,
+            567.873109613981,
+            487.8289739578911,
+            457.6396772020909
+          ],
+          "business_label": "Keluhan Update UI Baru & Bot Kehilangan Memori/Lupa"
+        },
+        {
+          "topic_id": 3,
+          "top_words": [
+            "tidak",
+            "tapi",
+            "padahal",
+            "iklan",
+            "tiba",
+            "verifikasi",
+            "malah"
+          ],
+          "weights": [
+            2786.379958437833,
+            1308.8385636089693,
+            821.0056294400176,
+            756.0989265300328,
+            675.0136007935506,
+            666.7084821651031,
+            606.3318813885983
+          ],
+          "business_label": "Masalah Login, Verifikasi Umur & Bug Loading Lambat"
+        }
+      ]
+    },
+    "DeepSeek": {
+      "rating_avg": 3.77,
+      "complaint_topics": [
+        {
+          "topic_id": 1,
+          "top_words": [
+            "tidak",
+            "server",
+            "sering",
+            "sibuk",
+            "error",
+            "lama",
+            "tapi"
+          ],
+          "weights": [
+            284.149233669607,
+            158.78137167748858,
+            155.5825655314364,
+            144.3045531376921,
+            128.69514036626975,
+            117.97246922007884,
+            111.35443235762618
+          ],
+          "business_label": "Server Sibuk / Down Karena Lonjakan Trafik Masif"
+        },
+        {
+          "topic_id": 2,
+          "top_words": [
+            "tidak",
+            "bagus",
+            "tapi",
+            "deepseek",
+            "masih",
+            "bahasa",
+            "lambat"
+          ],
+          "weights": [
+            444.06960089377884,
+            163.95479683949537,
+            147.66283663096007,
+            118.46591929480489,
+            116.37976580686384,
+            101.99763458556896,
+            86.25449451574137
+          ],
+          "business_label": "Koneksi Jaringan Error & Respon Terputus di Tengah Jalan"
+        },
+        {
+          "topic_id": 3,
+          "top_words": [
+            "server",
+            "busy",
+            "server busy",
+            "perbaiki",
+            "tidak",
+            "segera",
+            "please"
+          ],
+          "weights": [
+            284.95836627714283,
+            250.04909746401012,
+            192.45771298325943,
+            101.50128495903665,
+            92.28686661157789,
+            85.84494278565165,
+            81.61193402727004
+          ],
+          "business_label": "Pujian Kecerdasan & Model Gratis tapi Terkendala Infrastruktur"
+        }
+      ]
+    },
+    "ChatGPT": {
+      "rating_avg": 4.46,
+      "praise_topics": [
+        {
+          "topic_id": 1,
+          "top_words": [
+            "membantu",
+            "mantap",
+            "bagus",
+            "sekali",
+            "good",
+            "terbaik",
+            "bagus sekali"
+          ],
+          "weights": [
+            2873.4073936233576,
+            1571.531653148575,
+            1264.3797385083283,
+            798.6360962730349,
+            766.6604943848982,
+            346.07297732357534,
+            319.5869430460803
+          ],
+          "business_label": "Penyelesaian Tugas Kuliah, Koding & Terjemahan Cepat"
+        },
+        {
+          "topic_id": 2,
+          "top_words": [
+            "bagus",
+            "keren",
+            "baik",
+            "tidak",
+            "suka",
+            "kasih",
+            "tapi"
+          ],
+          "weights": [
+            4796.9322794946,
+            1078.164278978447,
+            867.8544364668804,
+            623.7578401064542,
+            620.6884777886726,
+            567.3539771571149,
+            501.49513432611496
+          ],
+          "business_label": "Asisten Belajar Serbaguna & Logika Cerdas"
+        }
+      ],
+      "complaint_topics": [
+        {
+          "topic_id": 1,
+          "top_words": [
+            "tidak",
+            "malah",
+            "membuat",
+            "bagus",
+            "gambar",
+            "tapi",
+            "terus"
+          ],
+          "weights": [
+            711.7022315350242,
+            211.92851397636088,
+            179.47945955618806,
+            167.78984338936658,
+            162.96980556589466,
+            114.85893047426669,
+            108.16924297886062
+          ],
+          "business_label": "Limit Pesan GPT-4o Cepat Habis & Paksaan Langganan Plus"
+        },
+        {
+          "topic_id": 2,
+          "top_words": [
+            "tidak",
+            "baru",
+            "sekarang",
+            "foto",
+            "limit",
+            "harus",
+            "makin"
+          ],
+          "weights": [
+            370.79309429474347,
+            245.51225040551188,
+            209.90513146358717,
+            202.43104608670487,
+            189.00519895217167,
+            173.8569683018687,
+            159.57137601718327
+          ],
+          "business_label": "Error Login Akun & Mode Suara Kadang Macet"
+        }
+      ]
+    }
+  }
+}
