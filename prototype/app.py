@@ -28,7 +28,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from core_predictor import (
     predict_single_review,
     predict_batch_dataframe,
-    load_model_artifacts,
+    load_trained_artifact,
 )
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -218,7 +218,7 @@ PILL_MAP = {
 # ══════════════════════════════════════════════════════════════════════════════
 @st.cache_resource(show_spinner=False)
 def get_model():
-    return load_model_artifacts()
+    return load_trained_artifact()
 
 
 def radar_chart(apps_selected: list[str]) -> go.Figure:
