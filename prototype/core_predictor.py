@@ -22,7 +22,7 @@ ASPECT_DEFINITIONS = {
     "A1_Akurasi_Kecerdasan": {
         "label": "A1: Akurasi & Kecerdasan AI",
         "keywords": {
-            "pintar", "cerdas", "akurat", "tepat", "paham", "mengerti", "jawaban", "solusi",
+            "pintar", "cerdas", "akurat", "akurasi", "tepat", "paham", "mengerti", "jawaban", "solusi",
             "membantu", "bantu", "tugas", "skripsi", "coding", "matematika", "halusinasi",
             "ngawur", "acau", "salah", "bodoh", "tersambung", "nyambung", "lupa", "sensor",
             "filter", "logika", "penjelasan", "informasi", "fakta", "ilmu", "belajar",
@@ -43,6 +43,7 @@ ASPECT_DEFINITIONS = {
             "error", "eror", "bug", "macet", "crash", "keluar", "login", "masuk", "akun",
             "update", "versi", "tampilan", "ui", "suara", "voice", "live", "jaringan",
             "koneksi", "berat", "ringan", "stabil", "verifikasi", "usia", "umur", "layar",
+            "nyaman", "smooth", "mulus", "interaktif",
         },
     },
     "A4_Bahasa_Indonesia": {
@@ -70,6 +71,7 @@ POS_PRAISE_WORDS = {
     "pintar", "cerdas", "cepat", "mudah", "akurat", "hebat", "recommended",
     "rekomendasi", "berguna", "bermanfaat", "canggih", "good", "best", "nice",
     "love", "awesome", "great", "helpful", "jos", "joss", "mantab", "top",
+    "nyaman", "enak", "lengkap", "mantul", "oke", "ok", "sempurna",
 }
 
 NEGATION_WORDS = {"tidak", "tak", "bukan", "jangan", "kurang", "belum", "gak", "ga", "gk", "nggak", "tdk"}
@@ -317,12 +319,16 @@ def predict_single_review(
     has_negated_complain = any(p in clean_text for p in NEGATED_COMPLAIN_PHRASES)
     has_negated_praise = any(p in clean_text for p in NEGATED_PRAISE_PHRASES)
 
+    is_short_review = len(clean_text.split()) <= 4
+    pure_complaint = len(neg_hits) > 0 and len(pos_hits) == 0 and not has_negated_complain
+    short_complaint_dominant = is_short_review and len(neg_hits) >= len(pos_hits) and not has_negated_complain
+
     if has_negated_complain and not has_negated_praise and len(neg_hits) <= 1:
         # Contoh: "tidak menyesal", "tidak kecewa" -> Sentimen Positif
         if pred_raw != "2_Positive":
             pred_raw = "2_Positive"
             probas = np.array([0.08, 0.07, 0.85], dtype=float)
-    elif (has_negated_praise or (len(neg_hits) > 0 and not has_negated_complain)) and len(neg_hits) >= len(pos_hits):
+    elif has_negated_praise or pure_complaint or short_complaint_dominant:
         # Contoh: "nyesel", "menyesal", "jelk", "bapuk", "goblok", "tidak bagus" -> Sentimen Negatif
         if pred_raw != "0_Negative":
             pred_raw = "0_Negative"

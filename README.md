@@ -1,4 +1,4 @@
-# Analisis Komparatif Sentimen Berbasis Aspek (ABSA) dan Pemodelan Topik Pengalaman Pengguna terhadap Ekosistem Aplikasi Mobile Generative AI di Indonesia
+# Analisis Komparatif Sentimen Berbasis Aspek (ABSA) dan Pemodelan Topik Pengalaman Pengguna terhadap Aplikasi Mobile Generative AI di Indonesia
 
 Repositori ini berisi kode program, dataset, eksperimen pemodelan, dan prototipe aplikasi web untuk Tugas Akhir mata kuliah **AM552 - Data Science of IS** (Program Studi S1 Sistem Informasi, Fakultas Teknologi Informasi, Universitas Kristen Satya Wacana).
 

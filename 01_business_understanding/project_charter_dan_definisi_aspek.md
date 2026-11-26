@@ -1,6 +1,6 @@
 # Definisi Masalah & Taksonomi Aspek Layanan (Bab 1: Business Understanding)
 
-- **Judul Proyek**: Analisis Komparatif Sentimen Berbasis Aspek (ABSA) dan Pemodelan Topik Pengalaman Pengguna terhadap Ekosistem Aplikasi Mobile Generative AI di Indonesia
+- **Judul Proyek**: Analisis Komparatif Sentimen Berbasis Aspek (ABSA) dan Pemodelan Topik Pengalaman Pengguna terhadap Aplikasi Mobile Generative AI di Indonesia
 - **Mata Kuliah**: AM552 - Data Science of IS (S1 Sistem Informasi, FTI UKSW)
 - **Dataset**: 71.221 ulasan pengguna Google Play Store Indonesia pada 8 aplikasi Generative AI (Mei 2023 – November 2026)
 

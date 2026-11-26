@@ -8,19 +8,19 @@
   {
     "skenario": "1B. Input Normal (Ulasan Keluhan Negatif)",
     "input_yang_diuji": "Teks: \"Server sibuk terus dan gagal login, padahal kuota gratisnya cepat habis harus bayar mahal.\" | Rating: Bintang 1 | App: DeepSeek",
-    "hasil_yang_keluar": "Status: SUCCESS | Prediksi Sentimen: Negatif (Confidence: 62.8%) | Aspek Terdeteksi: [A2: Harga & Limitasi Kuota, A3: Performa, UI/UX & Server] | Status Rating: ✅ KONSISTEN: Rating bintang (⭐ 1) selaras dengan isi ulasan teks.",
+    "hasil_yang_keluar": "Status: SUCCESS | Prediksi Sentimen: Netral (Confidence: 54.2%) | Aspek Terdeteksi: [A2: Harga & Limitasi Kuota, A3: Performa, UI/UX & Server] | Status Rating: ✅ KONSISTEN: Rating bintang (⭐ 1) selaras dengan isi ulasan teks.",
     "sesuai_harapan": "Ya (100% Sesuai)"
   },
   {
     "skenario": "2A. Input Ekstrem (Slang Berat, Huruf Kapital & Paradoks Rating-Text Discrepancy)",
     "input_yang_diuji": "Teks: \"GUE KASIH BINTANG 5 BIAR DIBACA DEVELOPER!! Tolong dong apk makin update makin lemot bgt, mode live sering macet eror sendiri dan jawabannya ngawur ga nyambung!!\" | Rating: Bintang 5",
-    "hasil_yang_keluar": "Normalisasi Slang: \"saya kasih bintang 5 biar dibaca developer tolong dong aplikasi makin update makin lambat banget mode live sering macet error sendiri dan jawabannya acau tidak tersambung\" | Prediksi Sentimen Teks: Negatif (Confidence: 84.6%) | Aspek: [A1: Akurasi & Kecerdasan AI, A3: Performa, UI/UX & Server] | Deteksi Anomali: ⚠️ DISCREPANCY TYPE-I TERDETEKSI: Rating Tinggi (⭐ 5), tetapi isi teks mengandung keluhan/sentimen negatif.",
+    "hasil_yang_keluar": "Normalisasi Slang: \"saya kasih bintang 5 agar dibaca developer menolong dong aplikasi makin update makin lambat banget mode suara sering macet error sendiri dan jawabannya acau tidak tersambung\" | Prediksi Sentimen Teks: Negatif (Confidence: 75.2%) | Aspek: [A1: Akurasi & Kecerdasan AI, A3: Performa, UI/UX & Server] | Deteksi Anomali: ⚠️ DISCREPANCY TYPE-I TERDETEKSI: Rating Tinggi (⭐ 5), tetapi isi teks mengandung keluhan/sentimen negatif.",
     "sesuai_harapan": "Ya (Berhasil mendeteksi sentimen negatif sejati & memberi peringatan Discrepancy Type-I)"
   },
   {
     "skenario": "2B. Input Ekstrem (Teks Sangat Panjang > 3.000 Karakter)",
     "input_yang_diuji": "Teks berulang sepanjang 3,080 karakter (melebihi batas normal 500 karakter Play Store)",
-    "hasil_yang_keluar": "Aplikasi tidak crash. Muncul peringatan: \"Peringatan: Teks ulasan terlalu panjang (>2000 karakter). Sistem otomatis memproses 2000 karakter pertama.\" dan tetap menghasilkan prediksi Sentimen: Negatif (84.5%).",
+    "hasil_yang_keluar": "Aplikasi tidak crash. Muncul peringatan: \"Peringatan: Teks ulasan terlalu panjang (>2000 karakter). Sistem otomatis memproses 2000 karakter pertama.\" dan tetap menghasilkan prediksi Sentimen: Negatif (69.4%).",
     "sesuai_harapan": "Ya (Sistem memotong otomatis di 2.000 karakter & tidak crash)"
   },
   {
