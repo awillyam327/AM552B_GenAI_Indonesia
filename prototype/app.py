@@ -260,6 +260,46 @@ html, body, [class*="css"] {
 .sent-neg { color: #dc2626 !important; }
 .sent-neu { color: #ca8a04 !important; }
 
+/* ── Badge sentimen per aspek (Clause-Level ABSA) ── */
+.asp-badge-pos {
+    display: inline-block;
+    background-color: rgba(22, 163, 74, 0.12);
+    border: 1px solid rgba(22, 163, 74, 0.35);
+    color: #16a34a !important;
+    border-radius: 6px;
+    padding: 1px 8px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    margin-left: 6px;
+}
+.asp-badge-neg {
+    display: inline-block;
+    background-color: rgba(220, 38, 38, 0.12);
+    border: 1px solid rgba(220, 38, 38, 0.35);
+    color: #dc2626 !important;
+    border-radius: 6px;
+    padding: 1px 8px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    margin-left: 6px;
+}
+.asp-badge-neu {
+    display: inline-block;
+    background-color: rgba(202, 138, 4, 0.12);
+    border: 1px solid rgba(202, 138, 4, 0.35);
+    color: #ca8a04 !important;
+    border-radius: 6px;
+    padding: 1px 8px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    margin-left: 6px;
+}
+.asp-clause-note {
+    font-size: 0.78rem;
+    opacity: 0.78;
+    margin: 2px 0 10px 16px;
+}
+
 /* ── Ikon sub-judul ── */
 .h4-icon { color: #3B6998; margin-right: 6px; }
 
@@ -575,7 +615,27 @@ def main():
                             ", ".join(f"`{k}`" for k in asp.get("matched_keywords", []))
                             if asp.get("matched_keywords") else "*ekspresi umum*"
                         )
-                        st.markdown(f"- **{asp.get('aspect_label', '')}** — Kata pemicu: {kw_str}")
+                        asp_sent = asp.get("aspect_sentiment", sent)
+                        asp_conf = asp.get("aspect_confidence")
+                        if asp_sent == "Positif":
+                            badge_cls = "asp-badge-pos"
+                        elif asp_sent == "Negatif":
+                            badge_cls = "asp-badge-neg"
+                        else:
+                            badge_cls = "asp-badge-neu"
+                        conf_txt = f" ({asp_conf*100:.0f}%)" if asp_conf is not None else ""
+                        st.markdown(
+                            f"- **{asp.get('aspect_label', '')}** "
+                            f"<span class=\"{badge_cls}\">{asp_sent}{conf_txt}</span>  \n"
+                            f"  Kata pemicu: {kw_str}",
+                            unsafe_allow_html=True,
+                        )
+                        clause_ctx = asp.get("clause_context", "")
+                        if clause_ctx and asp.get("aspect_code") != "A0_General_Impression":
+                            st.markdown(
+                                f'<div class="asp-clause-note">Klausa: &ldquo;{clause_ctx}&rdquo;</div>',
+                                unsafe_allow_html=True,
+                            )
 
                     st.markdown(
                         '<h4><i class="fa-solid fa-wand-magic-sparkles h4-icon"></i>'

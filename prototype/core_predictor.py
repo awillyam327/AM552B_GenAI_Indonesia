@@ -232,6 +232,153 @@ def analyze_aspects_and_discrepancy(raw_text, clean_text, star_rating=None, pred
     return detected_aspects, is_discrepancy, discrepancy_status
 
 
+CONTRAST_SPLIT_PATTERN = re.compile(
+    r"\b(?:tapi|tetapi|namun|cuma|cuman|sayang|sayangnya|padahal|walau|walaupun|meski|meskipun)\b"
+)
+
+
+def split_into_clean_clauses(raw_text: str) -> List[str]:
+    """
+    Memecah ulasan menjadi klausa-klausa bersih berdasarkan tanda baca dan kata hubung kontras
+    untuk mendukung analisis sentimen spesifik per aspek (Clause-Level ABSA).
+    """
+    if not isinstance(raw_text, str) or not raw_text.strip():
+        return []
+    punct_chunks = re.split(r"[.!?;,\n]+", raw_text)
+    clauses: List[str] = []
+    for chunk in punct_chunks:
+        cleaned = preprocess_text_indonesian(chunk)
+        if not cleaned:
+            continue
+        sub_clauses = CONTRAST_SPLIT_PATTERN.split(cleaned)
+        for sc in sub_clauses:
+            sc_s = sc.strip()
+            if sc_s:
+                clauses.append(sc_s)
+    return clauses
+
+
+def score_clause_sentiment(
+    clause_clean: str,
+    pipeline: Any,
+    classes: List[str],
+    label_display_map: Dict[str, str],
+) -> Tuple[str, float]:
+    """Memprediksi sentimen dan tingkat keyakinan pada satu klausa teks."""
+    pred_raw = pipeline.predict([clause_clean])[0]
+    probas = np.array(pipeline.predict_proba([clause_clean])[0], dtype=float)
+
+    tokens = clause_clean.split()
+    token_set = set(tokens)
+    neg_hits = token_set.intersection(NEG_COMPLAIN_WORDS)
+    pos_hits = token_set.intersection(POS_PRAISE_WORDS)
+    has_negated_complain = any(p in clause_clean for p in NEGATED_COMPLAIN_PHRASES)
+    has_negated_praise = any(p in clause_clean for p in NEGATED_PRAISE_PHRASES)
+
+    # Keluhan kuota sempit/dikit pada klausa A2
+    has_quota_complaint = (
+        len(token_set.intersection({"limit", "kuota", "batas", "token"})) > 0
+        and len(token_set.intersection({"sedikit", "dikit", "habis", "dibatasi", "mahal", "pelit", "kurang"})) > 0
+    )
+
+    if has_negated_complain and not has_negated_praise and len(neg_hits) <= 1:
+        pred_raw = "2_Positive"
+        probas = np.array([0.08, 0.07, 0.85], dtype=float)
+    elif has_negated_praise or has_quota_complaint or (
+        len(neg_hits) > 0 and len(pos_hits) == 0 and not has_negated_complain
+    ):
+        if pred_raw != "0_Negative":
+            pred_raw = "0_Negative"
+            neg_conf = min(max(float(probas[0]) + 0.50, 0.84), 0.95)
+            rem = 1.0 - neg_conf
+            probas = np.array([neg_conf, round(rem * 0.45, 4), round(rem * 0.55, 4)], dtype=float)
+    elif len(pos_hits) > 0 and len(neg_hits) == 0 and not has_negated_praise:
+        if pred_raw != "2_Positive" and float(probas[2]) >= 0.30:
+            pred_raw = "2_Positive"
+            pos_conf = min(max(float(probas[2]) + 0.35, 0.78), 0.94)
+            rem = 1.0 - pos_conf
+            probas = np.array([round(rem * 0.30, 4), round(rem * 0.70, 4), pos_conf], dtype=float)
+
+    pred_idx = list(classes).index(pred_raw)
+    label = label_display_map.get(pred_raw, str(pred_raw))
+    conf = round(float(probas[pred_idx]), 4)
+    return label, conf
+
+
+def enrich_aspects_with_sentiment(
+    raw_text: str,
+    detected_aspects: List[Dict[str, Any]],
+    pipeline: Any,
+    classes: List[str],
+    label_display_map: Dict[str, str],
+    global_sentiment: str,
+    global_confidence: float,
+) -> List[Dict[str, Any]]:
+    """
+    Menambahkan sentimen spesifik per aspek (Clause-Level ABSA) ke daftar aspek terdeteksi.
+    Memetakan setiap aspek ke klausa pemicunya agar ulasan campuran (pro-kontra)
+    dapat menampilkan polaritas berbeda per aspek.
+    """
+    clauses = split_into_clean_clauses(raw_text)
+    enriched: List[Dict[str, Any]] = []
+
+    for asp in detected_aspects:
+        asp_copy = dict(asp)
+        code = asp_copy.get("aspect_code", "")
+        kw_set = set(asp_copy.get("matched_keywords", []))
+
+        if code == "A0_General_Impression" or not kw_set or not clauses:
+            asp_copy["aspect_sentiment"] = global_sentiment
+            asp_copy["aspect_confidence"] = round(float(global_confidence), 4)
+            asp_copy["clause_context"] = clauses[0] if clauses else ""
+            enriched.append(asp_copy)
+            continue
+
+        matched_clauses = [c for c in clauses if len(set(c.split()).intersection(kw_set)) > 0]
+        if not matched_clauses:
+            asp_copy["aspect_sentiment"] = global_sentiment
+            asp_copy["aspect_confidence"] = round(float(global_confidence), 4)
+            asp_copy["clause_context"] = ""
+            enriched.append(asp_copy)
+            continue
+
+        clause_preds = [
+            score_clause_sentiment(c, pipeline, classes, label_display_map)
+            for c in matched_clauses
+        ]
+        labels_only = [lbl for lbl, _ in clause_preds]
+        confs_only = [cnf for _, cnf in clause_preds]
+
+        has_pos = "Positif" in labels_only
+        has_neg = "Negatif" in labels_only
+
+        if has_pos and has_neg:
+            asp_sent = "Netral (Campuran)"
+            asp_conf = round(float(np.mean(confs_only)), 4)
+        elif has_neg:
+            neg_confs = [cnf for lbl, cnf in clause_preds if lbl == "Negatif"]
+            asp_sent = "Negatif"
+            asp_conf = round(float(max(neg_confs)), 4)
+        elif has_pos:
+            pos_confs = [cnf for lbl, cnf in clause_preds if lbl == "Positif"]
+            asp_sent = "Positif"
+            asp_conf = round(float(max(pos_confs)), 4)
+        else:
+            asp_sent = "Netral"
+            asp_conf = round(float(np.mean(confs_only)), 4)
+
+        snippet = " | ".join(matched_clauses)
+        if len(snippet) > 120:
+            snippet = snippet[:117] + "..."
+
+        asp_copy["aspect_sentiment"] = asp_sent
+        asp_copy["aspect_confidence"] = asp_conf
+        asp_copy["clause_context"] = snippet
+        enriched.append(asp_copy)
+
+    return enriched
+
+
 def explain_prediction_keywords(pipeline, clean_text, predicted_class_idx, top_k: Optional[int] = 10):
     """
     Mengekstrak kata kunci di dalam ulasan pengguna yang memberikan bobot kontribusi
@@ -347,6 +494,15 @@ def predict_single_review(
 
     detected_aspects, is_discrepancy, discrepancy_status = analyze_aspects_and_discrepancy(
         validated_text, clean_text, star_rating=star_rating, predicted_sentiment=pred_label
+    )
+    detected_aspects = enrich_aspects_with_sentiment(
+        raw_text=validated_text,
+        detected_aspects=detected_aspects,
+        pipeline=pipeline,
+        classes=classes,
+        label_display_map=label_display_map,
+        global_sentiment=pred_label,
+        global_confidence=confidence,
     )
     all_contribs = explain_prediction_keywords(pipeline, clean_text, pred_idx, top_k=None)
     if not all_contribs and len(neg_hits) > 0 and pred_raw == "0_Negative":
