@@ -11,9 +11,16 @@ import importlib
 import json
 import os
 import sys
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 import pandas as pd
 import streamlit as st
+
+try:
+    import plotly.graph_objects as go
+    HAS_PLOTLY = True
+except ImportError:
+    go = None
+    HAS_PLOTLY = False
 
 # Pastikan direktori prototype/ dan root terdaftar di sys.path
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -333,6 +340,174 @@ def get_benchmark_summary():
 
 
 # ══════════════════════════════════════════════════════════════════════════════
+#  PLOTLY CHART HELPERS (TEMA BIRU TUA LEMBUT, BERSIH & PROFESIONAL)
+# ══════════════════════════════════════════════════════════════════════════════
+BLUE_PRIMARY = "#1E3A5F"
+BLUE_MID = "#4A7BB0"
+BLUE_LIGHT = "#7BA4D0"
+RED_MUTED = "#C85A5A"
+GREEN_MUTED = "#2E7D5B"
+AMBER_MUTED = "#D4A037"
+GRID_COLOR = "rgba(148, 163, 184, 0.22)"
+
+
+def _style_plotly_fig(fig: Any, height: int = 340, show_legend: bool = True) -> Any:
+    """Menerapkan tata letak Plotly seragam bertema biru tua lembut untuk penelitian."""
+    fig.update_layout(
+        height=height,
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        font=dict(family="Inter, Segoe UI, sans-serif", size=12),
+        margin=dict(l=10, r=15, t=32, b=15),
+        showlegend=show_legend,
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1.0),
+        xaxis=dict(gridcolor=GRID_COLOR, zeroline=False),
+        yaxis=dict(gridcolor=GRID_COLOR, zeroline=True, zerolinecolor="rgba(148,163,184,0.45)"),
+    )
+    return fig
+
+
+def plot_rating_comparison(df_rc: pd.DataFrame) -> Any:
+    """Grafik batang berkelompok: Rating Play Store vs Rating Aktual Terkoreksi."""
+    fig = go.Figure()
+    fig.add_trace(go.Bar(
+        name="Rating Play Store",
+        x=df_rc["Nama Aplikasi"],
+        y=df_rc["Rating Play Store"],
+        marker_color=BLUE_LIGHT,
+        text=df_rc["Rating Play Store"].round(2),
+        textposition="outside",
+    ))
+    fig.add_trace(go.Bar(
+        name="Rating Aktual (Terkoreksi)",
+        x=df_rc["Nama Aplikasi"],
+        y=df_rc["Rating Aktual (Terkoreksi)"],
+        marker_color=BLUE_PRIMARY,
+        text=df_rc["Rating Aktual (Terkoreksi)"].round(2),
+        textposition="outside",
+    ))
+    fig.update_layout(barmode="group", yaxis_range=[0, 5.4], yaxis_title="Skor Bintang")
+    fig.update_xaxes(tickangle=-25)
+    return _style_plotly_fig(fig, height=360, show_legend=True)
+
+
+def plot_absa_heatmap(df_asp_num: pd.DataFrame) -> Any:
+    """Heatmap kepuasan 8 Aplikasi x 4 Aspek ABSA (Net Sentiment Score)."""
+    df_hm = df_asp_num.set_index("Nama Aplikasi")
+    fig = go.Figure(data=go.Heatmap(
+        z=df_hm.values,
+        x=list(df_hm.columns),
+        y=list(df_hm.index),
+        colorscale=[
+            [0.0, RED_MUTED],
+            [0.5, "#E2E8F0"],
+            [1.0, BLUE_PRIMARY],
+        ],
+        zmid=0,
+        text=df_hm.values,
+        texttemplate="%{z:.1f}",
+        textfont=dict(size=12),
+        hovertemplate="Aplikasi: %{y}<br>Aspek: %{x}<br>NSS: %{z:.1f}<extra></extra>",
+        colorbar=dict(title="Skor NSS"),
+    ))
+    fig.update_yaxes(autorange="reversed")
+    return _style_plotly_fig(fig, height=360, show_legend=False)
+
+
+def plot_single_aspect_bar(df_asp_num: pd.DataFrame, col_name: str) -> Any:
+    """Grafik batang skor NSS per aplikasi untuk satu aspek terpilih."""
+    vals = df_asp_num[col_name]
+    colors = [BLUE_PRIMARY if v >= 0 else RED_MUTED for v in vals]
+    fig = go.Figure(go.Bar(
+        x=df_asp_num["Nama Aplikasi"],
+        y=vals,
+        marker_color=colors,
+        text=[f"{v:+.1f}" for v in vals],
+        textposition="outside",
+        hovertemplate="%{x}<br>" + col_name + ": %{y:+.1f}<extra></extra>",
+    ))
+    fig.update_layout(yaxis_title="Skor Net Sentiment (NSS)")
+    fig.update_xaxes(tickangle=-20)
+    return _style_plotly_fig(fig, height=350, show_legend=False)
+
+
+def plot_model_comparison(df_models: pd.DataFrame) -> Any:
+    """Grafik batang perbandingan Macro F1 dan ROC-AUC antar model uji."""
+    fig = go.Figure()
+    fig.add_trace(go.Bar(
+        name="Test Macro F1",
+        x=df_models["model_name"],
+        y=df_models["test_macro_f1"],
+        marker_color=BLUE_PRIMARY,
+        text=df_models["test_macro_f1"].round(3),
+        textposition="outside",
+    ))
+    fig.add_trace(go.Bar(
+        name="Test ROC-AUC",
+        x=df_models["model_name"],
+        y=df_models["test_roc_auc"],
+        marker_color=BLUE_MID,
+        text=df_models["test_roc_auc"].round(3),
+        textposition="outside",
+    ))
+    fig.update_layout(barmode="group", yaxis_range=[0, 1.08], yaxis_title="Skor Evaluasi")
+    fig.update_xaxes(tickangle=-18)
+    return _style_plotly_fig(fig, height=360, show_legend=True)
+
+
+def plot_feature_attribution(shown_contribs: List[Tuple[str, float]]) -> Any:
+    """Grafik batang horizontal dua arah untuk bobot kontribusi kata (+ vs -)."""
+    ordered = list(reversed(shown_contribs))
+    terms = [t for t, _ in ordered]
+    weights = [w for _, w in ordered]
+    colors = [BLUE_PRIMARY if w >= 0 else RED_MUTED for w in weights]
+    fig = go.Figure(go.Bar(
+        x=weights,
+        y=terms,
+        orientation="h",
+        marker_color=colors,
+        text=[f"{w:+.4f}" for w in weights],
+        textposition="outside",
+        hovertemplate="Fitur: %{y}<br>Kontribusi: %{x:+.4f}<extra></extra>",
+    ))
+    fig.add_vline(x=0, line_width=1, line_color="rgba(148,163,184,0.6)")
+    fig.update_layout(xaxis_title="Bobot Kontribusi Log-Odds")
+    return _style_plotly_fig(fig, height=max(240, len(terms) * 26 + 70), show_legend=False)
+
+
+def plot_class_probabilities(class_probs: Dict[str, float]) -> Any:
+    """Grafik batang probabilitas 3 kelas sentimen."""
+    labels = list(class_probs.keys())
+    probs = [float(v) for v in class_probs.values()]
+    color_map = {"Negatif": RED_MUTED, "Netral": AMBER_MUTED, "Positif": GREEN_MUTED}
+    colors = [color_map.get(lbl, BLUE_MID) for lbl in labels]
+    fig = go.Figure(go.Bar(
+        x=labels,
+        y=probs,
+        marker_color=colors,
+        text=[f"{p*100:.1f}%" for p in probs],
+        textposition="outside",
+    ))
+    fig.update_layout(yaxis_range=[0, 1.12], yaxis_title="Probabilitas")
+    return _style_plotly_fig(fig, height=280, show_legend=False)
+
+
+def plot_batch_sentiment_bar(sent_counts_df: pd.DataFrame) -> Any:
+    """Grafik batang distribusi hasil prediksi batch CSV."""
+    color_map = {"Negatif": RED_MUTED, "Netral": AMBER_MUTED, "Positif": GREEN_MUTED}
+    colors = [color_map.get(s, BLUE_MID) for s in sent_counts_df["Sentimen"]]
+    fig = go.Figure(go.Bar(
+        x=sent_counts_df["Sentimen"],
+        y=sent_counts_df["Jumlah Baris"],
+        marker_color=colors,
+        text=sent_counts_df["Jumlah Baris"],
+        textposition="outside",
+    ))
+    fig.update_layout(yaxis_title="Jumlah Ulasan")
+    return _style_plotly_fig(fig, height=280, show_legend=False)
+
+
+# ══════════════════════════════════════════════════════════════════════════════
 #  MAIN
 # ══════════════════════════════════════════════════════════════════════════════
 def main():
@@ -426,8 +601,11 @@ def main():
                 df_rc = pd.DataFrame(bench["rating_comparison"])
                 c_rc1, c_rc2 = st.columns([1.15, 1.35])
                 with c_rc1:
-                    df_rc_chart = df_rc.set_index("Nama Aplikasi")[["Rating Play Store", "Rating Aktual (Terkoreksi)"]]
-                    st.bar_chart(df_rc_chart)
+                    if HAS_PLOTLY:
+                        st.plotly_chart(plot_rating_comparison(df_rc), use_container_width=True)
+                    else:
+                        df_rc_chart = df_rc.set_index("Nama Aplikasi")[["Rating Play Store", "Rating Aktual (Terkoreksi)"]]
+                        st.bar_chart(df_rc_chart)
                 with c_rc2:
                     st.dataframe(df_rc, use_container_width=True, hide_index=True)
 
@@ -440,19 +618,23 @@ def main():
                     ["Semua Aspek (A1 - A4)", "A1: Akurasi AI", "A2: Harga & Kuota",
                      "A3: Performa & Server", "A4: Bahasa Indonesia"],
                 )
-                # Altair (backend st.bar_chart) tidak mendukung ':' dan '&' dalam nama kolom.
-                # Rename kolom sementara untuk plotting agar tidak memicu ValueError.
                 def _safe_col(c: str) -> str:
                     return c.replace(":", "-").replace("&", "dan")
 
                 if asp_col_choice == "Semua Aspek (A1 - A4)":
-                    df_plot = df_asp_num.set_index("Nama Aplikasi").copy()
-                    df_plot.columns = [_safe_col(c) for c in df_plot.columns]
-                    st.bar_chart(df_plot)
+                    if HAS_PLOTLY:
+                        st.plotly_chart(plot_absa_heatmap(df_asp_num), use_container_width=True)
+                    else:
+                        df_plot = df_asp_num.set_index("Nama Aplikasi").copy()
+                        df_plot.columns = [_safe_col(c) for c in df_plot.columns]
+                        st.bar_chart(df_plot)
                 else:
-                    df_plot = df_asp_num.set_index("Nama Aplikasi")[[str(asp_col_choice)]].copy()
-                    df_plot.columns = [_safe_col(str(asp_col_choice))]
-                    st.bar_chart(df_plot)
+                    if HAS_PLOTLY:
+                        st.plotly_chart(plot_single_aspect_bar(df_asp_num, str(asp_col_choice)), use_container_width=True)
+                    else:
+                        df_plot = df_asp_num.set_index("Nama Aplikasi")[[str(asp_col_choice)]].copy()
+                        df_plot.columns = [_safe_col(str(asp_col_choice))]
+                        st.bar_chart(df_plot)
 
             df_bench = pd.DataFrame(bench["app_absa_matrix"])
             st.dataframe(df_bench, use_container_width=True, hide_index=True)
@@ -484,7 +666,10 @@ def main():
             df_models = pd.DataFrame(bench["model_comparison"])
             c_m1, c_m2 = st.columns([1.0, 1.4])
             with c_m1:
-                st.bar_chart(df_models.set_index("model_name")[["test_macro_f1", "test_roc_auc"]])
+                if HAS_PLOTLY:
+                    st.plotly_chart(plot_model_comparison(df_models), use_container_width=True)
+                else:
+                    st.bar_chart(df_models.set_index("model_name")[["test_macro_f1", "test_roc_auc"]])
             with c_m2:
                 st.dataframe(df_models, use_container_width=True, hide_index=True)
         else:
@@ -676,6 +861,8 @@ def main():
                                 for term, weight in shown_contribs
                             ]
                         )
+                        if HAS_PLOTLY:
+                            st.plotly_chart(plot_feature_attribution(shown_contribs), use_container_width=True)
                         st.dataframe(df_kw, use_container_width=True, hide_index=True)
                         st.caption(f"Menampilkan {len(shown_contribs)} dari total {total_feats} fitur kata/n-gram aktif di kosakata TF-IDF.")
                     else:
@@ -687,11 +874,14 @@ def main():
                         unsafe_allow_html=True,
                     )
                     class_probs: Dict[str, float] = res.get("class_probabilities", {})
-                    df_prob = pd.DataFrame(
-                        list(class_probs.items()),
-                        columns=["Kelas Sentimen", "Probabilitas"],
-                    )
-                    st.bar_chart(df_prob.set_index("Kelas Sentimen"))
+                    if HAS_PLOTLY and class_probs:
+                        st.plotly_chart(plot_class_probabilities(class_probs), use_container_width=True)
+                    else:
+                        df_prob = pd.DataFrame(
+                            list(class_probs.items()),
+                            columns=["Kelas Sentimen", "Probabilitas"],
+                        )
+                        st.bar_chart(df_prob.set_index("Kelas Sentimen"))
 
     # =========================================================================
     # MENU 3: PREDIKSI BATCH (Upload CSV)
@@ -755,14 +945,62 @@ def main():
                         st.error(f"{err_msg}")
                     else:
                         st.success(f"Berhasil memproses **{len(df_res):,} baris** ulasan!")
+                        total_rows = len(df_res)
+                        sent_vc = df_res["predicted_sentiment"].value_counts()
+                        dom_sent = str(sent_vc.index[0]) if len(sent_vc) > 0 else "-"
+                        dom_pct = (float(sent_vc.iloc[0]) / total_rows * 100.0) if total_rows > 0 and len(sent_vc) > 0 else 0.0
+
+                        kpi1, kpi2, kpi3 = st.columns(3)
+                        with kpi1:
+                            st.markdown(
+                                f'<div class="metric-card-clean">'
+                                f'<div class="metric-card-label">Total Ulasan Diproses</div>'
+                                f'<div class="metric-card-value">{total_rows:,}</div>'
+                                f'<div class="metric-card-note">Baris valid dari file CSV unggahan</div>'
+                                f'</div>',
+                                unsafe_allow_html=True,
+                            )
+                        with kpi2:
+                            st.markdown(
+                                f'<div class="metric-card-clean">'
+                                f'<div class="metric-card-label">Sentimen Dominan</div>'
+                                f'<div class="metric-card-value">{dom_sent}</div>'
+                                f'<div class="metric-card-note">{dom_pct:.1f}% dari total ulasan</div>'
+                                f'</div>',
+                                unsafe_allow_html=True,
+                            )
+                        with kpi3:
+                            if "is_discrepancy" in df_res.columns:
+                                disc_cnt = int(df_res["is_discrepancy"].sum())
+                                disc_pct = (disc_cnt / total_rows * 100.0) if total_rows > 0 else 0.0
+                                st.markdown(
+                                    f'<div class="metric-card-clean">'
+                                    f'<div class="metric-card-label">Rating-Text Discrepancy</div>'
+                                    f'<div class="metric-card-value">{disc_cnt:,}</div>'
+                                    f'<div class="metric-card-note">{disc_pct:.1f}% terindikasi anomali rating</div>'
+                                    f'</div>',
+                                    unsafe_allow_html=True,
+                                )
+                            else:
+                                st.markdown(
+                                    '<div class="metric-card-clean">'
+                                    '<div class="metric-card-label">Rating-Text Discrepancy</div>'
+                                    '<div class="metric-card-value">-</div>'
+                                    '<div class="metric-card-note">Kolom skor bintang tidak dipilih</div>'
+                                    '</div>',
+                                    unsafe_allow_html=True,
+                                )
+
+                        sent_counts_df = (
+                            sent_vc.rename_axis("Sentimen").reset_index(name="Jumlah Baris")
+                        )
                         c_s1, c_s2 = st.columns(2)
                         with c_s1:
                             st.markdown("**Distribusi Hasil Prediksi Sentimen:**")
+                            if HAS_PLOTLY and not sent_counts_df.empty:
+                                st.plotly_chart(plot_batch_sentiment_bar(sent_counts_df), use_container_width=True)
                             st.dataframe(
-                                df_res["predicted_sentiment"]
-                                    .value_counts()
-                                    .rename_axis("Sentimen")
-                                    .reset_index(name="Jumlah Baris"),
+                                sent_counts_df,
                                 use_container_width=True, hide_index=True,
                             )
                         with c_s2:
