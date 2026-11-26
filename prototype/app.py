@@ -69,10 +69,16 @@ html, body, [class*="css"] { font-family: 'Inter', 'Segoe UI', sans-serif; }
 [data-testid="stSidebar"] [data-testid="stMetric"] {
     background: rgba(255,255,255,0.08);
     border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 12px; padding: 12px 16px; margin-bottom: 8px;
+    border-radius: 12px; padding: 10px 8px; margin-bottom: 8px;
 }
-[data-testid="stSidebar"] [data-testid="stMetricLabel"] { font-size: 0.75rem; opacity: 0.85; }
-[data-testid="stSidebar"] [data-testid="stMetricValue"] { font-size: 1.9rem; font-weight: 800; }
+[data-testid="stSidebar"] [data-testid="stMetricLabel"] { font-size: 0.78rem; opacity: 0.85; }
+[data-testid="stSidebar"] [data-testid="stMetricValue"] {
+    font-size: 1.42rem !important;
+    font-weight: 800 !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: nowrap !important;
+}
 [data-testid="stSidebar"] [data-testid="stMetricDelta"] { font-size: 0.72rem; }
 
 /* ── Tabs ── */
@@ -202,9 +208,9 @@ def main():
         )
         col_m1, col_m2 = st.columns(2)
         with col_m1:
-            st.metric("Macro F1", f"{test_macro_f1:.4f}", delta="vs Baseline")
+            st.metric("Macro F1", f"{test_macro_f1:.3f}", delta="vs Baseline")
         with col_m2:
-            st.metric("ROC-AUC", f"{test_roc_auc:.4f}", delta="Target")
+            st.metric("ROC-AUC", f"{test_roc_auc:.3f}", delta="Target")
         st.caption(f"Model: **{model_name}** · TF-IDF 1-2gram")
 
         st.divider()
