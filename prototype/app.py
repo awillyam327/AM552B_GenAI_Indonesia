@@ -839,6 +839,10 @@ def main():
                         unsafe_allow_html=True,
                     )
                     st.code(res["clean_text"], language="text")
+                    typo_corr = res.get("typo_corrections", [])
+                    if typo_corr:
+                        corr_str = ", ".join(f"`{c['asal']}` -> `{c['koreksi']}`" for c in typo_corr)
+                        st.caption(f"Koreksi typo otomatis: {corr_str}")
 
                 with c_right:
                     st.markdown(

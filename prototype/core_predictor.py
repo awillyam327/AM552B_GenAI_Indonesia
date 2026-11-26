@@ -3,6 +3,7 @@ Modul Preprocessing Teks, Inferensi Model, Ekstraksi 4 Aspek ABSA & Validasi Inp
 Digunakan oleh prototype/app.py dan prototype/test_prototype_scenarios.py
 """
 
+from difflib import SequenceMatcher
 import json
 import os
 import re
@@ -10,7 +11,7 @@ import joblib
 import numpy as np
 import pandas as pd
 
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 MODEL_PATH = os.path.join(ROOT_DIR, "models", "genai_absa_pipeline.joblib")
@@ -154,18 +155,180 @@ def validate_review_input(raw_text):
     return True, warning_msg, text_str
 
 
-def preprocess_text_indonesian(text, slang_dict=None):
-    """Pipeline preprocessing yang 100% identik dengan Notebook 02 & 03."""
+PROTECTED_TYPO_TERMS: Set[str] = {
+    "chatgpt", "gpt", "openai", "gemini", "bard", "deepseek", "claude", "anthropic",
+    "perplexity", "copilot", "microsoft", "poe", "character", "cai", "ai", "ui", "ux",
+    "apk", "app", "id", "ok", "oke", "pro", "plus", "pdf", "csv", "api", "llm",
+    "prompt", "coding", "chat", "bot", "bots", "live", "free", "good", "best", "nice",
+    "love", "great", "top", "jos", "joss", "nya", "nih", "sih", "kok", "dong",
+}
+
+DOMAIN_PRIORITY_WORDS: Set[str] = (
+    set().union(*(info["keywords"] for info in ASPECT_DEFINITIONS.values()))
+    | NEG_COMPLAIN_WORDS
+    | POS_PRAISE_WORDS
+    | NEGATION_WORDS
+)
+
+_TYPO_INDEX_CACHE: Dict[int, Dict[str, Any]] = {}
+
+
+def _damerau_levenshtein(a: str, b: str) -> int:
+    """Menghitung jarak Damerau-Levenshtein (termasuk transposisi huruf bersebelahan)."""
+    la, lb = len(a), len(b)
+    if abs(la - lb) > 2:
+        return 3
+    dp = [[0] * (lb + 1) for _ in range(la + 1)]
+    for i in range(la + 1):
+        dp[i][0] = i
+    for j in range(lb + 1):
+        dp[0][j] = j
+    for i in range(1, la + 1):
+        for j in range(1, lb + 1):
+            cost = 0 if a[i - 1] == b[j - 1] else 1
+            dp[i][j] = min(
+                dp[i - 1][j] + 1,
+                dp[i][j - 1] + 1,
+                dp[i - 1][j - 1] + cost,
+            )
+            if i > 1 and j > 1 and a[i - 1] == b[j - 2] and a[i - 2] == b[j - 1]:
+                dp[i][j] = min(dp[i][j], dp[i - 2][j - 2] + 1)
+    return dp[la][lb]
+
+
+def build_typo_vocab_index(pipeline: Any) -> Dict[str, Any]:
+    """Membangun indeks kosakata TF-IDF + domain ABSA tercache untuk koreksi typo OOV."""
+    cache_key = id(pipeline)
+    if cache_key in _TYPO_INDEX_CACHE:
+        return _TYPO_INDEX_CACHE[cache_key]
+
+    valid_words: Set[str] = set(DOMAIN_PRIORITY_WORDS) | set(PROTECTED_TYPO_TERMS)
+    slang_dict = get_fresh_slang_dict()
+    valid_words.update(w for w in slang_dict.values() if isinstance(w, str) and " " not in w)
+
+    try:
+        vec = pipeline.named_steps["tfidf"]
+        for term in vec.vocabulary_.keys():
+            if " " not in term and term.isalpha():
+                valid_words.add(term)
+    except Exception:
+        pass
+
+    by_len: Dict[int, List[str]] = {}
+    for w in valid_words:
+        if w.isalpha() and len(w) >= 4:
+            by_len.setdefault(len(w), []).append(w)
+
+    index = {"valid_words": valid_words, "by_len": by_len}
+    _TYPO_INDEX_CACHE[cache_key] = index
+    return index
+
+
+def autocorrect_oov_token(
+    token: str,
+    slang_dict: Dict[str, str],
+    vocab_index: Optional[Dict[str, Any]],
+) -> Tuple[str, Optional[Tuple[str, str]]]:
+    """
+    Koreksi typo otomatis untuk token OOV dengan guardrails ketat:
+      1. Cek slang_dict, valid_words, protected terms, dan token berangka -> tidak diubah.
+      2. Smart Elongation Reduction: reduksi huruf berulang ke 1 huruf (mis. baguuus -> bagus).
+      3. Fuzzy Damerau-Levenshtein untuk kata >= 4 huruf (mis. akursi -> akurasi, bagsu -> bagus).
+    """
+    if token in slang_dict:
+        return slang_dict[token], None
+
+    if vocab_index is None or not token.isalpha():
+        return token, None
+
+    valid_words: Set[str] = vocab_index["valid_words"]
+    if token in valid_words or token in PROTECTED_TYPO_TERMS:
+        return token, None
+
+    # Tahap 1: Smart Elongation Reduction (mis. baguuss -> bagus, lemooot -> lemot -> lambat)
+    reduced_1 = re.sub(r"(.)\1+", r"\1", token)
+    if reduced_1 != token:
+        if reduced_1 in slang_dict:
+            mapped = slang_dict[reduced_1]
+            return mapped, (token, mapped)
+        if reduced_1 in valid_words:
+            return reduced_1, (token, reduced_1)
+
+    # Guardrail panjang minimal untuk fuzzy matching
+    n = len(token)
+    if n < 4:
+        return token, None
+
+    by_len: Dict[int, List[str]] = vocab_index["by_len"]
+    max_dist = 1 if n <= 6 else 2
+    candidate_lengths = range(max(4, n - 1), n + max_dist + 1)
+
+    best_cand: Optional[str] = None
+    best_rank: Tuple[int, int, float] = (99, 99, 0.0)
+
+    first_ch = token[0]
+    first_two_rev = token[1] + token[0]
+
+    for cand_len in candidate_lengths:
+        for cand in by_len.get(cand_len, ()):
+            # Guardrail awal kata: huruf pertama sama ATAU transposisi 2 huruf awal
+            if cand[0] != first_ch and cand[:2] != first_two_rev:
+                continue
+            dist = _damerau_levenshtein(token, cand)
+            if dist > max_dist:
+                continue
+            if dist == 2:
+                # Jarak 2 hanya diizinkan untuk kata domain penting >= 7 huruf dengan kemiripan tinggi
+                if n < 7 or cand not in DOMAIN_PRIORITY_WORDS:
+                    continue
+                if SequenceMatcher(None, token, cand).ratio() < 0.80:
+                    continue
+
+            sim = SequenceMatcher(None, token, cand).ratio()
+            if n <= 5 and sim < 0.72:
+                continue
+            priority = 0 if cand in DOMAIN_PRIORITY_WORDS else 1
+            rank = (dist, priority, -sim)
+            if rank < best_rank:
+                best_rank = rank
+                best_cand = cand
+
+    if best_cand is not None:
+        final_word = slang_dict.get(best_cand, best_cand)
+        if final_word != token:
+            return final_word, (token, final_word)
+
+    return token, None
+
+
+def preprocess_text_indonesian(text, slang_dict=None, vocab_index=None, return_corrections=False):
+    """Pipeline preprocessing teks Indonesia + dukungan koreksi typo OOV opsional."""
     if slang_dict is None:
         slang_dict = get_fresh_slang_dict()
     if not isinstance(text, str):
-        return ""
+        return ("", []) if return_corrections else ""
     text_lower = text.lower()
     text_lower = re.sub(r"http\S+|www\.\S+", " ", text_lower)
     text_lower = re.sub(r"(.)\1{2,}", r"\1\1", text_lower)
     tokens = re.findall(r"[a-z0-9]+", text_lower)
-    norm_tokens = [slang_dict.get(t, t) for t in tokens]
-    return " ".join(norm_tokens)
+
+    norm_tokens: List[str] = []
+    corrections: List[Dict[str, str]] = []
+    seen_corr: Set[Tuple[str, str]] = set()
+    for t in tokens:
+        if vocab_index is not None:
+            fixed, corr = autocorrect_oov_token(t, slang_dict, vocab_index)
+            norm_tokens.append(fixed)
+            if corr is not None and corr not in seen_corr:
+                seen_corr.add(corr)
+                corrections.append({"asal": corr[0], "koreksi": corr[1]})
+        else:
+            norm_tokens.append(slang_dict.get(t, t))
+
+    cleaned = " ".join(norm_tokens)
+    if return_corrections:
+        return cleaned, corrections
+    return cleaned
 
 
 def analyze_aspects_and_discrepancy(raw_text, clean_text, star_rating=None, predicted_sentiment=None):
@@ -237,7 +400,7 @@ CONTRAST_SPLIT_PATTERN = re.compile(
 )
 
 
-def split_into_clean_clauses(raw_text: str) -> List[str]:
+def split_into_clean_clauses(raw_text: str, vocab_index: Optional[Dict[str, Any]] = None) -> List[str]:
     """
     Memecah ulasan menjadi klausa-klausa bersih berdasarkan tanda baca dan kata hubung kontras
     untuk mendukung analisis sentimen spesifik per aspek (Clause-Level ABSA).
@@ -247,7 +410,7 @@ def split_into_clean_clauses(raw_text: str) -> List[str]:
     punct_chunks = re.split(r"[.!?;,\n]+", raw_text)
     clauses: List[str] = []
     for chunk in punct_chunks:
-        cleaned = preprocess_text_indonesian(chunk)
+        cleaned = preprocess_text_indonesian(chunk, vocab_index=vocab_index)
         if not cleaned:
             continue
         sub_clauses = CONTRAST_SPLIT_PATTERN.split(cleaned)
@@ -313,13 +476,14 @@ def enrich_aspects_with_sentiment(
     label_display_map: Dict[str, str],
     global_sentiment: str,
     global_confidence: float,
+    vocab_index: Optional[Dict[str, Any]] = None,
 ) -> List[Dict[str, Any]]:
     """
     Menambahkan sentimen spesifik per aspek (Clause-Level ABSA) ke daftar aspek terdeteksi.
     Memetakan setiap aspek ke klausa pemicunya agar ulasan campuran (pro-kontra)
     dapat menampilkan polaritas berbeda per aspek.
     """
-    clauses = split_into_clean_clauses(raw_text)
+    clauses = split_into_clean_clauses(raw_text, vocab_index=vocab_index)
     enriched: List[Dict[str, Any]] = []
 
     for asp in detected_aspects:
@@ -452,7 +616,10 @@ def predict_single_review(
         },
     )
 
-    clean_text = preprocess_text_indonesian(validated_text)
+    vocab_index = build_typo_vocab_index(pipeline)
+    clean_text, typo_corrections = preprocess_text_indonesian(
+        validated_text, vocab_index=vocab_index, return_corrections=True
+    )
     if not clean_text.strip():
         return {
             "status": "INVALID_INPUT",
@@ -503,6 +670,7 @@ def predict_single_review(
         label_display_map=label_display_map,
         global_sentiment=pred_label,
         global_confidence=confidence,
+        vocab_index=vocab_index,
     )
     all_contribs = explain_prediction_keywords(pipeline, clean_text, pred_idx, top_k=None)
     if not all_contribs and len(neg_hits) > 0 and pred_raw == "0_Negative":
@@ -518,6 +686,7 @@ def predict_single_review(
         "app_name": app_name,
         "raw_text": validated_text,
         "clean_text": clean_text,
+        "typo_corrections": typo_corrections,
         "star_rating": star_rating,
         "predicted_class_raw": pred_raw,
         "predicted_sentiment": pred_label,
