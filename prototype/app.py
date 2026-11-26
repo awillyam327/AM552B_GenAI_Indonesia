@@ -295,10 +295,19 @@ def main():
                     ["Semua Aspek (A1 - A4)", "A1: Akurasi AI", "A2: Harga & Kuota",
                      "A3: Performa & Server", "A4: Bahasa Indonesia"],
                 )
+                # Altair (backend st.bar_chart) tidak mendukung ':' dan '&' dalam nama kolom.
+                # Rename kolom sementara untuk plotting agar tidak memicu ValueError.
+                def _safe_col(c: str) -> str:
+                    return c.replace(":", "-").replace("&", "dan")
+
                 if asp_col_choice == "Semua Aspek (A1 - A4)":
-                    st.bar_chart(df_asp_num.set_index("Nama Aplikasi"))
+                    df_plot = df_asp_num.set_index("Nama Aplikasi").copy()
+                    df_plot.columns = [_safe_col(c) for c in df_plot.columns]
+                    st.bar_chart(df_plot)
                 else:
-                    st.bar_chart(df_asp_num.set_index("Nama Aplikasi")[[str(asp_col_choice)]])
+                    df_plot = df_asp_num.set_index("Nama Aplikasi")[[str(asp_col_choice)]].copy()
+                    df_plot.columns = [_safe_col(str(asp_col_choice))]
+                    st.bar_chart(df_plot)
 
             df_bench = pd.DataFrame(bench["app_absa_matrix"])
             st.dataframe(df_bench, use_container_width=True, hide_index=True)
