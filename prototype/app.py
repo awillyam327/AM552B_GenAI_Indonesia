@@ -3,8 +3,8 @@ Aplikasi Web Prototype — Analisis Sentimen Berbasis Aspek (ABSA) & Deteksi Dis
 Mata Kuliah: AM552 - Data Science of IS (S1 Sistem Informasi, FTI UKSW)
 Cara Menjalankan: streamlit run prototype/app.py
 
-UI: Seluruh emoji diganti dengan Font Awesome 6 (HTML) dan Material Icons (Streamlit native).
-Seluruh logika prediksi, Tab 1-3, dan fungsi Arthur dipertahankan utuh.
+Desain UI: Sidebar navigasi kiri (4 menu) dengan tema biru tua lembut yang bersih dan profesional
+untuk kebutuhan presentasi penelitian. Seluruh logika prediksi dan keluaran data dipertahankan utuh.
 """
 
 import importlib
@@ -34,13 +34,13 @@ from core_predictor import (
 
 st.set_page_config(
     page_title="GenAI Indonesia ABSA & Discrepancy Analyzer — AM552 FTI UKSW",
-    page_icon=":material/robot:",
+    page_icon=":material/analytics:",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
 # ══════════════════════════════════════════════════════════════════════════════
-#  CSS + FONT AWESOME 6 FREE
+#  CSS — TEMA BIRU TUA LEMBUT, BERSIH & PROFESIONAL UNTUK PENELITIAN
 # ══════════════════════════════════════════════════════════════════════════════
 st.markdown("""
 <link rel="stylesheet"
@@ -49,107 +49,235 @@ st.markdown("""
       crossorigin="anonymous" referrerpolicy="no-referrer">
 
 <style>
-/* ── Global font ── */
-html, body, [class*="css"] { font-family: 'Inter', 'Segoe UI', sans-serif; }
+/* ── Tipografi global bersih ── */
+html, body, [class*="css"] {
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
 
-/* ── Sidebar: dark navy gradient ── */
+/* ── Sidebar kiri: biru tua lembut solid (tanpa efek rumit) ── */
 [data-testid="stSidebar"] {
-    background: linear-gradient(180deg, #0d2137 0%, #1a3a5c 100%) !important;
-    border-right: 1px solid #1e4976;
+    background-color: #1E3A5F !important;
+    border-right: 1px solid #2A4B75;
 }
-[data-testid="stSidebar"] * { color: #e8f4fd !important; }
-[data-testid="stSidebar"] h1,
-[data-testid="stSidebar"] h2,
-[data-testid="stSidebar"] h3 { color: #ffffff !important; }
-[data-testid="stSidebar"] .stMarkdown h2 {
-    font-size: 1.1rem; font-weight: 700; line-height: 1.4; margin-bottom: 2px;
+[data-testid="stSidebar"] * {
+    color: #E8F0F8 !important;
 }
-
-/* ── Metric cards (sidebar) ── */
-[data-testid="stSidebar"] [data-testid="stMetric"] {
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 12px; padding: 10px 8px; margin-bottom: 8px;
-}
-[data-testid="stSidebar"] [data-testid="stMetricLabel"] { font-size: 0.78rem; opacity: 0.85; }
-[data-testid="stSidebar"] [data-testid="stMetricValue"] {
-    font-size: 1.42rem !important;
-    font-weight: 800 !important;
-    overflow: visible !important;
-    text-overflow: clip !important;
-    white-space: nowrap !important;
-}
-[data-testid="stSidebar"] [data-testid="stMetricDelta"] { font-size: 0.72rem; }
-
-/* ── Tabs ── */
-[data-testid="stTabs"] [role="tablist"] { border-bottom: 2px solid #e2e8f0; }
-[data-testid="stTabs"] [role="tab"] {
-    font-weight: 600; font-size: 0.88rem; padding: 10px 20px; color: #64748b;
-}
-[data-testid="stTabs"] [aria-selected="true"] {
-    color: #1F4E79 !important;
-    border-bottom: 2px solid #1F4E79 !important;
-    background: transparent !important;
+[data-testid="stSidebar"] hr {
+    border-color: rgba(232, 240, 248, 0.16) !important;
+    margin: 0.9rem 0 !important;
 }
 
-/* ── Primary button ── */
-.stButton > button[kind="primary"] {
-    background: #1F4E79 !important; border: none !important;
-    color: #fff !important; border-radius: 8px !important; font-weight: 700 !important;
+/* ── Identitas aplikasi di sidebar ── */
+.sb-brand-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #FFFFFF !important;
+    line-height: 1.3;
+    margin-bottom: 2px;
 }
-.stButton > button[kind="primary"]:hover { background: #163d60 !important; }
-
-/* ── Badge institusi ── */
-.badge-inst {
+.sb-brand-sub {
+    font-size: 0.80rem;
+    color: #B8CEE4 !important;
+    margin-bottom: 10px;
+}
+.sb-badge {
     display: inline-block;
-    background: rgba(255,255,255,0.12);
-    border: 1px solid rgba(255,255,255,0.25);
-    border-radius: 8px; font-size: 0.72rem; font-weight: 600;
-    padding: 4px 10px; margin: 4px 0 12px 0; color: #e8f4fd !important;
+    background-color: rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 6px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    color: #E8F0F8 !important;
+}
+.sb-nav-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #9BB8D4 !important;
+    margin: 6px 0 10px 2px;
 }
 
-/* ── Aspek item di sidebar ── */
-.asp-item {
-    display: flex; align-items: flex-start; gap: 8px; margin: 6px 0;
-    padding: 6px 8px; background: rgba(255,255,255,0.06); border-radius: 8px;
+/* ── Tombol menu navigasi di sidebar ── */
+[data-testid="stSidebar"] .stButton {
+    margin-bottom: 4px;
 }
-.asp-icon { font-size: 0.95rem; min-width: 20px; color: #90c8e8 !important; padding-top: 2px; }
-.asp-label { font-size: 0.8rem; font-weight: 700; line-height: 1.3; }
-.asp-desc { font-size: 0.69rem; opacity: 0.72; }
+[data-testid="stSidebar"] .stButton > button,
+[data-testid="stSidebar"] .stButton > button > div {
+    justify-content: flex-start !important;
+    text-align: left !important;
+}
+[data-testid="stSidebar"] .stButton > button {
+    width: 100%;
+    padding: 0.60rem 0.90rem !important;
+    border-radius: 8px !important;
+    font-size: 0.88rem !important;
+    box-shadow: none !important;
+    transition: background-color 0.15s ease;
+}
+[data-testid="stSidebar"] .stButton > button[kind="secondary"] {
+    background-color: transparent !important;
+    border: 1px solid transparent !important;
+    color: #D2E1F0 !important;
+    font-weight: 500 !important;
+}
+[data-testid="stSidebar"] .stButton > button[kind="secondary"]:hover {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    color: #FFFFFF !important;
+}
+[data-testid="stSidebar"] .stButton > button[kind="primary"] {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid rgba(155, 184, 212, 0.35) !important;
+    border-left: 4px solid #9BB8D4 !important;
+    color: #FFFFFF !important;
+    font-weight: 700 !important;
+}
+[data-testid="stSidebar"] .stButton > button[kind="primary"]:hover {
+    background-color: rgba(255, 255, 255, 0.18) !important;
+}
 
-/* ── Sidebar section header ── */
-.sidebar-section-hdr {
-    font-size: 0.82rem; font-weight: 700; letter-spacing: 0.03em;
-    color: #90c8e8 !important; margin: 2px 0 8px 0;
+/* ── Footer ringkas sidebar ── */
+.sb-footer {
+    font-size: 0.72rem;
+    line-height: 1.55;
+    color: #A9C2DB !important;
 }
-.sidebar-section-hdr i { margin-right: 5px; }
+
+/* ── Tombol utama di area konten ── */
+.main .stButton > button[kind="primary"],
+[data-testid="stMain"] .stButton > button[kind="primary"],
+[data-testid="stAppViewContainer"] section.main .stButton > button[kind="primary"] {
+    background-color: #1E3A5F !important;
+    border: 1px solid #1E3A5F !important;
+    color: #FFFFFF !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    box-shadow: none !important;
+}
+.main .stButton > button[kind="primary"]:hover,
+[data-testid="stMain"] .stButton > button[kind="primary"]:hover,
+[data-testid="stAppViewContainer"] section.main .stButton > button[kind="primary"]:hover {
+    background-color: #162D4A !important;
+    border-color: #162D4A !important;
+}
+
+/* ── Header utama penelitian ── */
+.page-header-box {
+    border-bottom: 1px solid rgba(59, 105, 152, 0.28);
+    padding-bottom: 14px;
+    margin-bottom: 20px;
+}
+.page-header-title {
+    font-size: 1.65rem;
+    font-weight: 700;
+    line-height: 1.3;
+    margin: 0 0 6px 0;
+}
+.page-header-sub {
+    font-size: 0.90rem;
+    opacity: 0.85;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* ── Kartu bersih halaman Detail Metodologi ── */
+.metric-card-clean {
+    background-color: rgba(30, 58, 95, 0.08);
+    border: 1px solid rgba(59, 105, 152, 0.30);
+    border-top: 3px solid #2B547E;
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-bottom: 12px;
+}
+.metric-card-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    opacity: 0.82;
+    margin-bottom: 6px;
+}
+.metric-card-value {
+    font-size: 2.15rem;
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 6px;
+    white-space: nowrap;
+}
+.metric-card-note {
+    font-size: 0.78rem;
+    opacity: 0.78;
+}
+
+.info-panel-clean {
+    background-color: rgba(30, 58, 95, 0.06);
+    border: 1px solid rgba(59, 105, 152, 0.25);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    line-height: 1.75;
+    font-size: 0.88rem;
+}
+.info-panel-clean i {
+    color: #3B6998;
+    width: 20px;
+    text-align: center;
+    margin-right: 6px;
+}
+
+.aspect-card-clean {
+    background-color: rgba(30, 58, 95, 0.07);
+    border: 1px solid rgba(59, 105, 152, 0.26);
+    border-left: 4px solid #2B547E;
+    border-radius: 8px;
+    padding: 15px 18px;
+    margin-bottom: 12px;
+}
+.aspect-card-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+.aspect-card-title i {
+    color: #3B6998;
+    margin-right: 8px;
+}
+.aspect-card-desc {
+    font-size: 0.84rem;
+    opacity: 0.85;
+    line-height: 1.5;
+    margin: 0;
+}
 
 /* ── File uploader ── */
-[data-testid="stFileUploader"] { border: 2px dashed #cbd5e1; border-radius: 12px; padding: 8px; }
+[data-testid="stFileUploader"] {
+    border: 1.5px dashed rgba(59, 105, 152, 0.45);
+    border-radius: 10px;
+    padding: 8px;
+}
 
-/* ── Sentiment icon colors ── */
+/* ── Warna ikon sentimen ── */
 .sent-pos { color: #16a34a !important; }
 .sent-neg { color: #dc2626 !important; }
 .sent-neu { color: #ca8a04 !important; }
 
-/* ── Section h4 with icon ── */
-.h4-icon { color: #1F4E79; margin-right: 6px; }
+/* ── Ikon sub-judul ── */
+.h4-icon { color: #3B6998; margin-right: 6px; }
 
-/* ── Footer ── */
+/* ── Footer halaman ── */
 .footer-bar {
-    text-align: center; color: #94a3b8; font-size: 0.75rem;
-    padding: 20px 0 8px 0; border-top: 1px solid #e2e8f0; margin-top: 32px;
+    text-align: center;
+    opacity: 0.72;
+    font-size: 0.76rem;
+    padding: 18px 0 8px 0;
+    border-top: 1px solid rgba(59, 105, 152, 0.25);
+    margin-top: 32px;
 }
-
-/* ── Dataset stats list ── */
-.ds-list { font-size: 0.8rem; line-height: 2.2; }
-.ds-list i { margin-right: 5px; color: #90c8e8; }
 </style>
 """, unsafe_allow_html=True)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-#  CACHED LOADERS  (tidak diubah dari versi Arthur)
+#  CACHED LOADERS (TIDAK DIUBAH)
 # ══════════════════════════════════════════════════════════════════════════════
 @st.cache_resource
 def get_model_artifact():
@@ -168,12 +296,6 @@ def get_benchmark_summary():
 #  MAIN
 # ══════════════════════════════════════════════════════════════════════════════
 def main():
-    st.title("🤖 Sistem Analisis Sentimen Berbasis Aspek (ABSA) & Deteksi Discrepancy")
-    st.markdown(
-        "**Aplikasi Mobile Generative AI di Indonesia (71.221 Ulasan Google Play Store)**  \n"
-        "*Prototype Tugas Akhir Mata Kuliah AM552 - Data Science of IS | Program Studi S1 Sistem Informasi, FTI UKSW*"
-    )
-
     # ── Load model artifact ──────────────────────────────────────────────────
     try:
         artifact      = get_model_artifact()
@@ -185,96 +307,73 @@ def main():
         st.stop()
         return
 
+    # ── State navigasi sidebar (4 menu) ──────────────────────────────────────
+    MENU_ITEMS = [
+        ("Dashboard Komparasi",     ":material/bar_chart:"),
+        ("Analisis Ulasan Tunggal", ":material/search:"),
+        ("Prediksi Batch",          ":material/folder_open:"),
+        ("Detail Metodologi",       ":material/menu_book:"),
+    ]
+    if "active_menu" not in st.session_state:
+        st.session_state["active_menu"] = "Dashboard Komparasi"
+
     # ═════════════════════════════════════════════════════════════════════════
-    #  SIDEBAR
+    #  SIDEBAR KIRI — 4 MENU NAVIGASI
     # ═════════════════════════════════════════════════════════════════════════
     with st.sidebar:
-        st.markdown("## GenAI Indonesia\nABSA & Discrepancy Analyzer")
         st.markdown(
-            '<span class="badge-inst">'
-            '<i class="fa-solid fa-school"></i>&nbsp;S1 Sistem Informasi · FTI UKSW'
+            '<div class="sb-brand-title">GenAI Indonesia</div>'
+            '<div class="sb-brand-sub">Analisis ABSA &amp; Discrepancy</div>'
+            '<span class="sb-badge">'
+            '<i class="fa-solid fa-graduation-cap"></i>&nbsp;S1 Sistem Informasi · FTI UKSW'
             '</span>',
             unsafe_allow_html=True,
         )
 
         st.divider()
 
-        # Metric cards — nilai real dari artifact
-        st.markdown(
-            '<div class="sidebar-section-hdr">'
-            '<i class="fa-solid fa-chart-line"></i> Performa Model Produksi'
-            '</div>',
-            unsafe_allow_html=True,
-        )
-        col_m1, col_m2 = st.columns(2)
-        with col_m1:
-            st.metric("Macro F1", f"{test_macro_f1:.3f}", delta="vs Baseline")
-        with col_m2:
-            st.metric("ROC-AUC", f"{test_roc_auc:.3f}", delta="Target")
-        st.caption(f"Model: **{model_name}** · TF-IDF 1-2gram")
+        st.markdown('<div class="sb-nav-label">Menu Navigasi</div>', unsafe_allow_html=True)
+        for menu_label, menu_icon in MENU_ITEMS:
+            is_active = st.session_state["active_menu"] == menu_label
+            if st.button(
+                menu_label,
+                key=f"nav_btn_{menu_label}",
+                type="primary" if is_active else "secondary",
+                use_container_width=True,
+                icon=menu_icon,
+            ):
+                st.session_state["active_menu"] = menu_label
+                st.rerun()
 
         st.divider()
 
-        # 4 Dimensi Aspek ABSA
         st.markdown(
-            '<div class="sidebar-section-hdr">'
-            '<i class="fa-solid fa-layer-group"></i> 4 Dimensi Aspek ABSA'
-            '</div>',
-            unsafe_allow_html=True,
-        )
-        aspects = [
-            ("fa-bullseye",   "A1: Akurasi AI",   "Kecerdasan, halusinasi, kualitas jawaban"),
-            ("fa-coins",      "A2: Harga/Quota",  "Biaya, limit, subscription, iklan"),
-            ("fa-bolt",       "A3: Performa/UI",  "Kecepatan, server, bug, tampilan"),
-            ("fa-globe",      "A4: Bahasa Lokal", "Bahasa Indonesia, terjemahan, konteks lokal"),
-        ]
-        for fa_name, label, desc in aspects:
-            st.markdown(
-                f'<div class="asp-item">'
-                f'<span class="asp-icon"><i class="fa-solid {fa_name}"></i></span>'
-                f'<div><div class="asp-label">{label}</div>'
-                f'<div class="asp-desc">{desc}</div></div>'
-                f'</div>',
-                unsafe_allow_html=True,
-            )
-
-        st.divider()
-
-        # Dataset stats
-        st.markdown(
-            '<div class="sidebar-section-hdr">'
-            '<i class="fa-solid fa-database"></i> Dataset'
-            '</div>',
-            unsafe_allow_html=True,
-        )
-        st.markdown(
-            '<div class="ds-list">'
-            '<i class="fa-solid fa-hashtag"></i><b>71.221</b> ulasan · 8 aplikasi<br>'
-            '<i class="fa-solid fa-calendar-days"></i>Google Play Store Indonesia<br>'
-            '<i class="fa-solid fa-scale-balanced"></i>Class imbalance: Bintang 5 (63.96%)'
+            '<div class="sb-footer">'
+            '<b>AM552 - Data Science of IS</b><br>'
+            'Arthur (682024046) · Brendan (682024016) · Tiara (682024059)<br>'
+            '&copy; 2026 FTI UKSW'
             '</div>',
             unsafe_allow_html=True,
         )
 
-        st.divider()
-        st.caption(
-            "© 2026 Arthur (682024046) · Brendan (682024016) · Tiara (682024059)\n"
-            "S1 Sistem Informasi · FTI UKSW"
-        )
+    # ── Header Utama Penelitian ──────────────────────────────────────────────
+    st.markdown(
+        '<div class="page-header-box">'
+        '<div class="page-header-title">Sistem Analisis Sentimen Berbasis Aspek (ABSA) &amp; Deteksi Discrepancy</div>'
+        '<p class="page-header-sub">'
+        '<b>Aplikasi Mobile Generative AI di Indonesia (71.221 Ulasan Google Play Store)</b><br>'
+        'Prototype Penelitian Mata Kuliah AM552 - Data Science of IS | Program Studi S1 Sistem Informasi, FTI UKSW'
+        '</p>'
+        '</div>',
+        unsafe_allow_html=True,
+    )
 
-    # ═════════════════════════════════════════════════════════════════════════
-    #  TABS — Material Icons
-    # ═════════════════════════════════════════════════════════════════════════
-    tab1, tab2, tab3 = st.tabs([
-        ":material/bar_chart:  Dashboard Komparasi",
-        ":material/search:  Analisis Ulasan Tunggal",
-        ":material/folder_open:  Prediksi Batch (Upload CSV)",
-    ])
+    active_menu = st.session_state["active_menu"]
 
     # =========================================================================
-    # TAB 1: DASHBOARD KOMPARASI
+    # MENU 1: DASHBOARD KOMPARASI
     # =========================================================================
-    with tab1:
+    if active_menu == "Dashboard Komparasi":
         st.subheader("Dashboard Komparasi 8 Aplikasi Generative AI di Google Play Store Indonesia")
         bench = get_benchmark_summary()
         if bench and "app_absa_matrix" in bench:
@@ -352,9 +451,9 @@ def main():
             st.info("Data ringkasan benchmark sedang dimuat dari hasil eksperimen notebook.")
 
     # =========================================================================
-    # TAB 2: ANALISIS ULASAN TUNGGAL
+    # MENU 2: ANALISIS ULASAN TUNGGAL
     # =========================================================================
-    with tab2:
+    elif active_menu == "Analisis Ulasan Tunggal":
         st.subheader("1. Form Input Analisis Ulasan Pengguna")
         st.write(
             "Masukkan teks ulasan aplikasi Generative AI beserta skor bintangnya untuk mendeteksi "
@@ -413,7 +512,7 @@ def main():
                 "Jalankan Analisis Sentimen & ABSA",
                 type="primary",
                 use_container_width=True,
-                icon=":material/rocket_launch:",
+                icon=":material/play_arrow:",
             )
 
         if analyze_btn:
@@ -440,7 +539,6 @@ def main():
                 m1, m2, m3 = st.columns(3)
                 sent = res["predicted_sentiment"]
 
-                # FA icon per sentimen (HTML)
                 SENT_ICON_HTML = {
                     "Positif": '<i class="fa-solid fa-circle-check sent-pos"></i>',
                     "Negatif": '<i class="fa-solid fa-circle-xmark sent-neg"></i>',
@@ -453,7 +551,7 @@ def main():
                 m3.metric("Rating Bintang Input", f"{res['star_rating']} / 5 bintang")
 
                 st.markdown(
-                    f'<p style="font-size:1.05rem;margin:6px 0 2px;">'
+                    f'<p style="font-size:1.02rem;margin:6px 0 4px;">'
                     f'{sent_icon}&nbsp;<b>Sentimen: {sent}</b>'
                     f'</p>',
                     unsafe_allow_html=True,
@@ -536,9 +634,9 @@ def main():
                     st.bar_chart(df_prob.set_index("Kelas Sentimen"))
 
     # =========================================================================
-    # TAB 3: PREDIKSI BATCH (Upload CSV)
+    # MENU 3: PREDIKSI BATCH (Upload CSV)
     # =========================================================================
-    with tab3:
+    elif active_menu == "Prediksi Batch":
         st.subheader("Prediksi Massal (Batch Prediction) dari File CSV")
         st.write(
             "Unggah file `.csv` yang memiliki kolom teks ulasan (misal: `content` atau `ulasan`) "
@@ -634,11 +732,81 @@ def main():
                             icon=":material/save:",
                         )
 
+    # =========================================================================
+    # MENU 4: DETAIL METODOLOGI
+    # =========================================================================
+    elif active_menu == "Detail Metodologi":
+        st.subheader("Detail Metodologi & Performa Model Penelitian")
+        st.write(
+            "Ringkasan performa model klasifikasi aktif, karakteristik dataset penelitian, serta "
+            "definisi 4 kategori aspek layanan pada kerangka *Aspect-Based Sentiment Analysis* (ABSA)."
+        )
+
+        # ── Kartu Performa Model ─────────────────────────────────────────────
+        st.markdown(
+            '<h4><i class="fa-solid fa-chart-line h4-icon"></i> Performa Model Produksi</h4>',
+            unsafe_allow_html=True,
+        )
+        col_perf1, col_perf2 = st.columns(2)
+        with col_perf1:
+            st.markdown(
+                f'<div class="metric-card-clean">'
+                f'<div class="metric-card-label">Macro F1-Score (Data Uji)</div>'
+                f'<div class="metric-card-value">{test_macro_f1:.3f}</div>'
+                f'<div class="metric-card-note">Evaluasi keseimbangan 3 kelas sentimen (vs Baseline)</div>'
+                f'</div>',
+                unsafe_allow_html=True,
+            )
+        with col_perf2:
+            st.markdown(
+                f'<div class="metric-card-clean">'
+                f'<div class="metric-card-label">ROC-AUC Score (OvR)</div>'
+                f'<div class="metric-card-value">{test_roc_auc:.3f}</div>'
+                f'<div class="metric-card-note">Kemampuan pemisahan antar kelas sentimen (Memenuhi Target)</div>'
+                f'</div>',
+                unsafe_allow_html=True,
+            )
+
+        # ── Spesifikasi Model & Dataset ──────────────────────────────────────
+        st.markdown(
+            f'<div class="info-panel-clean">'
+            f'<i class="fa-solid fa-microchip"></i><b>Model Produksi Aktif:</b> {model_name} &middot; TF-IDF 1-2 Gram<br>'
+            f'<i class="fa-solid fa-database"></i><b>Cakupan Dataset:</b> 71.221 ulasan &middot; 8 aplikasi Generative AI (Google Play Store Indonesia)<br>'
+            f'<i class="fa-solid fa-scale-balanced"></i><b>Karakteristik Data:</b> Ketimpangan kelas (<i>Class Imbalance</i>): Bintang 5 sebesar 63,96%'
+            f'</div>',
+            unsafe_allow_html=True,
+        )
+
+        st.markdown("---")
+
+        # ── Daftar 4 Kategori Aspek ABSA ─────────────────────────────────────
+        st.markdown(
+            '<h4><i class="fa-solid fa-layer-group h4-icon"></i> Daftar 4 Kategori Aspek ABSA</h4>',
+            unsafe_allow_html=True,
+        )
+        aspects = [
+            ("fa-bullseye", "A1: Akurasi & Kecerdasan AI",          "Kecerdasan, halusinasi, kualitas jawaban, serta ketepatan solusi."),
+            ("fa-coins",    "A2: Harga & Limitasi Kuota",           "Biaya langganan, limit penggunaan gratis, paket berbayar, dan iklan."),
+            ("fa-bolt",     "A3: Performa, UI/UX & Server",         "Kecepatan respons, kestabilan server, bug, serta kenyamanan tampilan."),
+            ("fa-globe",    "A4: Bahasa Indonesia & Konteks Lokal", "Kualitas bahasa Indonesia, terjemahan, serta pemahaman konteks lokal."),
+        ]
+        col_asp1, col_asp2 = st.columns(2)
+        for idx, (fa_name, label, desc) in enumerate(aspects):
+            target_col = col_asp1 if idx % 2 == 0 else col_asp2
+            with target_col:
+                st.markdown(
+                    f'<div class="aspect-card-clean">'
+                    f'<div class="aspect-card-title"><i class="fa-solid {fa_name}"></i>{label}</div>'
+                    f'<p class="aspect-card-desc">{desc}</p>'
+                    f'</div>',
+                    unsafe_allow_html=True,
+                )
+
     # ── Footer ────────────────────────────────────────────────────────────────
     st.markdown(
         '<div class="footer-bar">'
         '&copy; 2026 <b>Arthur</b> (682024046) &middot; <b>Brendan</b> (682024016) &middot; <b>Tiara</b> (682024059)<br>'
-        '<span style="font-size:0.68rem;">AM552B Data Science of IS &middot; S1 Sistem Informasi &middot; FTI UKSW</span>'
+        '<span style="font-size:0.70rem;">AM552B Data Science of IS &middot; S1 Sistem Informasi &middot; FTI UKSW</span>'
         '</div>',
         unsafe_allow_html=True,
     )
