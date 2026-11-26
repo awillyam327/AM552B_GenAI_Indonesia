@@ -52,7 +52,7 @@ def get_benchmark_summary():
 def main():
     st.title("🤖 Sistem Analisis Sentimen Berbasis Aspek (ABSA) & Deteksi Discrepancy")
     st.markdown(
-        "**Ekosistem Aplikasi Mobile Generative AI di Indonesia (71.221 Ulasan Google Play Store)**  \n"
+        "**Aplikasi Mobile Generative AI di Indonesia (71.221 Ulasan Google Play Store)**  \n"
         "*Prototype Tugas Akhir Mata Kuliah AM552 - Data Science of IS | Program Studi S1 Sistem Informasi, FTI UKSW*"
     )
 
