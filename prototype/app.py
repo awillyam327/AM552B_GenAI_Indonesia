@@ -3,7 +3,7 @@ Aplikasi Web Prototype — Analisis Sentimen Berbasis Aspek (ABSA) & Deteksi Dis
 Mata Kuliah: AM552 - Data Science of IS (S1 Sistem Informasi, FTI UKSW)
 Cara Menjalankan: streamlit run prototype/app.py
 
-UI Redesign by Tiara (682024059) — modern sidebar + custom CSS skin.
+UI: Seluruh emoji diganti dengan Font Awesome 6 (HTML) dan Material Icons (Streamlit native).
 Seluruh logika prediksi, Tab 1-3, dan fungsi Arthur dipertahankan utuh.
 """
 
@@ -34,20 +34,23 @@ from core_predictor import (
 
 st.set_page_config(
     page_title="GenAI Indonesia ABSA & Discrepancy Analyzer — AM552 FTI UKSW",
-    page_icon="🤖",
+    page_icon=":material/robot:",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
 # ══════════════════════════════════════════════════════════════════════════════
-#  CUSTOM CSS — UI Redesign (hanya styling, tidak mengubah logika)
+#  CSS + FONT AWESOME 6 FREE
 # ══════════════════════════════════════════════════════════════════════════════
 st.markdown("""
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plq7G5tGm0rU+1SPhVotteLpBERwTkA=="
+      crossorigin="anonymous" referrerpolicy="no-referrer">
+
 <style>
 /* ── Global font ── */
-html, body, [class*="css"] {
-    font-family: 'Inter', 'Segoe UI', sans-serif;
-}
+html, body, [class*="css"] { font-family: 'Inter', 'Segoe UI', sans-serif; }
 
 /* ── Sidebar: dark navy gradient ── */
 [data-testid="stSidebar"] {
@@ -57,42 +60,25 @@ html, body, [class*="css"] {
 [data-testid="stSidebar"] * { color: #e8f4fd !important; }
 [data-testid="stSidebar"] h1,
 [data-testid="stSidebar"] h2,
-[data-testid="stSidebar"] h3 {
-    color: #ffffff !important;
-}
+[data-testid="stSidebar"] h3 { color: #ffffff !important; }
 [data-testid="stSidebar"] .stMarkdown h2 {
-    font-size: 1.1rem; font-weight: 700;
-    line-height: 1.4; margin-bottom: 2px;
+    font-size: 1.1rem; font-weight: 700; line-height: 1.4; margin-bottom: 2px;
 }
 
-/* ── Metric cards (sidebar & main) ── */
-[data-testid="stMetric"] {
+/* ── Metric cards (sidebar) ── */
+[data-testid="stSidebar"] [data-testid="stMetric"] {
     background: rgba(255,255,255,0.08);
     border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 12px;
-    padding: 12px 16px;
-    margin-bottom: 8px;
+    border-radius: 12px; padding: 12px 16px; margin-bottom: 8px;
 }
-[data-testid="stMetricLabel"]  { font-size: 0.75rem; opacity: 0.85; }
-[data-testid="stMetricValue"]  { font-size: 1.9rem;  font-weight: 800; }
-[data-testid="stMetricDelta"]  { font-size: 0.72rem; }
-
-/* Metric cards di main area: warna berbeda agar tidak terlalu dark */
-[data-testid="stMain"] [data-testid="stMetric"] {
-    background: #f0f7ff;
-    border: 1px solid #bfdbfe;
-}
-[data-testid="stMain"] [data-testid="stMetricLabel"] { color: #1e3a5f !important; }
-[data-testid="stMain"] [data-testid="stMetricValue"] { color: #1F4E79 !important; }
+[data-testid="stSidebar"] [data-testid="stMetricLabel"] { font-size: 0.75rem; opacity: 0.85; }
+[data-testid="stSidebar"] [data-testid="stMetricValue"] { font-size: 1.9rem; font-weight: 800; }
+[data-testid="stSidebar"] [data-testid="stMetricDelta"] { font-size: 0.72rem; }
 
 /* ── Tabs ── */
-[data-testid="stTabs"] [role="tablist"] {
-    border-bottom: 2px solid #e2e8f0;
-}
+[data-testid="stTabs"] [role="tablist"] { border-bottom: 2px solid #e2e8f0; }
 [data-testid="stTabs"] [role="tab"] {
-    font-weight: 600; font-size: 0.88rem;
-    padding: 10px 20px;
-    color: #64748b;
+    font-weight: 600; font-size: 0.88rem; padding: 10px 20px; color: #64748b;
 }
 [data-testid="stTabs"] [aria-selected="true"] {
     color: #1F4E79 !important;
@@ -102,59 +88,56 @@ html, body, [class*="css"] {
 
 /* ── Primary button ── */
 .stButton > button[kind="primary"] {
-    background: #1F4E79 !important;
-    border: none !important;
-    color: #fff !important;
-    border-radius: 8px !important;
-    font-weight: 700 !important;
+    background: #1F4E79 !important; border: none !important;
+    color: #fff !important; border-radius: 8px !important; font-weight: 700 !important;
 }
-.stButton > button[kind="primary"]:hover {
-    background: #163d60 !important;
-}
+.stButton > button[kind="primary"]:hover { background: #163d60 !important; }
 
 /* ── Badge institusi ── */
 .badge-inst {
     display: inline-block;
     background: rgba(255,255,255,0.12);
     border: 1px solid rgba(255,255,255,0.25);
-    border-radius: 8px;
-    font-size: 0.72rem;
-    font-weight: 600;
-    padding: 4px 10px;
-    margin: 4px 0 12px 0;
-    color: #e8f4fd !important;
+    border-radius: 8px; font-size: 0.72rem; font-weight: 600;
+    padding: 4px 10px; margin: 4px 0 12px 0; color: #e8f4fd !important;
 }
 
 /* ── Aspek item di sidebar ── */
 .asp-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-    margin: 6px 0;
-    padding: 6px 8px;
-    background: rgba(255,255,255,0.06);
-    border-radius: 8px;
+    display: flex; align-items: flex-start; gap: 8px; margin: 6px 0;
+    padding: 6px 8px; background: rgba(255,255,255,0.06); border-radius: 8px;
 }
-.asp-icon { font-size: 1rem; min-width: 20px; }
+.asp-icon { font-size: 0.95rem; min-width: 20px; color: #90c8e8 !important; padding-top: 2px; }
 .asp-label { font-size: 0.8rem; font-weight: 700; line-height: 1.3; }
-.asp-desc  { font-size: 0.69rem; opacity: 0.72; }
+.asp-desc { font-size: 0.69rem; opacity: 0.72; }
+
+/* ── Sidebar section header ── */
+.sidebar-section-hdr {
+    font-size: 0.82rem; font-weight: 700; letter-spacing: 0.03em;
+    color: #90c8e8 !important; margin: 2px 0 8px 0;
+}
+.sidebar-section-hdr i { margin-right: 5px; }
 
 /* ── File uploader ── */
-[data-testid="stFileUploader"] {
-    border: 2px dashed #cbd5e1;
-    border-radius: 12px;
-    padding: 8px;
-}
+[data-testid="stFileUploader"] { border: 2px dashed #cbd5e1; border-radius: 12px; padding: 8px; }
+
+/* ── Sentiment icon colors ── */
+.sent-pos { color: #16a34a !important; }
+.sent-neg { color: #dc2626 !important; }
+.sent-neu { color: #ca8a04 !important; }
+
+/* ── Section h4 with icon ── */
+.h4-icon { color: #1F4E79; margin-right: 6px; }
 
 /* ── Footer ── */
 .footer-bar {
-    text-align: center;
-    color: #94a3b8;
-    font-size: 0.75rem;
-    padding: 20px 0 8px 0;
-    border-top: 1px solid #e2e8f0;
-    margin-top: 32px;
+    text-align: center; color: #94a3b8; font-size: 0.75rem;
+    padding: 20px 0 8px 0; border-top: 1px solid #e2e8f0; margin-top: 32px;
 }
+
+/* ── Dataset stats list ── */
+.ds-list { font-size: 0.8rem; line-height: 2.2; }
+.ds-list i { margin-right: 5px; color: #90c8e8; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -181,7 +164,7 @@ def get_benchmark_summary():
 def main():
     # ── Load model artifact ──────────────────────────────────────────────────
     try:
-        artifact = get_model_artifact()
+        artifact      = get_model_artifact()
         model_name    = artifact.get("model_name", "Best Tuned Classifier")
         test_macro_f1 = artifact.get("metrics_summary", {}).get("macro_f1",    0.65)
         test_roc_auc  = artifact.get("metrics_summary", {}).get("roc_auc_ovr", 0.87)
@@ -191,40 +174,52 @@ def main():
         return
 
     # ═════════════════════════════════════════════════════════════════════════
-    #  SIDEBAR — Redesigned UI (konten Arthur dipertahankan, tampilan diperbarui)
+    #  SIDEBAR
     # ═════════════════════════════════════════════════════════════════════════
     with st.sidebar:
         st.markdown("## GenAI Indonesia\nABSA & Discrepancy Analyzer")
         st.markdown(
-            '<span class="badge-inst">🏫 S1 Sistem Informasi · FTI UKSW</span>',
+            '<span class="badge-inst">'
+            '<i class="fa-solid fa-school"></i>&nbsp;S1 Sistem Informasi · FTI UKSW'
+            '</span>',
             unsafe_allow_html=True,
         )
 
         st.divider()
 
         # Metric cards — nilai real dari artifact
-        st.markdown("**📊 Performa Model Produksi**")
+        st.markdown(
+            '<div class="sidebar-section-hdr">'
+            '<i class="fa-solid fa-chart-line"></i> Performa Model Produksi'
+            '</div>',
+            unsafe_allow_html=True,
+        )
         col_m1, col_m2 = st.columns(2)
         with col_m1:
-            st.metric("Macro F1", f"{test_macro_f1:.4f}", delta="▲ vs Baseline")
+            st.metric("Macro F1", f"{test_macro_f1:.4f}", delta="vs Baseline")
         with col_m2:
-            st.metric("ROC-AUC", f"{test_roc_auc:.4f}", delta="✅ Target")
+            st.metric("ROC-AUC", f"{test_roc_auc:.4f}", delta="Target")
         st.caption(f"Model: **{model_name}** · TF-IDF 1-2gram")
 
         st.divider()
 
         # 4 Dimensi Aspek ABSA
-        st.markdown("**🧩 4 Dimensi Aspek ABSA:**")
+        st.markdown(
+            '<div class="sidebar-section-hdr">'
+            '<i class="fa-solid fa-layer-group"></i> 4 Dimensi Aspek ABSA'
+            '</div>',
+            unsafe_allow_html=True,
+        )
         aspects = [
-            ("🎯", "A1: Akurasi AI",   "Kecerdasan, halusinasi, kualitas jawaban"),
-            ("💰", "A2: Harga/Quota",  "Biaya, limit, subscription, iklan"),
-            ("⚡", "A3: Performa/UI",  "Kecepatan, server, bug, tampilan"),
-            ("🌏", "A4: Bahasa Lokal", "Bahasa Indonesia, terjemahan, konteks lokal"),
+            ("fa-bullseye",   "A1: Akurasi AI",   "Kecerdasan, halusinasi, kualitas jawaban"),
+            ("fa-coins",      "A2: Harga/Quota",  "Biaya, limit, subscription, iklan"),
+            ("fa-bolt",       "A3: Performa/UI",  "Kecepatan, server, bug, tampilan"),
+            ("fa-globe",      "A4: Bahasa Lokal", "Bahasa Indonesia, terjemahan, konteks lokal"),
         ]
-        for icon, label, desc in aspects:
+        for fa_name, label, desc in aspects:
             st.markdown(
                 f'<div class="asp-item">'
-                f'<span class="asp-icon">{icon}</span>'
+                f'<span class="asp-icon"><i class="fa-solid {fa_name}"></i></span>'
                 f'<div><div class="asp-label">{label}</div>'
                 f'<div class="asp-desc">{desc}</div></div>'
                 f'</div>',
@@ -233,42 +228,44 @@ def main():
 
         st.divider()
 
-        # Dataset stats ringkas
-        st.markdown("**📁 Dataset**")
+        # Dataset stats
         st.markdown(
-            "<div style='font-size:0.8rem;line-height:2;'>"
-            "🔢 <b>71.221</b> ulasan · 8 aplikasi<br>"
-            "📅 Google Play Store Indonesia<br>"
-            "⚖️ Class imbalance: ⭐5 (63.96%)"
-            "</div>",
+            '<div class="sidebar-section-hdr">'
+            '<i class="fa-solid fa-database"></i> Dataset'
+            '</div>',
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            '<div class="ds-list">'
+            '<i class="fa-solid fa-hashtag"></i><b>71.221</b> ulasan · 8 aplikasi<br>'
+            '<i class="fa-solid fa-calendar-days"></i>Google Play Store Indonesia<br>'
+            '<i class="fa-solid fa-scale-balanced"></i>Class imbalance: Bintang 5 (63.96%)'
+            '</div>',
             unsafe_allow_html=True,
         )
 
         st.divider()
         st.caption(
-            "© 2026 Arthur (682024046) • Brendan (682024016) • Tiara (682024059)\n"
+            "© 2026 Arthur (682024046) · Brendan (682024016) · Tiara (682024059)\n"
             "S1 Sistem Informasi · FTI UKSW"
         )
 
     # ═════════════════════════════════════════════════════════════════════════
-    #  TABS — urutan diubah agar Dashboard ada di depan sesuai referensi UI
+    #  TABS — Material Icons
     # ═════════════════════════════════════════════════════════════════════════
-    tab1, tab2, tab3 = st.tabs(
-        [
-            "📊  Dashboard Komparasi",
-            "🔍  Analisis Ulasan Tunggal",
-            "📂  Prediksi Batch (Upload CSV)",
-        ]
-    )
+    tab1, tab2, tab3 = st.tabs([
+        ":material/bar_chart:  Dashboard Komparasi",
+        ":material/search:  Analisis Ulasan Tunggal",
+        ":material/folder_open:  Prediksi Batch (Upload CSV)",
+    ])
 
     # =========================================================================
-    # TAB 1: DASHBOARD KOMPARASI (sebelumnya Tab 3 Arthur)
+    # TAB 1: DASHBOARD KOMPARASI
     # =========================================================================
     with tab1:
         st.subheader("Dashboard Komparasi 8 Aplikasi Generative AI di Google Play Store Indonesia")
         bench = get_benchmark_summary()
         if bench and "app_absa_matrix" in bench:
-            # 1. Perbandingan Rating Play Store vs Rating Aktual (Koreksi Discrepancy)
             if "rating_comparison" in bench:
                 st.markdown("#### 1. Perbandingan Rating Bintang Play Store vs Rating Aktual (Setelah Koreksi Discrepancy)")
                 st.caption(
@@ -284,13 +281,13 @@ def main():
                     st.dataframe(df_rc, use_container_width=True, hide_index=True)
 
             st.markdown("---")
-            # 2. Visualisasi Skor Kepuasan Bersih (Net Sentiment Score) 4 Aspek ABSA
             st.markdown("#### 2. Peta Kepuasan 4 Aspek Layanan (ABSA) Lintas 8 Aplikasi")
             if "aspect_numeric_matrix" in bench:
                 df_asp_num = pd.DataFrame(bench["aspect_numeric_matrix"])
                 asp_col_choice = st.selectbox(
                     "Pilih Dimensi Aspek Layanan untuk Dibandingkan pada Grafik:",
-                    ["Semua Aspek (A1 - A4)", "A1: Akurasi AI", "A2: Harga & Kuota", "A3: Performa & Server", "A4: Bahasa Indonesia"],
+                    ["Semua Aspek (A1 - A4)", "A1: Akurasi AI", "A2: Harga & Kuota",
+                     "A3: Performa & Server", "A4: Bahasa Indonesia"],
                 )
                 if asp_col_choice == "Semua Aspek (A1 - A4)":
                     st.bar_chart(df_asp_num.set_index("Nama Aplikasi"))
@@ -300,7 +297,6 @@ def main():
             df_bench = pd.DataFrame(bench["app_absa_matrix"])
             st.dataframe(df_bench, use_container_width=True, hide_index=True)
 
-            # 3. Keluhan Paling Banyak Disetujui Pengguna (Thumbs Up Tertinggi) & Penyebutan Kompetitor
             if "top_thumbs_complaints" in bench:
                 st.markdown("---")
                 c_b1, c_b2 = st.columns([1.45, 1.0])
@@ -335,7 +331,7 @@ def main():
             st.info("Data ringkasan benchmark sedang dimuat dari hasil eksperimen notebook.")
 
     # =========================================================================
-    # TAB 2: ANALISIS ULASAN TUNGGAL (sebelumnya Tab 1 Arthur — TIDAK DIUBAH)
+    # TAB 2: ANALISIS ULASAN TUNGGAL
     # =========================================================================
     with tab2:
         st.subheader("1. Form Input Analisis Ulasan Pengguna")
@@ -360,10 +356,8 @@ def main():
                 ],
             )
             star_input = st.slider(
-                "Skor Bintang yang Diberikan Pengguna (1–5):",
-                min_value=1,
-                max_value=5,
-                value=5,
+                "Skor Bintang yang Diberikan Pengguna (1-5):",
+                min_value=1, max_value=5, value=5,
                 help="Digunakan untuk memeriksa apakah rating bintang konsisten dengan isi teks ulasan.",
             )
             preset_example = st.selectbox(
@@ -394,7 +388,12 @@ def main():
                 height=145,
                 placeholder="Contoh: Jawabannya akurat bgt buat bantu skripsi, tapi sayang limit chat gratisnya dikit...",
             )
-            analyze_btn = st.button("🚀 Jalankan Analisis Sentimen & ABSA", type="primary", use_container_width=True)
+            analyze_btn = st.button(
+                "Jalankan Analisis Sentimen & ABSA",
+                type="primary",
+                use_container_width=True,
+                icon=":material/rocket_launch:",
+            )
 
         if analyze_btn:
             res: Dict[str, Any] = predict_single_review(
@@ -405,7 +404,7 @@ def main():
             )
 
             if res["status"] == "INVALID_INPUT":
-                st.error(f"❌ **Validasi Input Gagal**: {res['error_message']}")
+                st.error(f"Validasi Input Gagal: {res['error_message']}")
             else:
                 if res.get("warning_message"):
                     st.warning(res["warning_message"])
@@ -415,10 +414,25 @@ def main():
 
                 m1, m2, m3 = st.columns(3)
                 sent = res["predicted_sentiment"]
-                badge_color = "🟢" if sent == "Positif" else ("🔴" if sent == "Negatif" else "🟡")
-                m1.metric("Prediksi Sentimen Teks", f"{badge_color} {sent}")
+
+                # FA icon per sentimen (HTML)
+                SENT_ICON_HTML = {
+                    "Positif": '<i class="fa-solid fa-circle-check sent-pos"></i>',
+                    "Negatif": '<i class="fa-solid fa-circle-xmark sent-neg"></i>',
+                    "Netral":  '<i class="fa-solid fa-circle-minus sent-neu"></i>',
+                }
+                sent_icon = SENT_ICON_HTML.get(sent, '<i class="fa-solid fa-circle-question"></i>')
+
+                m1.metric("Prediksi Sentimen Teks", sent)
                 m2.metric("Tingkat Keyakinan (Confidence)", f"{res['confidence']*100:.1f}%")
-                m3.metric("Rating Bintang Input", f"⭐ {res['star_rating']} / 5")
+                m3.metric("Rating Bintang Input", f"{res['star_rating']} / 5 bintang")
+
+                st.markdown(
+                    f'<p style="font-size:1.05rem;margin:6px 0 2px;">'
+                    f'{sent_icon}&nbsp;<b>Sentimen: {sent}</b>'
+                    f'</p>',
+                    unsafe_allow_html=True,
+                )
 
                 if res["is_discrepancy"]:
                     st.warning(res["discrepancy_status"])
@@ -427,24 +441,43 @@ def main():
 
                 c_left, c_right = st.columns(2)
                 with c_left:
-                    st.markdown("#### 🎯 Deteksi Dimensi Aspek Layanan (ABSA)")
+                    st.markdown(
+                        '<h4><i class="fa-solid fa-crosshairs h4-icon"></i>'
+                        ' Deteksi Dimensi Aspek Layanan (ABSA)</h4>',
+                        unsafe_allow_html=True,
+                    )
                     detected_aspects: List[Dict[str, Any]] = res.get("detected_aspects", [])
                     for asp in detected_aspects:
-                        kw_str = ", ".join(f"`{k}`" for k in asp.get("matched_keywords", [])) if asp.get("matched_keywords") else "*ekspresi umum*"
+                        kw_str = (
+                            ", ".join(f"`{k}`" for k in asp.get("matched_keywords", []))
+                            if asp.get("matched_keywords") else "*ekspresi umum*"
+                        )
                         st.markdown(f"- **{asp.get('aspect_label', '')}** — Kata pemicu: {kw_str}")
 
-                    st.markdown("#### 🧹 Hasil Normalisasi Teks Bahasa Indonesia")
+                    st.markdown(
+                        '<h4><i class="fa-solid fa-wand-magic-sparkles h4-icon"></i>'
+                        ' Hasil Normalisasi Teks Bahasa Indonesia</h4>',
+                        unsafe_allow_html=True,
+                    )
                     st.code(res["clean_text"], language="text")
 
                 with c_right:
-                    st.markdown("#### 🔑 Kata Kunci Pendorong Prediksi (Feature Attribution)")
+                    st.markdown(
+                        '<h4><i class="fa-solid fa-key h4-icon"></i>'
+                        ' Kata Kunci Pendorong Prediksi (Feature Attribution)</h4>',
+                        unsafe_allow_html=True,
+                    )
                     if res["key_drivers"]:
                         df_kw = pd.DataFrame(res["key_drivers"], columns=["Fitur Kata / N-Gram", "Bobot Kontribusi"])
                         st.dataframe(df_kw, use_container_width=True, hide_index=True)
                     else:
                         st.caption("Tidak ada token yang masuk dalam kosakata TF-IDF utama.")
 
-                    st.markdown("#### 📈 Distribusi Probabilitas Kelas")
+                    st.markdown(
+                        '<h4><i class="fa-solid fa-chart-bar h4-icon"></i>'
+                        ' Distribusi Probabilitas Kelas</h4>',
+                        unsafe_allow_html=True,
+                    )
                     class_probs: Dict[str, float] = res.get("class_probabilities", {})
                     df_prob = pd.DataFrame(
                         list(class_probs.items()),
@@ -453,29 +486,29 @@ def main():
                     st.bar_chart(df_prob.set_index("Kelas Sentimen"))
 
     # =========================================================================
-    # TAB 3: PREDIKSI BATCH (sebelumnya Tab 2 Arthur — TIDAK DIUBAH)
+    # TAB 3: PREDIKSI BATCH (Upload CSV)
     # =========================================================================
     with tab3:
         st.subheader("Prediksi Massal (Batch Prediction) dari File CSV")
         st.write(
             "Unggah file `.csv` yang memiliki kolom teks ulasan (misal: `content` atau `ulasan`) "
-            "untuk memproses normalisasi slang, prediksi sentimen, ekstraksi 4 aspek ABSA, dan deteksi *discrepancy* sekaligus."
+            "untuk memproses normalisasi slang, prediksi sentimen, ekstraksi 4 aspek ABSA, "
+            "dan deteksi *discrepancy* sekaligus."
         )
 
-        # Sediakan tombol download contoh CSV
-        sample_csv_df = pd.DataFrame(
-            [
-                {"app_name": "ChatGPT (OpenAI)", "score": 5, "content": "Sangat membantu tugas coding dan bahasa Indonesianya mudah dipahami"},
-                {"app_name": "DeepSeek - AI Assistant", "score": 5, "content": "Bagus sih gratis, tapi server terlalu sibuk gagal login terus"},
-                {"app_name": "Character.AI", "score": 1, "content": "Makin update makin banyak sensor filter dan bug verifikasi usia"},
-                {"app_name": "Google Gemini", "score": 2, "content": "Limit kuota gratis cepat habis dan mode live sering macet"},
-            ]
-        )
+        # Contoh CSV
+        sample_csv_df = pd.DataFrame([
+            {"app_name": "ChatGPT (OpenAI)",        "score": 5, "content": "Sangat membantu tugas coding dan bahasa Indonesianya mudah dipahami"},
+            {"app_name": "DeepSeek - AI Assistant", "score": 5, "content": "Bagus sih gratis, tapi server terlalu sibuk gagal login terus"},
+            {"app_name": "Character.AI",            "score": 1, "content": "Makin update makin banyak sensor filter dan bug verifikasi usia"},
+            {"app_name": "Google Gemini",           "score": 2, "content": "Limit kuota gratis cepat habis dan mode live sering macet"},
+        ])
         st.download_button(
-            "📥 Unduh Contoh Format CSV (sample_input_ulasan.csv)",
+            "Unduh Contoh Format CSV (sample_input_ulasan.csv)",
             data=sample_csv_df.to_csv(index=False).encode("utf-8-sig"),
             file_name="sample_input_ulasan.csv",
             mime="text/csv",
+            icon=":material/download:",
         )
 
         uploaded_file = st.file_uploader("Unggah File CSV Ulasan Anda:", type=["csv"])
@@ -483,7 +516,7 @@ def main():
             try:
                 df_up = pd.read_csv(uploaded_file)
             except Exception as e:
-                st.error(f"❌ File CSV tidak dapat dibaca atau rusak: {e}")
+                st.error(f"File CSV tidak dapat dibaca atau rusak: {e}")
                 df_up = None
 
             if df_up is not None:
@@ -491,58 +524,71 @@ def main():
                 col1, col2 = st.columns(2)
                 with col1:
                     default_tcol = "content" if "content" in df_up.columns else df_up.columns[0]
-                    text_col_choice = st.selectbox("Pilih Nama Kolom Teks Ulasan:", list(df_up.columns), index=list(df_up.columns).index(default_tcol))
+                    text_col_choice = st.selectbox(
+                        "Pilih Nama Kolom Teks Ulasan:",
+                        list(df_up.columns),
+                        index=list(df_up.columns).index(default_tcol),
+                    )
                 with col2:
                     score_options = ["-- Tidak Ada Kolom Rating --"] + list(df_up.columns)
                     default_scol = "score" if "score" in df_up.columns else "-- Tidak Ada Kolom Rating --"
-                    score_col_choice = st.selectbox("Pilih Kolom Skor Bintang (Opsional):", score_options, index=score_options.index(default_scol))
+                    score_col_choice = st.selectbox(
+                        "Pilih Kolom Skor Bintang (Opsional):",
+                        score_options,
+                        index=score_options.index(default_scol),
+                    )
 
-                if st.button("⚡ Proses Prediksi Batch Sekarang", type="primary"):
+                if st.button("Proses Prediksi Batch Sekarang", type="primary", icon=":material/settings:"):
                     scol = None if score_col_choice == "-- Tidak Ada Kolom Rating --" else str(score_col_choice)
                     df_res, err_msg = predict_batch_dataframe(
                         df_up.head(5000), text_col=str(text_col_choice), score_col=scol, artifact=artifact
                     )
                     if err_msg or df_res is None:
-                        st.error(f"❌ {err_msg}")
+                        st.error(f"{err_msg}")
                     else:
-                        st.success(f"✅ Berhasil memproses **{len(df_res):,} baris** ulasan!")
+                        st.success(f"Berhasil memproses **{len(df_res):,} baris** ulasan!")
                         c_s1, c_s2 = st.columns(2)
                         with c_s1:
                             st.markdown("**Distribusi Hasil Prediksi Sentimen:**")
                             st.dataframe(
-                                df_res["predicted_sentiment"].value_counts().rename_axis("Sentimen").reset_index(name="Jumlah Baris"),
-                                use_container_width=True,
-                                hide_index=True,
+                                df_res["predicted_sentiment"]
+                                    .value_counts()
+                                    .rename_axis("Sentimen")
+                                    .reset_index(name="Jumlah Baris"),
+                                use_container_width=True, hide_index=True,
                             )
                         with c_s2:
                             st.markdown("**Jumlah Ulasan per Aspek Layanan (ABSA):**")
                             aspect_counts = {
                                 "A1: Akurasi & Kecerdasan": int(df_res["A1_Akurasi_Kecerdasan"].sum()),
-                                "A2: Harga & Limit Kuota": int(df_res["A2_Harga_Kuota"].sum()),
+                                "A2: Harga & Limit Kuota":  int(df_res["A2_Harga_Kuota"].sum()),
                                 "A3: Performa, UI & Server": int(df_res["A3_Performa_UI_Server"].sum()),
-                                "A4: Bahasa Indonesia": int(df_res["A4_Bahasa_Indonesia"].sum()),
+                                "A4: Bahasa Indonesia":     int(df_res["A4_Bahasa_Indonesia"].sum()),
                             }
                             st.dataframe(
-                                pd.DataFrame(list(aspect_counts.items()), columns=["Dimensi Aspek", "Jumlah Ulasan Terdeteksi"]),
-                                use_container_width=True,
-                                hide_index=True,
+                                pd.DataFrame(
+                                    list(aspect_counts.items()),
+                                    columns=["Dimensi Aspek", "Jumlah Ulasan Terdeteksi"],
+                                ),
+                                use_container_width=True, hide_index=True,
                             )
 
                         st.markdown("**Preview 25 Baris Hasil Prediksi:**")
                         st.dataframe(df_res.head(25), use_container_width=True)
 
                         st.download_button(
-                            "💾 Download Hasil Prediksi Lengkap (.csv)",
+                            "Download Hasil Prediksi Lengkap (.csv)",
                             data=df_res.to_csv(index=False).encode("utf-8-sig"),
                             file_name="hasil_prediksi_absa_genai.csv",
                             mime="text/csv",
+                            icon=":material/save:",
                         )
 
     # ── Footer ────────────────────────────────────────────────────────────────
     st.markdown(
         '<div class="footer-bar">'
-        '© 2026 <b>Arthur</b> (682024046) · <b>Brendan</b> (682024016) · <b>Tiara</b> (682024059)<br>'
-        '<span style="font-size:0.68rem;">AM552B Data Science of IS · S1 Sistem Informasi · FTI UKSW</span>'
+        '&copy; 2026 <b>Arthur</b> (682024046) &middot; <b>Brendan</b> (682024016) &middot; <b>Tiara</b> (682024059)<br>'
+        '<span style="font-size:0.68rem;">AM552B Data Science of IS &middot; S1 Sistem Informasi &middot; FTI UKSW</span>'
         '</div>',
         unsafe_allow_html=True,
     )
