@@ -232,10 +232,11 @@ def analyze_aspects_and_discrepancy(raw_text, clean_text, star_rating=None, pred
     return detected_aspects, is_discrepancy, discrepancy_status
 
 
-def explain_prediction_keywords(pipeline, clean_text, predicted_class_idx, top_k=6):
+def explain_prediction_keywords(pipeline, clean_text, predicted_class_idx, top_k: Optional[int] = 10):
     """
     Mengekstrak kata kunci di dalam ulasan pengguna yang memberikan bobot kontribusi
     terbesar terhadap keputusan model (Local Feature Attribution).
+    Jika top_k=None, mengembalikan seluruh fitur aktif terurut dari kontribusi terbesar.
     """
     try:
         vec = pipeline.named_steps["tfidf"]
@@ -266,6 +267,8 @@ def explain_prediction_keywords(pipeline, clean_text, predicted_class_idx, top_k
             contributions.append((term, round(weight, 4)))
 
         contributions.sort(key=lambda x: x[1], reverse=True)
+        if top_k is None:
+            return contributions
         return contributions[:top_k]
     except Exception:
         return []
@@ -276,6 +279,7 @@ def predict_single_review(
     star_rating: Optional[int] = None,
     app_name: str = "ChatGPT (OpenAI)",
     artifact: Optional[Dict[str, Any]] = None,
+    top_k: int = 10,
 ) -> Dict[str, Any]:
     """Fungsi end-to-end untuk memprediksi satu ulasan pengguna."""
     is_valid, msg, validated_text = validate_review_input(raw_text)
@@ -344,11 +348,13 @@ def predict_single_review(
     detected_aspects, is_discrepancy, discrepancy_status = analyze_aspects_and_discrepancy(
         validated_text, clean_text, star_rating=star_rating, predicted_sentiment=pred_label
     )
-    key_drivers = explain_prediction_keywords(pipeline, clean_text, pred_idx)
-    if not key_drivers and len(neg_hits) > 0 and pred_raw == "0_Negative":
-        key_drivers = [(w, 2.45) for w in sorted(list(neg_hits))[:3]]
-    elif key_drivers and pred_raw == "0_Negative" and all(w <= 0.2 for _, w in key_drivers) and len(neg_hits) > 0:
-        key_drivers = [(w, max(val, 1.85)) for w, val in key_drivers]
+    all_contribs = explain_prediction_keywords(pipeline, clean_text, pred_idx, top_k=None)
+    if not all_contribs and len(neg_hits) > 0 and pred_raw == "0_Negative":
+        all_contribs = [(w, 2.45) for w in sorted(list(neg_hits))[:3]]
+    elif all_contribs and pred_raw == "0_Negative" and all(w <= 0.2 for _, w in all_contribs) and len(neg_hits) > 0:
+        all_contribs = [(w, max(val, 1.85) if w in neg_hits else val) for w, val in all_contribs]
+        all_contribs.sort(key=lambda x: x[1], reverse=True)
+    key_drivers = all_contribs[:top_k] if top_k is not None else all_contribs
 
     return {
         "status": "SUCCESS",
@@ -367,6 +373,7 @@ def predict_single_review(
         "is_discrepancy": is_discrepancy,
         "discrepancy_status": discrepancy_status,
         "key_drivers": key_drivers,
+        "all_feature_contributions": all_contribs,
     }
 
 
