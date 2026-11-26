@@ -7,11 +7,12 @@ Desain UI: Sidebar navigasi kiri (4 menu) dengan tema biru tua lembut yang bersi
 untuk kebutuhan presentasi penelitian. Seluruh logika prediksi dan keluaran data dipertahankan utuh.
 """
 
+from datetime import date, timedelta
 import importlib
 import json
 import os
 import sys
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 import pandas as pd
 import streamlit as st
 
@@ -332,6 +333,8 @@ def get_model_artifact():
 
 
 AUDIT_JSON_PATH = os.path.join(ROOT_DIR, "05_evaluation", "audit_results.json")
+DAILY_METRICS_PATH = os.path.join(ROOT_DIR, "models", "dashboard_daily_metrics.csv")
+DATED_COMPLAINTS_PATH = os.path.join(ROOT_DIR, "models", "dashboard_dated_complaints.csv")
 
 
 @st.cache_data
@@ -348,6 +351,216 @@ def get_audit_summary():
         with open(AUDIT_JSON_PATH, "r", encoding="utf-8") as f:
             return json.load(f)
     return None
+
+
+@st.cache_data
+def get_dashboard_daily_metrics() -> Optional[pd.DataFrame]:
+    if os.path.exists(DAILY_METRICS_PATH):
+        df_d = pd.read_csv(DAILY_METRICS_PATH)
+        df_d["date_dt"] = pd.to_datetime(df_d["date"], errors="coerce").dt.date
+        return df_d
+    return None
+
+
+@st.cache_data
+def get_dated_complaints() -> Optional[pd.DataFrame]:
+    if os.path.exists(DATED_COMPLAINTS_PATH):
+        df_c = pd.read_csv(DATED_COMPLAINTS_PATH)
+        return df_c
+    return None
+
+
+ASPECT_META_DASHBOARD = [
+    ("a1", "A1: Akurasi AI", "A1: Akurasi AI (Mention / NSS)", "A1: Akurasi & Kecerdasan AI"),
+    ("a2", "A2: Harga & Kuota", "A2: Harga/Kuota (Mention / NSS)", "A2: Harga & Limitasi Kuota"),
+    ("a3", "A3: Performa & Server", "A3: Performa/UI (Mention / NSS)", "A3: Performa, UI/UX & Server"),
+    ("a4", "A4: Bahasa Indonesia", "A4: Bhs Indonesia (Mention / NSS)", "A4: Bahasa Indonesia & Konteks Lokal"),
+]
+
+
+def render_date_range_selector(
+    min_d: date,
+    max_d: date,
+    key_prefix: str,
+    title: str = "Filter Periode Rentang Tanggal:",
+) -> Tuple[date, date, bool]:
+    """Menampilkan kontrol preset & pemilih rentang tanggal bersih."""
+    c_p1, c_p2, c_p3 = st.columns([1.2, 1.0, 1.0])
+    preset_opts = [
+        "Semua Periode",
+        "30 Hari Terakhir",
+        "90 Hari Terakhir",
+        "6 Bulan Terakhir",
+        "1 Tahun Terakhir",
+        "Rentang Manual",
+    ]
+    with c_p1:
+        preset = st.selectbox(title, preset_opts, key=f"{key_prefix}_preset")
+
+    if preset == "30 Hari Terakhir":
+        p_start, p_end = max(min_d, max_d - timedelta(days=30)), max_d
+    elif preset == "90 Hari Terakhir":
+        p_start, p_end = max(min_d, max_d - timedelta(days=90)), max_d
+    elif preset == "6 Bulan Terakhir":
+        p_start, p_end = max(min_d, max_d - timedelta(days=180)), max_d
+    elif preset == "1 Tahun Terakhir":
+        p_start, p_end = max(min_d, max_d - timedelta(days=365)), max_d
+    else:
+        p_start, p_end = min_d, max_d
+
+    is_manual = preset == "Rentang Manual"
+    with c_p2:
+        start_d = st.date_input(
+            "Dari Tanggal:",
+            value=p_start,
+            min_value=min_d,
+            max_value=max_d,
+            disabled=not is_manual,
+            key=f"{key_prefix}_start",
+        )
+    with c_p3:
+        end_d = st.date_input(
+            "Sampai Tanggal:",
+            value=p_end,
+            min_value=min_d,
+            max_value=max_d,
+            disabled=not is_manual,
+            key=f"{key_prefix}_end",
+        )
+
+    final_start = p_start if not is_manual else start_d
+    final_end = p_end if not is_manual else end_d
+    if final_start > final_end:
+        final_start, final_end = final_end, final_start
+
+    is_subperiod = (final_start > min_d) or (final_end < max_d)
+    return final_start, final_end, is_subperiod
+
+
+def _priority_status(nss: float) -> str:
+    if nss < 0:
+        return "Prioritas Tinggi (Perlu Perbaikan)"
+    if nss <= 30.0:
+        return "Perlu Dipantau"
+    return "Baik"
+
+
+def compute_dashboard_period_tables(
+    df_daily_sub: pd.DataFrame,
+    priority_app: str = "Semua Aplikasi",
+) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    """Mengagregasi metrik rating, ABSA, dan prioritas perbaikan dari slice harian."""
+    agg_cols = [
+        "n_reviews", "sum_score", "sum_adj_score", "disc_high_neg", "disc_low_pos",
+        "a1_n", "a1_pos", "a1_neg",
+        "a2_n", "a2_pos", "a2_neg",
+        "a3_n", "a3_pos", "a3_neg",
+        "a4_n", "a4_pos", "a4_neg",
+    ]
+    grouped = (
+        df_daily_sub.groupby("app_name", as_index=False)[agg_cols]
+        .sum()
+        .sort_values("n_reviews", ascending=False)
+    )
+
+    rc_rows = []
+    asp_num_rows = []
+    bench_rows = []
+
+    for _, row in grouped.iterrows():
+        n_rev = int(row["n_reviews"])
+        if n_rev == 0:
+            continue
+        app = str(row["app_name"])
+        avg_star = round(float(row["sum_score"]) / n_rev, 2)
+        adj_star = round(float(row["sum_adj_score"]) / n_rev, 2)
+        hi_neg = int(row["disc_high_neg"])
+        lo_pos = int(row["disc_low_pos"])
+        disc_pct = round(((hi_neg + lo_pos) / n_rev) * 100.0, 2)
+
+        rc_rows.append({
+            "Nama Aplikasi": app,
+            "Jumlah Ulasan": n_rev,
+            "Rating Play Store": avg_star,
+            "Rating Aktual (Terkoreksi)": adj_star,
+            "Selisih Rating": round(adj_star - avg_star, 2),
+            "Total Discrepancy (%)": disc_pct,
+            "Bintang 4-5 Teks Negatif": hi_neg,
+            "Bintang 1-2 Teks Positif": lo_pos,
+        })
+
+        num_r: Dict[str, Any] = {"Nama Aplikasi": app}
+        b_r: Dict[str, Any] = {
+            "Nama Aplikasi": app,
+            "Jumlah Ulasan": n_rev,
+            "Rata-rata Bintang": avg_star,
+        }
+        for pref, num_col, str_col, _ in ASPECT_META_DASHBOARD:
+            cnt = int(row[f"{pref}_n"])
+            pos_c = int(row[f"{pref}_pos"])
+            neg_c = int(row[f"{pref}_neg"])
+            nss = round(((pos_c - neg_c) / cnt) * 100.0, 1) if cnt > 0 else 0.0
+            num_r[num_col] = nss
+            b_r[str_col] = f"{cnt:,} ({nss:+.1f}%)" if cnt > 0 else "0 (0.0%)"
+
+        asp_num_rows.append(num_r)
+        bench_rows.append(b_r)
+
+    # Tabel Prioritas Perbaikan ABSA untuk developer (diurutkan dari NSS terendah)
+    df_prio_src = (
+        df_daily_sub[df_daily_sub["app_name"] == priority_app]
+        if priority_app != "Semua Aplikasi"
+        else df_daily_sub
+    )
+    prio_sums = df_prio_src[agg_cols].sum() if len(df_prio_src) > 0 else pd.Series(0, index=agg_cols)
+    prio_rows = []
+    for pref, _, _, full_label in ASPECT_META_DASHBOARD:
+        cnt = int(prio_sums[f"{pref}_n"])
+        pos_c = int(prio_sums[f"{pref}_pos"])
+        neg_c = int(prio_sums[f"{pref}_neg"])
+        nss = round(((pos_c - neg_c) / cnt) * 100.0, 1) if cnt > 0 else 0.0
+        prio_rows.append({
+            "Kategori Aspek ABSA": full_label,
+            "Total Mention": cnt,
+            "Positif": pos_c,
+            "Negatif": neg_c,
+            "Skor NSS (%)": nss,
+            "Prioritas Perbaikan": _priority_status(nss) if cnt > 0 else "Belum Ada Data",
+        })
+    df_priority = pd.DataFrame(prio_rows).sort_values("Skor NSS (%)", ascending=True)
+
+    return (
+        pd.DataFrame(rc_rows),
+        pd.DataFrame(asp_num_rows),
+        pd.DataFrame(bench_rows),
+        df_priority,
+    )
+
+
+def compute_batch_absa_priority(df_res: pd.DataFrame) -> pd.DataFrame:
+    """Menghitung skor NSS dan prioritas perbaikan per aspek ABSA dari hasil prediksi batch CSV."""
+    aspect_cols = [
+        ("A1_Akurasi_Kecerdasan", "A1: Akurasi & Kecerdasan AI"),
+        ("A2_Harga_Kuota", "A2: Harga & Limitasi Kuota"),
+        ("A3_Performa_UI_Server", "A3: Performa, UI/UX & Server"),
+        ("A4_Bahasa_Indonesia", "A4: Bahasa Indonesia & Konteks Lokal"),
+    ]
+    rows = []
+    for col, label in aspect_cols:
+        sub = df_res[df_res[col] == 1]
+        cnt = len(sub)
+        pos_c = int((sub["predicted_sentiment"] == "Positif").sum()) if cnt > 0 else 0
+        neg_c = int((sub["predicted_sentiment"] == "Negatif").sum()) if cnt > 0 else 0
+        nss = round(((pos_c - neg_c) / cnt) * 100.0, 1) if cnt > 0 else 0.0
+        rows.append({
+            "Kategori Aspek ABSA": label,
+            "Total Mention": cnt,
+            "Positif": pos_c,
+            "Negatif": neg_c,
+            "Skor NSS (%)": nss,
+            "Prioritas Perbaikan": _priority_status(nss) if cnt > 0 else "Tidak Terdeteksi",
+        })
+    return pd.DataFrame(rows).sort_values("Skor NSS (%)", ascending=True)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -602,14 +815,48 @@ def main():
     if active_menu == "Dashboard Komparasi":
         st.subheader("Dashboard Komparasi 8 Aplikasi Generative AI di Google Play Store Indonesia")
         bench = get_benchmark_summary()
+        df_daily = get_dashboard_daily_metrics()
+        df_dated_comp = get_dated_complaints()
+
         if bench and "app_absa_matrix" in bench:
-            if "rating_comparison" in bench:
+            is_subperiod = False
+            start_d: Optional[date] = None
+            end_d: Optional[date] = None
+            df_daily_sub: Optional[pd.DataFrame] = None
+
+            if df_daily is not None and not df_daily.empty:
+                min_d = df_daily["date_dt"].min()
+                max_d = df_daily["date_dt"].max()
+                start_d, end_d, is_subperiod = render_date_range_selector(
+                    min_d,
+                    max_d,
+                    key_prefix="dash",
+                    title="Filter Periode Rentang Tanggal Ulasan:",
+                )
+                df_daily_sub = df_daily[
+                    (df_daily["date_dt"] >= start_d) & (df_daily["date_dt"] <= end_d)
+                ]
+                period_total = int(df_daily_sub["n_reviews"].sum()) if not df_daily_sub.empty else 0
+                st.caption(
+                    f"Periode aktif: **{start_d.strftime('%d %b %Y')}** s.d. "
+                    f"**{end_d.strftime('%d %b %Y')}** · Total ulasan pada periode ini: **{period_total:,}**"
+                )
+                if period_total == 0:
+                    st.warning("Tidak ada ulasan pada rentang tanggal yang dipilih. Silakan perluas periode tanggal.")
+
+            if is_subperiod and df_daily_sub is not None and not df_daily_sub.empty:
+                df_rc, df_asp_num, df_bench, _ = compute_dashboard_period_tables(df_daily_sub)
+            else:
+                df_rc = pd.DataFrame(bench["rating_comparison"]) if "rating_comparison" in bench else pd.DataFrame()
+                df_asp_num = pd.DataFrame(bench["aspect_numeric_matrix"]) if "aspect_numeric_matrix" in bench else pd.DataFrame()
+                df_bench = pd.DataFrame(bench["app_absa_matrix"])
+
+            if not df_rc.empty:
                 st.markdown("#### 1. Perbandingan Rating Bintang Play Store vs Rating Aktual (Setelah Koreksi Discrepancy)")
                 st.caption(
                     "Mengoreksi bias penilaian bintang ketika pengguna memberi Bintang 4–5 tetapi isi teksnya mengeluh negatif "
                     "(atau memberi Bintang 1–2 tetapi isi teksnya memuji positif)."
                 )
-                df_rc = pd.DataFrame(bench["rating_comparison"])
                 c_rc1, c_rc2 = st.columns([1.15, 1.35])
                 with c_rc1:
                     if HAS_PLOTLY:
@@ -622,8 +869,7 @@ def main():
 
             st.markdown("---")
             st.markdown("#### 2. Peta Kepuasan 4 Aspek Layanan (ABSA) Lintas 8 Aplikasi")
-            if "aspect_numeric_matrix" in bench:
-                df_asp_num = pd.DataFrame(bench["aspect_numeric_matrix"])
+            if not df_asp_num.empty:
                 asp_col_choice = st.selectbox(
                     "Pilih Dimensi Aspek Layanan untuk Dibandingkan pada Grafik:",
                     ["Semua Aspek (A1 - A4)", "A1: Akurasi AI", "A2: Harga & Kuota",
@@ -647,23 +893,50 @@ def main():
                         df_plot.columns = [_safe_col(str(asp_col_choice))]
                         st.bar_chart(df_plot)
 
-            df_bench = pd.DataFrame(bench["app_absa_matrix"])
-            st.dataframe(df_bench, use_container_width=True, hide_index=True)
+            if not df_bench.empty:
+                st.dataframe(df_bench, use_container_width=True, hide_index=True)
 
-            if "top_thumbs_complaints" in bench:
+            # ── Prioritas Perbaikan ABSA untuk Developer pada Periode Terpilih ─
+            if df_daily_sub is not None and not df_daily_sub.empty:
+                st.markdown("#### Prioritas Perbaikan Aspek ABSA bagi Pengembang (Periode Terpilih)")
+                st.caption(
+                    "Diurutkan dari skor Net Sentiment Score (NSS) terendah untuk membantu pengembang "
+                    "menentukan aspek layanan yang paling mendesak ditingkatkan."
+                )
+                app_opts_prio = ["Semua Aplikasi"] + sorted(list(df_daily_sub["app_name"].unique()))
+                prio_app_choice = st.selectbox(
+                    "Fokus Analisis Prioritas Aplikasi:",
+                    app_opts_prio,
+                    key="dash_prio_app_filter",
+                )
+                _, _, _, df_priority = compute_dashboard_period_tables(
+                    df_daily_sub, priority_app=str(prio_app_choice)
+                )
+                st.dataframe(df_priority, use_container_width=True, hide_index=True)
+
+            if "top_thumbs_complaints" in bench or (df_dated_comp is not None and not df_dated_comp.empty):
                 st.markdown("---")
                 c_b1, c_b2 = st.columns([1.45, 1.0])
                 with c_b1:
                     st.markdown("#### 3. Ulasan Keluhan dengan Dukungan (Thumbs Up / Like) Tertinggi")
                     st.caption("Daftar keluhan pengguna yang paling banyak disetujui pengguna lain di Google Play Store.")
-                    df_thumbs = pd.DataFrame(bench["top_thumbs_complaints"])
-                    app_filter = st.selectbox(
-                        "Filter Berdasarkan Aplikasi:",
-                        ["Semua Aplikasi"] + list(df_thumbs["Aplikasi"].unique()),
-                    )
-                    if app_filter != "Semua Aplikasi":
-                        df_thumbs = df_thumbs[df_thumbs["Aplikasi"] == app_filter]
-                    st.dataframe(df_thumbs, use_container_width=True, hide_index=True)
+                    if df_dated_comp is not None and not df_dated_comp.empty and start_d is not None and end_d is not None:
+                        df_thumbs = df_dated_comp.copy()
+                        t_dates = pd.to_datetime(df_thumbs["Tanggal"], errors="coerce").dt.date
+                        df_thumbs = df_thumbs[(t_dates >= start_d) & (t_dates <= end_d)]
+                    else:
+                        df_thumbs = pd.DataFrame(bench.get("top_thumbs_complaints", []))
+
+                    if not df_thumbs.empty:
+                        app_filter = st.selectbox(
+                            "Filter Berdasarkan Aplikasi:",
+                            ["Semua Aplikasi"] + list(df_thumbs["Aplikasi"].unique()),
+                        )
+                        if app_filter != "Semua Aplikasi":
+                            df_thumbs = df_thumbs[df_thumbs["Aplikasi"] == app_filter]
+                        st.dataframe(df_thumbs.head(20), use_container_width=True, hide_index=True)
+                    else:
+                        st.info("Tidak ada ulasan keluhan teratas pada rentang tanggal ini.")
 
                 with c_b2:
                     st.markdown("#### 4. Perbandingan Penyebutan Aplikasi Kompetitor")
@@ -909,12 +1182,12 @@ def main():
             "dan deteksi *discrepancy* sekaligus."
         )
 
-        # Contoh CSV
+        # Contoh CSV (dilengkapi kolom tanggal `at` untuk simulasi filter rentang tanggal)
         sample_csv_df = pd.DataFrame([
-            {"app_name": "ChatGPT (OpenAI)",        "score": 5, "content": "Sangat membantu tugas coding dan bahasa Indonesianya mudah dipahami"},
-            {"app_name": "DeepSeek - AI Assistant", "score": 5, "content": "Bagus sih gratis, tapi server terlalu sibuk gagal login terus"},
-            {"app_name": "Character.AI",            "score": 1, "content": "Makin update makin banyak sensor filter dan bug verifikasi usia"},
-            {"app_name": "Google Gemini",           "score": 2, "content": "Limit kuota gratis cepat habis dan mode live sering macet"},
+            {"app_name": "ChatGPT (OpenAI)",        "score": 5, "at": "2026-09-18", "content": "Sangat membantu tugas coding dan bahasa Indonesianya mudah dipahami"},
+            {"app_name": "DeepSeek - AI Assistant", "score": 5, "at": "2026-10-06", "content": "Bagus sih gratis, tapi server terlalu sibuk gagal login terus"},
+            {"app_name": "Character.AI",            "score": 1, "at": "2026-10-24", "content": "Makin update makin banyak sensor filter dan bug verifikasi usia"},
+            {"app_name": "Google Gemini",           "score": 2, "at": "2026-11-12", "content": "Limit kuota gratis cepat habis dan mode live sering macet"},
         ])
         st.download_button(
             "Unduh Contoh Format CSV (sample_input_ulasan.csv)",
@@ -934,7 +1207,7 @@ def main():
 
             if df_up is not None:
                 st.write(f"File berhasil dimuat: **{len(df_up):,} baris** dan **{len(df_up.columns)} kolom**.")
-                col1, col2 = st.columns(2)
+                col1, col2, col3 = st.columns(3)
                 with col1:
                     default_tcol = "content" if "content" in df_up.columns else df_up.columns[0]
                     text_col_choice = st.selectbox(
@@ -950,100 +1223,142 @@ def main():
                         score_options,
                         index=score_options.index(default_scol),
                     )
+                with col3:
+                    date_options = ["-- Tidak Ada Kolom Tanggal --"] + list(df_up.columns)
+                    default_dcol = next(
+                        (c for c in ("at", "date", "tanggal", "created_at") if c in df_up.columns),
+                        "-- Tidak Ada Kolom Tanggal --",
+                    )
+                    date_col_choice = st.selectbox(
+                        "Pilih Kolom Tanggal (Opsional):",
+                        date_options,
+                        index=date_options.index(default_dcol),
+                    )
+
+                df_filtered_batch = df_up
+                batch_period_note = "Seluruh baris file CSV"
+                if date_col_choice != "-- Tidak Ada Kolom Tanggal --":
+                    parsed_dates = pd.to_datetime(df_up[str(date_col_choice)], errors="coerce").dt.date
+                    valid_dates = parsed_dates.dropna()
+                    if not valid_dates.empty:
+                        b_min_d = valid_dates.min()
+                        b_max_d = valid_dates.max()
+                        b_start, b_end, _ = render_date_range_selector(
+                            b_min_d,
+                            b_max_d,
+                            key_prefix="batch",
+                            title="Filter Periode Rentang Tanggal Batch:",
+                        )
+                        date_mask = parsed_dates.notna() & (parsed_dates >= b_start) & (parsed_dates <= b_end)
+                        df_filtered_batch = df_up[date_mask]
+                        batch_period_note = f"{b_start.strftime('%d %b %Y')} s.d. {b_end.strftime('%d %b %Y')}"
+                        st.caption(
+                            f"Baris cocok pada periode **{batch_period_note}**: "
+                            f"**{len(df_filtered_batch):,}** dari **{len(df_up):,} baris**."
+                        )
+                    else:
+                        st.warning(f"Kolom '{date_col_choice}' tidak berisi format tanggal yang dapat dibaca. Semua baris akan diproses.")
 
                 if st.button("Proses Prediksi Batch Sekarang", type="primary", icon=":material/settings:"):
-                    scol = None if score_col_choice == "-- Tidak Ada Kolom Rating --" else str(score_col_choice)
-                    df_res, err_msg = predict_batch_dataframe(
-                        df_up.head(5000), text_col=str(text_col_choice), score_col=scol, artifact=artifact
-                    )
-                    if err_msg or df_res is None:
-                        st.error(f"{err_msg}")
+                    if len(df_filtered_batch) == 0:
+                        st.warning("Tidak ada baris ulasan pada rentang tanggal yang dipilih.")
                     else:
-                        st.success(f"Berhasil memproses **{len(df_res):,} baris** ulasan!")
-                        total_rows = len(df_res)
-                        sent_vc = df_res["predicted_sentiment"].value_counts()
-                        dom_sent = str(sent_vc.index[0]) if len(sent_vc) > 0 else "-"
-                        dom_pct = (float(sent_vc.iloc[0]) / total_rows * 100.0) if total_rows > 0 and len(sent_vc) > 0 else 0.0
+                        scol = None if score_col_choice == "-- Tidak Ada Kolom Rating --" else str(score_col_choice)
+                        df_res, err_msg = predict_batch_dataframe(
+                            df_filtered_batch.head(5000), text_col=str(text_col_choice), score_col=scol, artifact=artifact
+                        )
+                        if err_msg or df_res is None:
+                            st.error(f"{err_msg}")
+                        else:
+                            st.success(f"Berhasil memproses **{len(df_res):,} baris** ulasan ({batch_period_note})!")
+                            total_rows = len(df_res)
+                            sent_vc = df_res["predicted_sentiment"].value_counts()
+                            dom_sent = str(sent_vc.index[0]) if len(sent_vc) > 0 else "-"
+                            dom_pct = (float(sent_vc.iloc[0]) / total_rows * 100.0) if total_rows > 0 and len(sent_vc) > 0 else 0.0
 
-                        kpi1, kpi2, kpi3 = st.columns(3)
-                        with kpi1:
-                            st.markdown(
-                                f'<div class="metric-card-clean">'
-                                f'<div class="metric-card-label">Total Ulasan Diproses</div>'
-                                f'<div class="metric-card-value">{total_rows:,}</div>'
-                                f'<div class="metric-card-note">Baris valid dari file CSV unggahan</div>'
-                                f'</div>',
-                                unsafe_allow_html=True,
-                            )
-                        with kpi2:
-                            st.markdown(
-                                f'<div class="metric-card-clean">'
-                                f'<div class="metric-card-label">Sentimen Dominan</div>'
-                                f'<div class="metric-card-value">{dom_sent}</div>'
-                                f'<div class="metric-card-note">{dom_pct:.1f}% dari total ulasan</div>'
-                                f'</div>',
-                                unsafe_allow_html=True,
-                            )
-                        with kpi3:
-                            if "is_discrepancy" in df_res.columns:
-                                disc_cnt = int(df_res["is_discrepancy"].sum())
-                                disc_pct = (disc_cnt / total_rows * 100.0) if total_rows > 0 else 0.0
+                            kpi1, kpi2, kpi3 = st.columns(3)
+                            with kpi1:
                                 st.markdown(
                                     f'<div class="metric-card-clean">'
-                                    f'<div class="metric-card-label">Rating-Text Discrepancy</div>'
-                                    f'<div class="metric-card-value">{disc_cnt:,}</div>'
-                                    f'<div class="metric-card-note">{disc_pct:.1f}% terindikasi anomali rating</div>'
+                                    f'<div class="metric-card-label">Total Ulasan Diproses</div>'
+                                    f'<div class="metric-card-value">{total_rows:,}</div>'
+                                    f'<div class="metric-card-note">Periode: {batch_period_note}</div>'
                                     f'</div>',
                                     unsafe_allow_html=True,
                                 )
-                            else:
+                            with kpi2:
                                 st.markdown(
-                                    '<div class="metric-card-clean">'
-                                    '<div class="metric-card-label">Rating-Text Discrepancy</div>'
-                                    '<div class="metric-card-value">-</div>'
-                                    '<div class="metric-card-note">Kolom skor bintang tidak dipilih</div>'
-                                    '</div>',
+                                    f'<div class="metric-card-clean">'
+                                    f'<div class="metric-card-label">Sentimen Dominan</div>'
+                                    f'<div class="metric-card-value">{dom_sent}</div>'
+                                    f'<div class="metric-card-note">{dom_pct:.1f}% dari total ulasan</div>'
+                                    f'</div>',
                                     unsafe_allow_html=True,
                                 )
+                            with kpi3:
+                                if "is_discrepancy" in df_res.columns:
+                                    disc_cnt = int(df_res["is_discrepancy"].sum())
+                                    disc_pct = (disc_cnt / total_rows * 100.0) if total_rows > 0 else 0.0
+                                    st.markdown(
+                                        f'<div class="metric-card-clean">'
+                                        f'<div class="metric-card-label">Rating-Text Discrepancy</div>'
+                                        f'<div class="metric-card-value">{disc_cnt:,}</div>'
+                                        f'<div class="metric-card-note">{disc_pct:.1f}% terindikasi anomali rating</div>'
+                                        f'</div>',
+                                        unsafe_allow_html=True,
+                                    )
+                                else:
+                                    st.markdown(
+                                        '<div class="metric-card-clean">'
+                                        '<div class="metric-card-label">Rating-Text Discrepancy</div>'
+                                        '<div class="metric-card-value">-</div>'
+                                        '<div class="metric-card-note">Kolom skor bintang tidak dipilih</div>'
+                                        '</div>',
+                                        unsafe_allow_html=True,
+                                    )
 
-                        sent_counts_df = (
-                            sent_vc.rename_axis("Sentimen").reset_index(name="Jumlah Baris")
-                        )
-                        c_s1, c_s2 = st.columns(2)
-                        with c_s1:
-                            st.markdown("**Distribusi Hasil Prediksi Sentimen:**")
-                            if HAS_PLOTLY and not sent_counts_df.empty:
-                                st.plotly_chart(plot_batch_sentiment_bar(sent_counts_df), use_container_width=True)
-                            st.dataframe(
-                                sent_counts_df,
-                                use_container_width=True, hide_index=True,
+                            sent_counts_df = (
+                                sent_vc.rename_axis("Sentimen").reset_index(name="Jumlah Baris")
                             )
-                        with c_s2:
-                            st.markdown("**Jumlah Ulasan per Aspek Layanan (ABSA):**")
-                            aspect_counts = {
-                                "A1: Akurasi & Kecerdasan": int(df_res["A1_Akurasi_Kecerdasan"].sum()),
-                                "A2: Harga & Limit Kuota":  int(df_res["A2_Harga_Kuota"].sum()),
-                                "A3: Performa, UI & Server": int(df_res["A3_Performa_UI_Server"].sum()),
-                                "A4: Bahasa Indonesia":     int(df_res["A4_Bahasa_Indonesia"].sum()),
-                            }
-                            st.dataframe(
-                                pd.DataFrame(
-                                    list(aspect_counts.items()),
-                                    columns=["Dimensi Aspek", "Jumlah Ulasan Terdeteksi"],
-                                ),
-                                use_container_width=True, hide_index=True,
+                            c_s1, c_s2 = st.columns(2)
+                            with c_s1:
+                                st.markdown("**Distribusi Hasil Prediksi Sentimen:**")
+                                if HAS_PLOTLY and not sent_counts_df.empty:
+                                    st.plotly_chart(plot_batch_sentiment_bar(sent_counts_df), use_container_width=True)
+                                st.dataframe(
+                                    sent_counts_df,
+                                    use_container_width=True, hide_index=True,
+                                )
+                            with c_s2:
+                                st.markdown("**Jumlah Ulasan per Aspek Layanan (ABSA):**")
+                                aspect_counts = {
+                                    "A1: Akurasi & Kecerdasan": int(df_res["A1_Akurasi_Kecerdasan"].sum()),
+                                    "A2: Harga & Limit Kuota":  int(df_res["A2_Harga_Kuota"].sum()),
+                                    "A3: Performa, UI & Server": int(df_res["A3_Performa_UI_Server"].sum()),
+                                    "A4: Bahasa Indonesia":     int(df_res["A4_Bahasa_Indonesia"].sum()),
+                                }
+                                st.dataframe(
+                                    pd.DataFrame(
+                                        list(aspect_counts.items()),
+                                        columns=["Dimensi Aspek", "Jumlah Ulasan Terdeteksi"],
+                                    ),
+                                    use_container_width=True, hide_index=True,
+                                )
+
+                            st.markdown("**Prioritas Perbaikan ABSA (Berdasarkan Periode Terpilih):**")
+                            st.caption("Membantu pengembang melihat kategori aspek dengan skor NSS terendah dari ulasan pada periode ini.")
+                            st.dataframe(compute_batch_absa_priority(df_res), use_container_width=True, hide_index=True)
+
+                            st.markdown("**Preview 25 Baris Hasil Prediksi:**")
+                            st.dataframe(df_res.head(25), use_container_width=True)
+
+                            st.download_button(
+                                "Download Hasil Prediksi Lengkap (.csv)",
+                                data=df_res.to_csv(index=False).encode("utf-8-sig"),
+                                file_name="hasil_prediksi_absa_genai.csv",
+                                mime="text/csv",
+                                icon=":material/save:",
                             )
-
-                        st.markdown("**Preview 25 Baris Hasil Prediksi:**")
-                        st.dataframe(df_res.head(25), use_container_width=True)
-
-                        st.download_button(
-                            "Download Hasil Prediksi Lengkap (.csv)",
-                            data=df_res.to_csv(index=False).encode("utf-8-sig"),
-                            file_name="hasil_prediksi_absa_genai.csv",
-                            mime="text/csv",
-                            icon=":material/save:",
-                        )
 
     # =========================================================================
     # MENU 4: DETAIL METODOLOGI
