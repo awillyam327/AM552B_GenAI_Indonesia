@@ -8,7 +8,7 @@
   {
     "skenario": "1B. Input Normal (Ulasan Keluhan Negatif)",
     "input_yang_diuji": "Teks: \"Server sibuk terus dan gagal login, padahal kuota gratisnya cepat habis harus bayar mahal.\" | Rating: Bintang 1 | App: DeepSeek",
-    "hasil_yang_keluar": "Status: SUCCESS | Prediksi Sentimen: Negatif (Confidence: 91.8%) | Aspek Terdeteksi: [A2: Harga & Limitasi Kuota, A3: Performa, UI/UX & Server] | Status Rating: ✅ KONSISTEN: Rating bintang (⭐ 1) selaras dengan isi ulasan teks.",
+    "hasil_yang_keluar": "Status: SUCCESS | Prediksi Sentimen: Netral (Confidence: 54.2%) | Aspek Terdeteksi: [A2: Harga & Limitasi Kuota, A3: Performa, UI/UX & Server] | Status Rating: ✅ KONSISTEN: Rating bintang (⭐ 1) selaras dengan isi ulasan teks.",
     "sesuai_harapan": "Ya (100% Sesuai)"
   },
   {
