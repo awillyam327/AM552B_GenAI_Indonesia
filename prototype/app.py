@@ -403,12 +403,16 @@ def main():
             analyze_btn = st.button("🚀 Jalankan Analisis Sentimen & ABSA", type="primary", use_container_width=True)
 
         if analyze_btn:
-            res: Dict[str, Any] = predict_single_review(
+            st.session_state["last_single_res"] = predict_single_review(
                 raw_text=user_text,
                 star_rating=star_input,
                 app_name=selected_app,
                 artifact=artifact,
+                top_k=10,
             )
+
+        if "last_single_res" in st.session_state:
+            res: Dict[str, Any] = st.session_state["last_single_res"]
 
             if res["status"] == "INVALID_INPUT":
                 st.error(f"❌ **Validasi Input Gagal**: {res['error_message']}")
@@ -444,9 +448,34 @@ def main():
 
                 with c_right:
                     st.markdown("#### 🔑 Kata Kunci Pendorong Prediksi (Feature Attribution)")
-                    if res["key_drivers"]:
-                        df_kw = pd.DataFrame(res["key_drivers"], columns=["Fitur Kata / N-Gram", "Bobot Kontribusi"])
+                    all_contribs = res.get("all_feature_contributions") or res.get("key_drivers", [])
+                    if all_contribs:
+                        total_feats = len(all_contribs)
+                        top_n_kw = st.slider(
+                            "Tampilkan Jumlah Fitur Kata / N-Gram (Top-N):",
+                            min_value=3,
+                            max_value=20,
+                            value=10,
+                            help=f"Ditemukan total {total_feats} fitur kata/n-gram aktif pada ulasan ini. Geser untuk memperingkas atau melihat seluruh kata.",
+                            key="top_n_feature_slider",
+                        )
+                        shown_contribs = all_contribs[:top_n_kw]
+                        df_kw = pd.DataFrame(
+                            [
+                                {
+                                    "Fitur Kata / N-Gram": term,
+                                    "Bobot Kontribusi": weight,
+                                    "Arah Pengaruh": (
+                                        "🟢 Mendukung Prediksi"
+                                        if weight > 0
+                                        else ("🔴 Kontras / Menahan" if weight < 0 else "⚪ Netral")
+                                    ),
+                                }
+                                for term, weight in shown_contribs
+                            ]
+                        )
                         st.dataframe(df_kw, use_container_width=True, hide_index=True)
+                        st.caption(f"Menampilkan {len(shown_contribs)} dari total {total_feats} fitur kata/n-gram aktif di kosakata TF-IDF.")
                     else:
                         st.caption("Tidak ada token yang masuk dalam kosakata TF-IDF utama.")
 
