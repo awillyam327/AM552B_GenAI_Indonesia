@@ -2,6 +2,9 @@
 Aplikasi Web Prototype — Analisis Sentimen Berbasis Aspek (ABSA) & Deteksi Discrepancy
 Mata Kuliah: AM552 - Data Science of IS (S1 Sistem Informasi, FTI UKSW)
 Cara Menjalankan: streamlit run prototype/app.py
+
+UI Redesign by Tiara (682024059) — modern sidebar + custom CSS skin.
+Seluruh logika prediksi, Tab 1-3, dan fungsi Arthur dipertahankan utuh.
 """
 
 import importlib
@@ -33,9 +36,132 @@ st.set_page_config(
     page_title="GenAI Indonesia ABSA & Discrepancy Analyzer — AM552 FTI UKSW",
     page_icon="🤖",
     layout="wide",
+    initial_sidebar_state="expanded",
 )
 
+# ══════════════════════════════════════════════════════════════════════════════
+#  CUSTOM CSS — UI Redesign (hanya styling, tidak mengubah logika)
+# ══════════════════════════════════════════════════════════════════════════════
+st.markdown("""
+<style>
+/* ── Global font ── */
+html, body, [class*="css"] {
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+}
 
+/* ── Sidebar: dark navy gradient ── */
+[data-testid="stSidebar"] {
+    background: linear-gradient(180deg, #0d2137 0%, #1a3a5c 100%) !important;
+    border-right: 1px solid #1e4976;
+}
+[data-testid="stSidebar"] * { color: #e8f4fd !important; }
+[data-testid="stSidebar"] h1,
+[data-testid="stSidebar"] h2,
+[data-testid="stSidebar"] h3 {
+    color: #ffffff !important;
+}
+[data-testid="stSidebar"] .stMarkdown h2 {
+    font-size: 1.1rem; font-weight: 700;
+    line-height: 1.4; margin-bottom: 2px;
+}
+
+/* ── Metric cards (sidebar & main) ── */
+[data-testid="stMetric"] {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+}
+[data-testid="stMetricLabel"]  { font-size: 0.75rem; opacity: 0.85; }
+[data-testid="stMetricValue"]  { font-size: 1.9rem;  font-weight: 800; }
+[data-testid="stMetricDelta"]  { font-size: 0.72rem; }
+
+/* Metric cards di main area: warna berbeda agar tidak terlalu dark */
+[data-testid="stMain"] [data-testid="stMetric"] {
+    background: #f0f7ff;
+    border: 1px solid #bfdbfe;
+}
+[data-testid="stMain"] [data-testid="stMetricLabel"] { color: #1e3a5f !important; }
+[data-testid="stMain"] [data-testid="stMetricValue"] { color: #1F4E79 !important; }
+
+/* ── Tabs ── */
+[data-testid="stTabs"] [role="tablist"] {
+    border-bottom: 2px solid #e2e8f0;
+}
+[data-testid="stTabs"] [role="tab"] {
+    font-weight: 600; font-size: 0.88rem;
+    padding: 10px 20px;
+    color: #64748b;
+}
+[data-testid="stTabs"] [aria-selected="true"] {
+    color: #1F4E79 !important;
+    border-bottom: 2px solid #1F4E79 !important;
+    background: transparent !important;
+}
+
+/* ── Primary button ── */
+.stButton > button[kind="primary"] {
+    background: #1F4E79 !important;
+    border: none !important;
+    color: #fff !important;
+    border-radius: 8px !important;
+    font-weight: 700 !important;
+}
+.stButton > button[kind="primary"]:hover {
+    background: #163d60 !important;
+}
+
+/* ── Badge institusi ── */
+.badge-inst {
+    display: inline-block;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    margin: 4px 0 12px 0;
+    color: #e8f4fd !important;
+}
+
+/* ── Aspek item di sidebar ── */
+.asp-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 6px 0;
+    padding: 6px 8px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 8px;
+}
+.asp-icon { font-size: 1rem; min-width: 20px; }
+.asp-label { font-size: 0.8rem; font-weight: 700; line-height: 1.3; }
+.asp-desc  { font-size: 0.69rem; opacity: 0.72; }
+
+/* ── File uploader ── */
+[data-testid="stFileUploader"] {
+    border: 2px dashed #cbd5e1;
+    border-radius: 12px;
+    padding: 8px;
+}
+
+/* ── Footer ── */
+.footer-bar {
+    text-align: center;
+    color: #94a3b8;
+    font-size: 0.75rem;
+    padding: 20px 0 8px 0;
+    border-top: 1px solid #e2e8f0;
+    margin-top: 32px;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+#  CACHED LOADERS  (tidak diubah dari versi Arthur)
+# ══════════════════════════════════════════════════════════════════════════════
 @st.cache_resource
 def get_model_artifact():
     return load_trained_artifact()
@@ -49,51 +175,169 @@ def get_benchmark_summary():
     return None
 
 
+# ══════════════════════════════════════════════════════════════════════════════
+#  MAIN
+# ══════════════════════════════════════════════════════════════════════════════
 def main():
-    st.title("🤖 Sistem Analisis Sentimen Berbasis Aspek (ABSA) & Deteksi Discrepancy")
-    st.markdown(
-        "**Aplikasi Mobile Generative AI di Indonesia (71.221 Ulasan Google Play Store)**  \n"
-        "*Prototype Tugas Akhir Mata Kuliah AM552 - Data Science of IS | Program Studi S1 Sistem Informasi, FTI UKSW*"
-    )
-
+    # ── Load model artifact ──────────────────────────────────────────────────
     try:
         artifact = get_model_artifact()
-        model_name = artifact.get("model_name", "Best Tuned Classifier")
-        test_macro_f1 = artifact.get("metrics_summary", {}).get("macro_f1", 0.65)
-        test_roc_auc = artifact.get("metrics_summary", {}).get("roc_auc_ovr", 0.87)
+        model_name    = artifact.get("model_name", "Best Tuned Classifier")
+        test_macro_f1 = artifact.get("metrics_summary", {}).get("macro_f1",    0.65)
+        test_roc_auc  = artifact.get("metrics_summary", {}).get("roc_auc_ovr", 0.87)
     except Exception as e:
         st.error(f"Gagal memuat artefak model: {e}")
         st.stop()
         return
 
+    # ═════════════════════════════════════════════════════════════════════════
+    #  SIDEBAR — Redesigned UI (konten Arthur dipertahankan, tampilan diperbarui)
+    # ═════════════════════════════════════════════════════════════════════════
     with st.sidebar:
-        st.header("📌 Informasi Model & Proyek")
-        st.success(f"**Model Aktif**: {model_name}")
-        st.metric("Test Macro F1-Score", f"{test_macro_f1:.4f}")
-        st.metric("Test ROC-AUC (OvR)", f"{test_roc_auc:.4f}")
-        st.markdown("---")
+        st.markdown("## GenAI Indonesia\nABSA & Discrepancy Analyzer")
         st.markdown(
-            "**4 Dimensi Aspek ABSA:**\n"
-            "1. **A1**: Akurasi & Kecerdasan AI\n"
-            "2. **A2**: Harga & Limitasi Kuota\n"
-            "3. **A3**: Performa, UI/UX & Server\n"
-            "4. **A4**: Bahasa Indonesia & Lokal\n"
+            '<span class="badge-inst">🏫 S1 Sistem Informasi · FTI UKSW</span>',
+            unsafe_allow_html=True,
         )
-        st.markdown("---")
-        st.caption("© 2026 Arthur (682024046) • Brendan (682024016) • Tiara (682024059) — S1 Sistem Informasi FTI UKSW")
 
+        st.divider()
+
+        # Metric cards — nilai real dari artifact
+        st.markdown("**📊 Performa Model Produksi**")
+        col_m1, col_m2 = st.columns(2)
+        with col_m1:
+            st.metric("Macro F1", f"{test_macro_f1:.4f}", delta="▲ vs Baseline")
+        with col_m2:
+            st.metric("ROC-AUC", f"{test_roc_auc:.4f}", delta="✅ Target")
+        st.caption(f"Model: **{model_name}** · TF-IDF 1-2gram")
+
+        st.divider()
+
+        # 4 Dimensi Aspek ABSA
+        st.markdown("**🧩 4 Dimensi Aspek ABSA:**")
+        aspects = [
+            ("🎯", "A1: Akurasi AI",   "Kecerdasan, halusinasi, kualitas jawaban"),
+            ("💰", "A2: Harga/Quota",  "Biaya, limit, subscription, iklan"),
+            ("⚡", "A3: Performa/UI",  "Kecepatan, server, bug, tampilan"),
+            ("🌏", "A4: Bahasa Lokal", "Bahasa Indonesia, terjemahan, konteks lokal"),
+        ]
+        for icon, label, desc in aspects:
+            st.markdown(
+                f'<div class="asp-item">'
+                f'<span class="asp-icon">{icon}</span>'
+                f'<div><div class="asp-label">{label}</div>'
+                f'<div class="asp-desc">{desc}</div></div>'
+                f'</div>',
+                unsafe_allow_html=True,
+            )
+
+        st.divider()
+
+        # Dataset stats ringkas
+        st.markdown("**📁 Dataset**")
+        st.markdown(
+            "<div style='font-size:0.8rem;line-height:2;'>"
+            "🔢 <b>71.221</b> ulasan · 8 aplikasi<br>"
+            "📅 Google Play Store Indonesia<br>"
+            "⚖️ Class imbalance: ⭐5 (63.96%)"
+            "</div>",
+            unsafe_allow_html=True,
+        )
+
+        st.divider()
+        st.caption(
+            "© 2026 Arthur (682024046) • Brendan (682024016) • Tiara (682024059)\n"
+            "S1 Sistem Informasi · FTI UKSW"
+        )
+
+    # ═════════════════════════════════════════════════════════════════════════
+    #  TABS — urutan diubah agar Dashboard ada di depan sesuai referensi UI
+    # ═════════════════════════════════════════════════════════════════════════
     tab1, tab2, tab3 = st.tabs(
         [
-            "🔍 Tab 1: Analisis Ulasan Tunggal",
-            "📂 Tab 2: Prediksi Batch (Upload CSV)",
-            "📊 Tab 3: Dashboard Komparasi 8 Aplikasi AI (N=71.221)",
+            "📊  Dashboard Komparasi",
+            "🔍  Analisis Ulasan Tunggal",
+            "📂  Prediksi Batch (Upload CSV)",
         ]
     )
 
     # =========================================================================
-    # TAB 1: ANALISIS ULASAN TUNGGAL
+    # TAB 1: DASHBOARD KOMPARASI (sebelumnya Tab 3 Arthur)
     # =========================================================================
     with tab1:
+        st.subheader("Dashboard Komparasi 8 Aplikasi Generative AI di Google Play Store Indonesia")
+        bench = get_benchmark_summary()
+        if bench and "app_absa_matrix" in bench:
+            # 1. Perbandingan Rating Play Store vs Rating Aktual (Koreksi Discrepancy)
+            if "rating_comparison" in bench:
+                st.markdown("#### 1. Perbandingan Rating Bintang Play Store vs Rating Aktual (Setelah Koreksi Discrepancy)")
+                st.caption(
+                    "Mengoreksi bias penilaian bintang ketika pengguna memberi Bintang 4–5 tetapi isi teksnya mengeluh negatif "
+                    "(atau memberi Bintang 1–2 tetapi isi teksnya memuji positif)."
+                )
+                df_rc = pd.DataFrame(bench["rating_comparison"])
+                c_rc1, c_rc2 = st.columns([1.15, 1.35])
+                with c_rc1:
+                    df_rc_chart = df_rc.set_index("Nama Aplikasi")[["Rating Play Store", "Rating Aktual (Terkoreksi)"]]
+                    st.bar_chart(df_rc_chart)
+                with c_rc2:
+                    st.dataframe(df_rc, use_container_width=True, hide_index=True)
+
+            st.markdown("---")
+            # 2. Visualisasi Skor Kepuasan Bersih (Net Sentiment Score) 4 Aspek ABSA
+            st.markdown("#### 2. Peta Kepuasan 4 Aspek Layanan (ABSA) Lintas 8 Aplikasi")
+            if "aspect_numeric_matrix" in bench:
+                df_asp_num = pd.DataFrame(bench["aspect_numeric_matrix"])
+                asp_col_choice = st.selectbox(
+                    "Pilih Dimensi Aspek Layanan untuk Dibandingkan pada Grafik:",
+                    ["Semua Aspek (A1 - A4)", "A1: Akurasi AI", "A2: Harga & Kuota", "A3: Performa & Server", "A4: Bahasa Indonesia"],
+                )
+                if asp_col_choice == "Semua Aspek (A1 - A4)":
+                    st.bar_chart(df_asp_num.set_index("Nama Aplikasi"))
+                else:
+                    st.bar_chart(df_asp_num.set_index("Nama Aplikasi")[[str(asp_col_choice)]])
+
+            df_bench = pd.DataFrame(bench["app_absa_matrix"])
+            st.dataframe(df_bench, use_container_width=True, hide_index=True)
+
+            # 3. Keluhan Paling Banyak Disetujui Pengguna (Thumbs Up Tertinggi) & Penyebutan Kompetitor
+            if "top_thumbs_complaints" in bench:
+                st.markdown("---")
+                c_b1, c_b2 = st.columns([1.45, 1.0])
+                with c_b1:
+                    st.markdown("#### 3. Ulasan Keluhan dengan Dukungan (Thumbs Up / Like) Tertinggi")
+                    st.caption("Daftar keluhan pengguna yang paling banyak disetujui pengguna lain di Google Play Store.")
+                    df_thumbs = pd.DataFrame(bench["top_thumbs_complaints"])
+                    app_filter = st.selectbox(
+                        "Filter Berdasarkan Aplikasi:",
+                        ["Semua Aplikasi"] + list(df_thumbs["Aplikasi"].unique()),
+                    )
+                    if app_filter != "Semua Aplikasi":
+                        df_thumbs = df_thumbs[df_thumbs["Aplikasi"] == app_filter]
+                    st.dataframe(df_thumbs, use_container_width=True, hide_index=True)
+
+                with c_b2:
+                    st.markdown("#### 4. Perbandingan Penyebutan Aplikasi Kompetitor")
+                    st.caption("Frekuensi pengguna menyebut aplikasi AI pesaing di dalam ulasan suatu aplikasi.")
+                    if "competitor_mentions" in bench:
+                        df_comp_m = pd.DataFrame(bench["competitor_mentions"])
+                        st.dataframe(df_comp_m, use_container_width=True, hide_index=True)
+
+            st.markdown("---")
+            st.markdown("#### 5. Perbandingan Performa Model Klasifikasi pada Data Uji (80:20 Stratified Split)")
+            df_models = pd.DataFrame(bench["model_comparison"])
+            c_m1, c_m2 = st.columns([1.0, 1.4])
+            with c_m1:
+                st.bar_chart(df_models.set_index("model_name")[["test_macro_f1", "test_roc_auc"]])
+            with c_m2:
+                st.dataframe(df_models, use_container_width=True, hide_index=True)
+        else:
+            st.info("Data ringkasan benchmark sedang dimuat dari hasil eksperimen notebook.")
+
+    # =========================================================================
+    # TAB 2: ANALISIS ULASAN TUNGGAL (sebelumnya Tab 1 Arthur — TIDAK DIUBAH)
+    # =========================================================================
+    with tab2:
         st.subheader("1. Form Input Analisis Ulasan Pengguna")
         st.write(
             "Masukkan teks ulasan aplikasi Generative AI beserta skor bintangnya untuk mendeteksi "
@@ -209,9 +453,9 @@ def main():
                     st.bar_chart(df_prob.set_index("Kelas Sentimen"))
 
     # =========================================================================
-    # TAB 2: PREDIKSI BATCH (UPLOAD CSV)
+    # TAB 3: PREDIKSI BATCH (sebelumnya Tab 2 Arthur — TIDAK DIUBAH)
     # =========================================================================
-    with tab2:
+    with tab3:
         st.subheader("Prediksi Massal (Batch Prediction) dari File CSV")
         st.write(
             "Unggah file `.csv` yang memiliki kolom teks ulasan (misal: `content` atau `ulasan`) "
@@ -294,78 +538,14 @@ def main():
                             mime="text/csv",
                         )
 
-    # =========================================================================
-    # TAB 3: DASHBOARD KOMPARASI EKOSISTEM AI INDONESIA (N = 71.221)
-    # =========================================================================
-    with tab3:
-        st.subheader("Dashboard Komparasi 8 Aplikasi Generative AI di Google Play Store Indonesia")
-        bench = get_benchmark_summary()
-        if bench and "app_absa_matrix" in bench:
-            # 1. Perbandingan Rating Play Store vs Rating Aktual (Koreksi Discrepancy)
-            if "rating_comparison" in bench:
-                st.markdown("#### 1. Perbandingan Rating Bintang Play Store vs Rating Aktual (Setelah Koreksi Discrepancy)")
-                st.caption(
-                    "Mengoreksi bias penilaian bintang ketika pengguna memberi Bintang 4–5 tetapi isi teksnya mengeluh negatif "
-                    "(atau memberi Bintang 1–2 tetapi isi teksnya memuji positif)."
-                )
-                df_rc = pd.DataFrame(bench["rating_comparison"])
-                c_rc1, c_rc2 = st.columns([1.15, 1.35])
-                with c_rc1:
-                    df_rc_chart = df_rc.set_index("Nama Aplikasi")[["Rating Play Store", "Rating Aktual (Terkoreksi)"]]
-                    st.bar_chart(df_rc_chart)
-                with c_rc2:
-                    st.dataframe(df_rc, use_container_width=True, hide_index=True)
-
-            st.markdown("---")
-            # 2. Visualisasi Skor Kepuasan Bersih (Net Sentiment Score) 4 Aspek ABSA
-            st.markdown("#### 2. Peta Kepuasan 4 Aspek Layanan (ABSA) Lintas 8 Aplikasi")
-            if "aspect_numeric_matrix" in bench:
-                df_asp_num = pd.DataFrame(bench["aspect_numeric_matrix"])
-                asp_col_choice = st.selectbox(
-                    "Pilih Dimensi Aspek Layanan untuk Dibandingkan pada Grafik:",
-                    ["Semua Aspek (A1 - A4)", "A1: Akurasi AI", "A2: Harga & Kuota", "A3: Performa & Server", "A4: Bahasa Indonesia"],
-                )
-                if asp_col_choice == "Semua Aspek (A1 - A4)":
-                    st.bar_chart(df_asp_num.set_index("Nama Aplikasi"))
-                else:
-                    st.bar_chart(df_asp_num.set_index("Nama Aplikasi")[[str(asp_col_choice)]])
-
-            df_bench = pd.DataFrame(bench["app_absa_matrix"])
-            st.dataframe(df_bench, use_container_width=True, hide_index=True)
-
-            # 3. Keluhan Paling Banyak Disetujui Pengguna (Thumbs Up Tertinggi) & Penyebutan Kompetitor
-            if "top_thumbs_complaints" in bench:
-                st.markdown("---")
-                c_b1, c_b2 = st.columns([1.45, 1.0])
-                with c_b1:
-                    st.markdown("#### 3. Ulasan Keluhan dengan Dukungan (Thumbs Up / Like) Tertinggi")
-                    st.caption("Daftar keluhan pengguna yang paling banyak disetujui pengguna lain di Google Play Store.")
-                    df_thumbs = pd.DataFrame(bench["top_thumbs_complaints"])
-                    app_filter = st.selectbox(
-                        "Filter Berdasarkan Aplikasi:",
-                        ["Semua Aplikasi"] + list(df_thumbs["Aplikasi"].unique()),
-                    )
-                    if app_filter != "Semua Aplikasi":
-                        df_thumbs = df_thumbs[df_thumbs["Aplikasi"] == app_filter]
-                    st.dataframe(df_thumbs, use_container_width=True, hide_index=True)
-
-                with c_b2:
-                    st.markdown("#### 4. Perbandingan Penyebutan Aplikasi Kompetitor")
-                    st.caption("Frekuensi pengguna menyebut aplikasi AI pesaing di dalam ulasan suatu aplikasi.")
-                    if "competitor_mentions" in bench:
-                        df_comp_m = pd.DataFrame(bench["competitor_mentions"])
-                        st.dataframe(df_comp_m, use_container_width=True, hide_index=True)
-
-            st.markdown("---")
-            st.markdown("#### 5. Perbandingan Performa Model Klasifikasi pada Data Uji (80:20 Stratified Split)")
-            df_models = pd.DataFrame(bench["model_comparison"])
-            c_m1, c_m2 = st.columns([1.0, 1.4])
-            with c_m1:
-                st.bar_chart(df_models.set_index("model_name")[["test_macro_f1", "test_roc_auc"]])
-            with c_m2:
-                st.dataframe(df_models, use_container_width=True, hide_index=True)
-        else:
-            st.info("Data ringkasan benchmark sedang dimuat dari hasil eksperimen notebook.")
+    # ── Footer ────────────────────────────────────────────────────────────────
+    st.markdown(
+        '<div class="footer-bar">'
+        '© 2026 <b>Arthur</b> (682024046) · <b>Brendan</b> (682024016) · <b>Tiara</b> (682024059)<br>'
+        '<span style="font-size:0.68rem;">AM552B Data Science of IS · S1 Sistem Informasi · FTI UKSW</span>'
+        '</div>',
+        unsafe_allow_html=True,
+    )
 
 
 if __name__ == "__main__":
