@@ -11,8 +11,10 @@ from datetime import date, timedelta
 import importlib
 import json
 import os
+import re
 import sys
 from typing import Any, Dict, List, Optional, Tuple
+import numpy as np
 import pandas as pd
 import streamlit as st
 
@@ -35,6 +37,7 @@ import core_predictor
 importlib.reload(core_predictor)
 from core_predictor import (
     BENCHMARK_JSON_PATH,
+    get_fresh_slang_dict,
     load_trained_artifact,
     predict_batch_dataframe,
     predict_single_review,
@@ -337,6 +340,92 @@ DAILY_METRICS_PATH = os.path.join(ROOT_DIR, "models", "dashboard_daily_metrics.c
 DATED_COMPLAINTS_PATH = os.path.join(ROOT_DIR, "models", "dashboard_dated_complaints.csv")
 COPILOT_ANALYSIS_PATH = os.path.join(ROOT_DIR, "models", "copilot_excellence_analysis.json")
 TOPIC_MODEL_JSON_PATH = os.path.join(ROOT_DIR, "04_modeling", "topic_modeling_results.json")
+RAW_DATASET_PATH = os.path.join(ROOT_DIR, "dataset", "RAW_DATASET_GENAI_INDONESIA_AM522B.csv")
+
+
+@st.cache_data(show_spinner=False)
+def get_per_app_model_performance() -> pd.DataFrame:
+    """
+    Menghitung performa evaluasi model klasifikasi produksi per aplikasi pada data uji
+    (20% Stratified Split identik dengan skrip pelatihan train_sentiment_models.py, random_state=42).
+    """
+    if not os.path.exists(RAW_DATASET_PATH):
+        return pd.DataFrame()
+    try:
+        from sklearn.metrics import (
+            accuracy_score,
+            balanced_accuracy_score,
+            f1_score,
+            matthews_corrcoef,
+            precision_score,
+            recall_score,
+            roc_auc_score,
+        )
+        from sklearn.model_selection import train_test_split
+        from sklearn.preprocessing import label_binarize
+
+        artifact = get_model_artifact()
+        pipe = artifact["pipeline"]
+        classes = list(artifact.get("classes", ["0_Negative", "1_Neutral", "2_Positive"]))
+        slang_map = get_fresh_slang_dict()
+
+        df_raw = pd.read_csv(RAW_DATASET_PATH, usecols=["app_name", "content", "score"])
+        sentiment_3 = np.where(
+            df_raw["score"] <= 2,
+            "0_Negative",
+            np.where(df_raw["score"] == 3, "1_Neutral", "2_Positive"),
+        )
+        strat_key = df_raw["app_name"].astype(str) + "_" + pd.Series(sentiment_3).astype(str)
+        _, test_idx = train_test_split(
+            df_raw.index.to_numpy(),
+            test_size=0.20,
+            stratify=strat_key,
+            random_state=42,
+        )
+        df_te = df_raw.loc[test_idx].copy()
+        y_te = sentiment_3[test_idx]
+
+        def _prep_eval_text(text: Any) -> str:
+            if not isinstance(text, str):
+                return ""
+            s = text.lower()
+            s = re.sub(r"http\S+|www\.\S+", " ", s)
+            s = re.sub(r"(.)\1{2,}", r"\1\1", s)
+            toks = re.findall(r"[a-z0-9]+", s)
+            return " ".join(slang_map.get(t, t) for t in toks)
+
+        x_te = [_prep_eval_text(t) for t in df_te["content"].tolist()]
+        y_pred = pipe.predict(x_te)
+        y_proba = pipe.predict_proba(x_te)
+
+        def _eval_slice(yt: np.ndarray, yp: np.ndarray, ypr: np.ndarray, label_name: str) -> Dict[str, Any]:
+            yb = label_binarize(yt, classes=classes)
+            try:
+                auc_val = round(float(roc_auc_score(yb, ypr, average="macro", multi_class="ovr")), 4)
+            except Exception:
+                auc_val = float("nan")
+            return {
+                "Nama Aplikasi": label_name,
+                "Jumlah Data Uji": int(len(yt)),
+                "Macro F1": round(float(f1_score(yt, yp, average="macro", zero_division=0)), 4),
+                "ROC-AUC": auc_val,
+                "Accuracy": round(float(accuracy_score(yt, yp)), 4),
+                "Weighted F1": round(float(f1_score(yt, yp, average="weighted", zero_division=0)), 4),
+                "Balanced Accuracy": round(float(balanced_accuracy_score(yt, yp)), 4),
+                "MCC": round(float(matthews_corrcoef(yt, yp)), 4),
+                "Macro Precision": round(float(precision_score(yt, yp, average="macro", zero_division=0)), 4),
+                "Macro Recall": round(float(recall_score(yt, yp, average="macro", zero_division=0)), 4),
+            }
+
+        rows: List[Dict[str, Any]] = []
+        for app_nm in df_te["app_name"].value_counts().index:
+            mask = (df_te["app_name"] == app_nm).to_numpy()
+            rows.append(_eval_slice(y_te[mask], y_pred[mask], y_proba[mask], str(app_nm)))
+
+        rows.sort(key=lambda r: r["Macro F1"], reverse=True)
+        return pd.DataFrame(rows)
+    except Exception:
+        return pd.DataFrame()
 
 
 @st.cache_data
@@ -695,6 +784,40 @@ def plot_model_comparison(df_models: pd.DataFrame) -> Any:
     fig.update_layout(barmode="group", yaxis_range=[0, 1.08], yaxis_title="Skor Evaluasi")
     fig.update_xaxes(tickangle=-18)
     return _style_plotly_fig(fig, height=360, show_legend=True)
+
+
+def plot_per_app_model_performance(df_sub: pd.DataFrame, selected_metrics: List[str]) -> Any:
+    """Grafik batang berkelompok perbandingan skor performa model klasifikasi antar aplikasi."""
+    metric_colors = {
+        "Macro F1": BLUE_PRIMARY,
+        "ROC-AUC": BLUE_MID,
+        "Accuracy": BLUE_LIGHT,
+        "Weighted F1": GREEN_MUTED,
+        "Balanced Accuracy": AMBER_MUTED,
+        "MCC": "#4B6B8A",
+        "Macro Precision": "#64748B",
+        "Macro Recall": RED_MUTED,
+    }
+    fig = go.Figure()
+    for m_col in selected_metrics:
+        if m_col not in df_sub.columns:
+            continue
+        fig.add_trace(go.Bar(
+            name=m_col,
+            x=df_sub["Nama Aplikasi"],
+            y=df_sub[m_col],
+            marker_color=metric_colors.get(m_col, BLUE_MID),
+            text=[f"{v:.3f}" if pd.notna(v) else "-" for v in df_sub[m_col]],
+            textposition="outside",
+            hovertemplate="%{x}<br>" + m_col + ": %{y:.4f}<extra></extra>",
+        ))
+    fig.update_layout(
+        barmode="group",
+        yaxis_range=[0, 1.12],
+        yaxis_title="Skor Performa Model (0 – 1)",
+    )
+    fig.update_xaxes(tickangle=-18)
+    return _style_plotly_fig(fig, height=390, show_legend=True)
 
 
 def plot_feature_attribution(shown_contribs: List[Tuple[str, float]]) -> Any:
@@ -1140,6 +1263,110 @@ def main():
                     st.bar_chart(df_models.set_index("model_name")[["test_macro_f1", "test_roc_auc"]])
             with c_m2:
                 st.dataframe(df_models, use_container_width=True, hide_index=True)
+
+            # ── 5B. Perbandingan Performa Model Klasifikasi per Aplikasi (Multiple Choice) ─
+            df_per_app_perf = get_per_app_model_performance()
+            if not df_per_app_perf.empty:
+                st.markdown("##### Perbandingan Performa Model Klasifikasi per Aplikasi (Interaktif)")
+                st.caption(
+                    f"Evaluasi model produksi aktif (**{model_name}**) pada masing-masing subset aplikasi "
+                    "di data uji (20% Stratified Split, N = 14.245 ulasan). Pilih beberapa aplikasi sekaligus "
+                    "untuk membandingkan skor performa klasifikasinya."
+                )
+                all_apps_perf = df_per_app_perf["Nama Aplikasi"].tolist()
+                all_metrics_perf = [
+                    "Macro F1",
+                    "ROC-AUC",
+                    "Accuracy",
+                    "Weighted F1",
+                    "Balanced Accuracy",
+                    "MCC",
+                    "Macro Precision",
+                    "Macro Recall",
+                ]
+                c_pa1, c_pa2 = st.columns([1.35, 1.0])
+                with c_pa1:
+                    selected_apps_perf = st.multiselect(
+                        "Pilih Aplikasi untuk Dibandingkan (Multiple Choice):",
+                        options=all_apps_perf,
+                        default=all_apps_perf,
+                        key="dash_perf_apps_multiselect",
+                        help="Pilih dua atau lebih aplikasi untuk membandingkan skor performa model klasifikasi antar aplikasi.",
+                    )
+                with c_pa2:
+                    selected_metrics_perf = st.multiselect(
+                        "Pilih Metrik Performa yang Dibandingkan:",
+                        options=all_metrics_perf,
+                        default=["Macro F1", "ROC-AUC", "Accuracy", "MCC"],
+                        key="dash_perf_metrics_multiselect",
+                        help="Pilih satu atau lebih metrik evaluasi model klasifikasi.",
+                    )
+
+                if selected_apps_perf and selected_metrics_perf:
+                    df_perf_sub = df_per_app_perf[
+                        df_per_app_perf["Nama Aplikasi"].isin(selected_apps_perf)
+                    ].copy()
+
+                    # Ringkasan KPI cepat dari aplikasi terpilih
+                    best_f1_row = df_perf_sub.loc[df_perf_sub["Macro F1"].idxmax()]
+                    best_auc_row = df_perf_sub.loc[df_perf_sub["ROC-AUC"].idxmax()]
+                    min_f1_row = df_perf_sub.loc[df_perf_sub["Macro F1"].idxmin()]
+                    gap_f1 = float(best_f1_row["Macro F1"]) - float(min_f1_row["Macro F1"])
+
+                    pk1, pk2, pk3 = st.columns(3)
+                    with pk1:
+                        st.markdown(
+                            f'<div class="metric-card-clean">'
+                            f'<div class="metric-card-label">Macro F1 Tertinggi (Terpilih)</div>'
+                            f'<div class="metric-card-value">{float(best_f1_row["Macro F1"]):.4f}</div>'
+                            f'<div class="metric-card-note">{best_f1_row["Nama Aplikasi"]} (N={int(best_f1_row["Jumlah Data Uji"]):,})</div>'
+                            f'</div>',
+                            unsafe_allow_html=True,
+                        )
+                    with pk2:
+                        st.markdown(
+                            f'<div class="metric-card-clean">'
+                            f'<div class="metric-card-label">ROC-AUC Tertinggi (Terpilih)</div>'
+                            f'<div class="metric-card-value">{float(best_auc_row["ROC-AUC"]):.4f}</div>'
+                            f'<div class="metric-card-note">{best_auc_row["Nama Aplikasi"]} (N={int(best_auc_row["Jumlah Data Uji"]):,})</div>'
+                            f'</div>',
+                            unsafe_allow_html=True,
+                        )
+                    with pk3:
+                        st.markdown(
+                            f'<div class="metric-card-clean">'
+                            f'<div class="metric-card-label">Rentang Selisih Macro F1</div>'
+                            f'<div class="metric-card-value">{gap_f1:.4f}</div>'
+                            f'<div class="metric-card-note">Tertinggi vs Terendah ({min_f1_row["Nama Aplikasi"]}: {float(min_f1_row["Macro F1"]):.4f})</div>'
+                            f'</div>',
+                            unsafe_allow_html=True,
+                        )
+
+                    if HAS_PLOTLY:
+                        st.plotly_chart(
+                            plot_per_app_model_performance(df_perf_sub, selected_metrics_perf),
+                            use_container_width=True,
+                        )
+                    else:
+                        st.bar_chart(df_perf_sub.set_index("Nama Aplikasi")[selected_metrics_perf])
+
+                    display_cols = ["Nama Aplikasi", "Jumlah Data Uji"] + selected_metrics_perf
+                    perf_col_cfg: Dict[str, Any] = {
+                        "Nama Aplikasi": st.column_config.TextColumn("Nama Aplikasi", width="medium"),
+                        "Jumlah Data Uji": st.column_config.NumberColumn("Jumlah Data Uji", format="%d", width="small"),
+                    }
+                    for mc in selected_metrics_perf:
+                        perf_col_cfg[mc] = st.column_config.NumberColumn(mc, format="%.4f", width="small")
+
+                    st.dataframe(
+                        df_perf_sub[display_cols],
+                        use_container_width=True,
+                        hide_index=True,
+                        height=min(360, (len(df_perf_sub) + 1) * 36 + 12),
+                        column_config=perf_col_cfg,
+                    )
+                else:
+                    st.info("Pilih minimal satu aplikasi dan satu metrik evaluasi untuk melihat perbandingan performa.")
 
             # ── 6. Analisis Bukti Empiris Keunggulan Microsoft Copilot ───────
             cop_data = get_copilot_analysis()
