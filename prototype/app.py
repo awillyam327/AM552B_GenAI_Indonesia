@@ -1066,35 +1066,68 @@ def main():
                 st.dataframe(df_priority, use_container_width=True, hide_index=True)
 
             if "top_thumbs_complaints" in bench or (df_dated_comp is not None and not df_dated_comp.empty):
+                # ── Tabel 3 (Full Width — Atas) ───────────────────────────────
                 st.markdown("---")
-                c_b1, c_b2 = st.columns([1.45, 1.0])
-                with c_b1:
-                    st.markdown("#### 3. Ulasan Keluhan dengan Dukungan (Thumbs Up / Like) Tertinggi")
-                    st.caption("Daftar keluhan pengguna yang paling banyak disetujui pengguna lain di Google Play Store.")
-                    if df_dated_comp is not None and not df_dated_comp.empty and start_d is not None and end_d is not None:
-                        df_thumbs = df_dated_comp.copy()
-                        t_dates = pd.to_datetime(df_thumbs["Tanggal"], errors="coerce").dt.date
-                        df_thumbs = df_thumbs[(t_dates >= start_d) & (t_dates <= end_d)]
-                    else:
-                        df_thumbs = pd.DataFrame(bench.get("top_thumbs_complaints", []))
+                st.markdown("#### 3. Ulasan Keluhan dengan Dukungan (Thumbs Up / Like) Tertinggi")
+                st.caption("Daftar keluhan pengguna yang paling banyak disetujui pengguna lain di Google Play Store.")
+                if df_dated_comp is not None and not df_dated_comp.empty and start_d is not None and end_d is not None:
+                    df_thumbs = df_dated_comp.copy()
+                    t_dates = pd.to_datetime(df_thumbs["Tanggal"], errors="coerce").dt.date
+                    df_thumbs = df_thumbs[(t_dates >= start_d) & (t_dates <= end_d)]
+                else:
+                    df_thumbs = pd.DataFrame(bench.get("top_thumbs_complaints", []))
 
-                    if not df_thumbs.empty:
+                if not df_thumbs.empty:
+                    c_tf1, _ = st.columns([1.2, 2.0])
+                    with c_tf1:
                         app_filter = st.selectbox(
                             "Filter Berdasarkan Aplikasi:",
                             ["Semua Aplikasi"] + list(df_thumbs["Aplikasi"].unique()),
+                            key="dash_thumbs_app_filter",
                         )
-                        if app_filter != "Semua Aplikasi":
-                            df_thumbs = df_thumbs[df_thumbs["Aplikasi"] == app_filter]
-                        st.dataframe(df_thumbs.head(20), use_container_width=True, hide_index=True)
-                    else:
-                        st.info("Tidak ada ulasan keluhan teratas pada rentang tanggal ini.")
+                    if app_filter != "Semua Aplikasi":
+                        df_thumbs = df_thumbs[df_thumbs["Aplikasi"] == app_filter]
+                    df_thumbs_view = df_thumbs.head(20)
+                    thumbs_col_cfg: Dict[str, Any] = {
+                        "Aplikasi": st.column_config.TextColumn("Aplikasi", width="medium"),
+                        "Bintang": st.column_config.NumberColumn("Bintang", format="%d", width="small"),
+                        "Jumlah Like (Thumbs Up)": st.column_config.NumberColumn(
+                            "Jumlah Like (Thumbs Up)", format="%d", width="small"
+                        ),
+                        "Aspek Terkait": st.column_config.TextColumn("Aspek Terkait", width="medium"),
+                        "Cuplikan Keluhan Pengguna": st.column_config.TextColumn(
+                            "Cuplikan Keluhan Pengguna", width="large"
+                        ),
+                    }
+                    if "Tanggal" in df_thumbs_view.columns:
+                        thumbs_col_cfg["Tanggal"] = st.column_config.TextColumn("Tanggal", width="small")
+                    st.dataframe(
+                        df_thumbs_view,
+                        use_container_width=True,
+                        hide_index=True,
+                        height=min(480, (len(df_thumbs_view) + 1) * 38 + 12),
+                        column_config=thumbs_col_cfg,
+                    )
+                else:
+                    st.info("Tidak ada ulasan keluhan teratas pada rentang tanggal ini.")
 
-                with c_b2:
+                # ── Tabel 4 (Full Width — Bawah, Berurutan) ──────────────────
+                if "competitor_mentions" in bench:
+                    st.markdown("---")
                     st.markdown("#### 4. Perbandingan Penyebutan Aplikasi Kompetitor")
                     st.caption("Frekuensi pengguna menyebut aplikasi AI pesaing di dalam ulasan suatu aplikasi.")
-                    if "competitor_mentions" in bench:
-                        df_comp_m = pd.DataFrame(bench["competitor_mentions"])
-                        st.dataframe(df_comp_m, use_container_width=True, hide_index=True)
+                    df_comp_m = pd.DataFrame(bench["competitor_mentions"])
+                    st.dataframe(
+                        df_comp_m,
+                        use_container_width=True,
+                        hide_index=True,
+                        height=min(480, (len(df_comp_m) + 1) * 36 + 12),
+                        column_config={
+                            "Ulasan pada Aplikasi": st.column_config.TextColumn("Ulasan pada Aplikasi", width="medium"),
+                            "Menyebut Kompetitor": st.column_config.TextColumn("Menyebut Kompetitor", width="medium"),
+                            "Jumlah Ulasan": st.column_config.NumberColumn("Jumlah Ulasan", format="%d", width="small"),
+                        },
+                    )
 
             st.markdown("---")
             st.markdown("#### 5. Perbandingan Performa Model Klasifikasi pada Data Uji (80:20 Stratified Split)")
