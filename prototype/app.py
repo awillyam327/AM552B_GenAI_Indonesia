@@ -335,6 +335,7 @@ def get_model_artifact():
 AUDIT_JSON_PATH = os.path.join(ROOT_DIR, "05_evaluation", "audit_results.json")
 DAILY_METRICS_PATH = os.path.join(ROOT_DIR, "models", "dashboard_daily_metrics.csv")
 DATED_COMPLAINTS_PATH = os.path.join(ROOT_DIR, "models", "dashboard_dated_complaints.csv")
+COPILOT_ANALYSIS_PATH = os.path.join(ROOT_DIR, "models", "copilot_excellence_analysis.json")
 
 
 @st.cache_data
@@ -367,6 +368,14 @@ def get_dated_complaints() -> Optional[pd.DataFrame]:
     if os.path.exists(DATED_COMPLAINTS_PATH):
         df_c = pd.read_csv(DATED_COMPLAINTS_PATH)
         return df_c
+    return None
+
+
+@st.cache_data
+def get_copilot_analysis() -> Optional[Dict[str, Any]]:
+    if os.path.exists(COPILOT_ANALYSIS_PATH):
+        with open(COPILOT_ANALYSIS_PATH, "r", encoding="utf-8") as f:
+            return json.load(f)
     return None
 
 
@@ -731,6 +740,50 @@ def plot_batch_sentiment_bar(sent_counts_df: pd.DataFrame) -> Any:
     return _style_plotly_fig(fig, height=280, show_legend=False)
 
 
+def plot_copilot_composite_index(df_comp_rank: pd.DataFrame) -> Any:
+    """Grafik batang horizontal Skor Indeks Komposit 8 Aplikasi (menyorot Microsoft Copilot)."""
+    df_s = df_comp_rank.sort_values("Skor Indeks Komposit", ascending=True)
+    colors = [BLUE_PRIMARY if a == "Microsoft Copilot" else BLUE_LIGHT for a in df_s["Nama Aplikasi"]]
+    fig = go.Figure(go.Bar(
+        x=df_s["Skor Indeks Komposit"],
+        y=df_s["Nama Aplikasi"],
+        orientation="h",
+        marker_color=colors,
+        text=[f"{v:.2f}" for v in df_s["Skor Indeks Komposit"]],
+        textposition="outside",
+        hovertemplate="%{y}<br>Skor Indeks Komposit: %{x:.2f}/100<extra></extra>",
+    ))
+    fig.update_layout(xaxis_range=[0, 98], xaxis_title="Skor Indeks Komposit (0–100)")
+    return _style_plotly_fig(fig, height=340, show_legend=False)
+
+
+def plot_copilot_vs_peers_absa(df_comp_rank: pd.DataFrame) -> Any:
+    """Grafik perbandingan NSS 4 aspek ABSA: Microsoft Copilot vs 4 kompetitor teratas."""
+    peers = [
+        "Microsoft Copilot",
+        "Perplexity - Ask Anything",
+        "Poe - Fast AI Chat",
+        "ChatGPT (OpenAI)",
+        "Google Gemini",
+    ]
+    asp_cols = ["A1: Akurasi AI", "A2: Harga & Kuota", "A3: Performa & Server", "A4: Bahasa Indonesia"]
+    palette = [BLUE_PRIMARY, BLUE_MID, BLUE_LIGHT, "#94A3B8", "#CBD5E1"]
+    sub = df_comp_rank.set_index("Nama Aplikasi")
+    fig = go.Figure()
+    for idx, app_n in enumerate(peers):
+        if app_n not in sub.index:
+            continue
+        vals = [float(sub.loc[app_n, c]) for c in asp_cols]
+        fig.add_trace(go.Bar(
+            name=app_n,
+            x=["A1: Akurasi", "A2: Harga/Kuota", "A3: Performa/UI", "A4: Bhs Lokal"],
+            y=vals,
+            marker_color=palette[idx],
+        ))
+    fig.update_layout(barmode="group", yaxis_title="Net Sentiment Score / NSS (%)")
+    return _style_plotly_fig(fig, height=340, show_legend=True)
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 #  MAIN
 # ══════════════════════════════════════════════════════════════════════════════
@@ -956,6 +1009,84 @@ def main():
                     st.bar_chart(df_models.set_index("model_name")[["test_macro_f1", "test_roc_auc"]])
             with c_m2:
                 st.dataframe(df_models, use_container_width=True, hide_index=True)
+
+            # ── 6. Analisis Bukti Empiris Keunggulan Microsoft Copilot ───────
+            cop_data = get_copilot_analysis()
+            if cop_data and "composite_ranking_table" in cop_data:
+                st.markdown("---")
+                st.markdown("#### 6. Analisis Bukti Empiris: Mengapa Microsoft Copilot Paling Unggul Secara Menyeluruh?")
+                st.caption(
+                    "Evaluasi multidimensi berbasis 71.221 ulasan Google Play Store Indonesia yang menggabungkan "
+                    "Rating Aktual Terkoreksi, keseimbangan 4 aspek ABSA, batas bawah kepercayaan Wilson 95%, serta tingkat keluhan."
+                )
+                kh = cop_data.get("key_highlights", {})
+                k_c1, k_c2, k_c3, k_c4 = st.columns(4)
+                with k_c1:
+                    st.markdown(
+                        f'<div class="metric-card-clean">'
+                        f'<div class="metric-card-label">Peringkat Indeks Komposit</div>'
+                        f'<div class="metric-card-value">#{kh.get("rank_composite", 1)} ({kh.get("composite_score", 85.53):.2f})</div>'
+                        f'<div class="metric-card-note">Tertinggi dari seluruh 8 aplikasi AI</div>'
+                        f'</div>',
+                        unsafe_allow_html=True,
+                    )
+                with k_c2:
+                    st.markdown(
+                        f'<div class="metric-card-clean">'
+                        f'<div class="metric-card-label">Rating Aktual Terkoreksi</div>'
+                        f'<div class="metric-card-value">{kh.get("adjusted_rating", 4.62):.2f} / 5.00</div>'
+                        f'<div class="metric-card-note">#1 setelah koreksi discrepancy ({kh.get("discrepancy_pct", 2.95):.2f}%)</div>'
+                        f'</div>',
+                        unsafe_allow_html=True,
+                    )
+                with k_c3:
+                    st.markdown(
+                        f'<div class="metric-card-clean">'
+                        f'<div class="metric-card-label">Rata-rata NSS 4 Aspek ABSA</div>'
+                        f'<div class="metric-card-value">{kh.get("mean_absa_nss", 46.58):+.2f}%</div>'
+                        f'<div class="metric-card-note">Satu-satunya aplikasi {kh.get("positive_aspects_count", "4/4")} aspek positif</div>'
+                        f'</div>',
+                        unsafe_allow_html=True,
+                    )
+                with k_c4:
+                    st.markdown(
+                        f'<div class="metric-card-clean">'
+                        f'<div class="metric-card-label">Konsistensi Kepuasan (N=5.459)</div>'
+                        f'<div class="metric-card-value">{kh.get("positive_share_pct", 91.9):.1f}%</div>'
+                        f'<div class="metric-card-note">Wilson 95% LB {kh.get("wilson_95_lb_pct", 91.19):.1f}% · Bintang 1 hanya {kh.get("star1_complaint_pct", 4.51):.1f}%</div>'
+                        f'</div>',
+                        unsafe_allow_html=True,
+                    )
+
+                df_comp_rank = pd.DataFrame(cop_data["composite_ranking_table"])
+                if HAS_PLOTLY and not df_comp_rank.empty:
+                    ch_cop1, ch_cop2 = st.columns(2)
+                    with ch_cop1:
+                        st.markdown("**Peringkat Skor Indeks Komposit (0–100):**")
+                        st.plotly_chart(plot_copilot_composite_index(df_comp_rank), use_container_width=True)
+                    with ch_cop2:
+                        st.markdown("**Profil NSS 4 Aspek ABSA (Copilot vs Kompetitor Utama):**")
+                        st.plotly_chart(plot_copilot_vs_peers_absa(df_comp_rank), use_container_width=True)
+
+                st.markdown("**Tabel Peringkat Keunggulan Multidimensi Lintas 8 Aplikasi:**")
+                st.dataframe(df_comp_rank, use_container_width=True, hide_index=True)
+
+                c_ev1, c_ev2 = st.columns([1.1, 1.2])
+                with c_ev1:
+                    st.markdown("**Temuan Head-to-Head terhadap Kompetitor Terdekat:**")
+                    for h2h in cop_data.get("head_to_head_summary", []):
+                        st.markdown(f"- **{h2h['Pembanding']}:** {h2h['Bukti Statistik Kredibel']}")
+                    if cop_data.get("yearly_stability"):
+                        st.markdown("**Konsistensi Rating Tahunan Microsoft Copilot (2023–2026):**")
+                        st.dataframe(pd.DataFrame(cop_data["yearly_stability"]), use_container_width=True, hide_index=True)
+
+                with c_ev2:
+                    if cop_data.get("satisfaction_drivers"):
+                        st.markdown("**Faktor Pendorong Kepuasan pada Ulasan Positif Copilot:**")
+                        st.dataframe(pd.DataFrame(cop_data["satisfaction_drivers"]), use_container_width=True, hide_index=True)
+                    if cop_data.get("verified_quotes"):
+                        st.markdown("**Sampel Bukti Ulasan Nyata Pengguna Indonesia:**")
+                        st.dataframe(pd.DataFrame(cop_data["verified_quotes"]).head(5), use_container_width=True, hide_index=True)
         else:
             st.info("Data ringkasan benchmark sedang dimuat dari hasil eksperimen notebook.")
 

@@ -1,0 +1,312 @@
+{
+  "title": "Analisis Empiris Keunggulan Microsoft Copilot di Ekosistem Mobile GenAI Indonesia",
+  "total_dataset_reviews": 71221,
+  "copilot_total_reviews": 5459,
+  "copilot_substantive_positive_reviews": 2111,
+  "key_highlights": {
+    "rank_composite": 1,
+    "composite_score": 85.53,
+    "adjusted_rating": 4.62,
+    "raw_rating": 4.65,
+    "positive_share_pct": 91.88,
+    "wilson_95_lb_pct": 91.13,
+    "star1_complaint_pct": 4.51,
+    "discrepancy_pct": 2.95,
+    "mean_absa_nss": 46.58,
+    "positive_aspects_count": "4/4"
+  },
+  "head_to_head_summary": [
+    {
+      "Pembanding": "Microsoft Copilot vs Poe - Fast AI Chat",
+      "Bukti Statistik Kredibel": "Meski rating mentah Poe 4.66 vs Copilot 4.65, sampel Copilot 3,1x lebih besar (5,459 vs 1,736 ulasan). Setelah koreksi discrepancy, Rating Aktual Copilot unggul #1 (4.62 vs 4.58), dan Poe bernilai negatif pada A2 Harga & Kuota (-21.1% vs Copilot +42.4%)."
+    },
+    {
+      "Pembanding": "Microsoft Copilot vs ChatGPT (OpenAI)",
+      "Bukti Statistik Kredibel": "ChatGPT unggul volume unduhan (22,000 ulasan), namun menderita keluhan berat pada A2 Harga & Kuota (-30.4%) serta A3 Performa/Server (-18.1%). Copilot unggul di seluruh 4 aspek dengan rata-rata NSS +46.58% vs ChatGPT +12.73%."
+    },
+    {
+      "Pembanding": "Microsoft Copilot vs Perplexity - Ask Anything",
+      "Bukti Statistik Kredibel": "Perplexity kuat pada pencarian & kecepatan (+40.0%), tetapi masih negatif pada A2 Harga & Kuota (-5.5%). Copilot unggul pada Rating Terkoreksi (4.62 vs 4.52) dan A4 Bahasa Indonesia (+45.0% vs +8.8%)."
+    }
+  ],
+  "composite_ranking_table": [
+    {
+      "Peringkat": 1,
+      "Nama Aplikasi": "Microsoft Copilot",
+      "Jumlah Ulasan": 5459,
+      "Rating Play Store": 4.65,
+      "Rating Terkoreksi": 4.62,
+      "Proporsi Positif (%)": 91.88,
+      "Wilson 95% LB (%)": 91.13,
+      "Rasio Bintang 1 (%)": 4.51,
+      "Simpangan Baku": 0.94,
+      "Discrepancy (%)": 2.95,
+      "Like Keluhan / 1k Ulasan": 132.8,
+      "A1: Akurasi AI": 84.1,
+      "A2: Harga & Kuota": 42.4,
+      "A3: Performa & Server": 14.8,
+      "A4: Bahasa Indonesia": 45.0,
+      "Rata-rata NSS 4 Aspek (%)": 46.58,
+      "Jumlah Aspek Positif": "4/4",
+      "Skor Indeks Komposit": 85.53
+    },
+    {
+      "Peringkat": 2,
+      "Nama Aplikasi": "Poe - Fast AI Chat",
+      "Jumlah Ulasan": 1736,
+      "Rating Play Store": 4.66,
+      "Rating Terkoreksi": 4.58,
+      "Proporsi Positif (%)": 92.11,
+      "Wilson 95% LB (%)": 90.75,
+      "Rasio Bintang 1 (%)": 3.8,
+      "Simpangan Baku": 0.91,
+      "Discrepancy (%)": 4.67,
+      "Like Keluhan / 1k Ulasan": 213.1,
+      "A1: Akurasi AI": 88.9,
+      "A2: Harga & Kuota": -21.1,
+      "A3: Performa & Server": 15.4,
+      "A4: Bahasa Indonesia": 23.5,
+      "Rata-rata NSS 4 Aspek (%)": 26.68,
+      "Jumlah Aspek Positif": "3/4",
+      "Skor Indeks Komposit": 81.57
+    },
+    {
+      "Peringkat": 3,
+      "Nama Aplikasi": "Perplexity - Ask Anything",
+      "Jumlah Ulasan": 8043,
+      "Rating Play Store": 4.54,
+      "Rating Terkoreksi": 4.52,
+      "Proporsi Positif (%)": 88.98,
+      "Wilson 95% LB (%)": 88.28,
+      "Rasio Bintang 1 (%)": 6.74,
+      "Simpangan Baku": 1.09,
+      "Discrepancy (%)": 2.47,
+      "Like Keluhan / 1k Ulasan": 356.6,
+      "A1: Akurasi AI": 82.9,
+      "A2: Harga & Kuota": -5.5,
+      "A3: Performa & Server": 40.0,
+      "A4: Bahasa Indonesia": 8.8,
+      "Rata-rata NSS 4 Aspek (%)": 31.55,
+      "Jumlah Aspek Positif": "3/4",
+      "Skor Indeks Komposit": 81.5
+    },
+    {
+      "Peringkat": 4,
+      "Nama Aplikasi": "ChatGPT (OpenAI)",
+      "Jumlah Ulasan": 22000,
+      "Rating Play Store": 4.46,
+      "Rating Terkoreksi": 4.43,
+      "Proporsi Positif (%)": 86.47,
+      "Wilson 95% LB (%)": 86.01,
+      "Rasio Bintang 1 (%)": 8.49,
+      "Simpangan Baku": 1.2,
+      "Discrepancy (%)": 3.13,
+      "Like Keluhan / 1k Ulasan": 145.5,
+      "A1: Akurasi AI": 77.2,
+      "A2: Harga & Kuota": -30.4,
+      "A3: Performa & Server": -18.1,
+      "A4: Bahasa Indonesia": 22.2,
+      "Rata-rata NSS 4 Aspek (%)": 12.73,
+      "Jumlah Aspek Positif": "2/4",
+      "Skor Indeks Komposit": 76.91
+    },
+    {
+      "Peringkat": 5,
+      "Nama Aplikasi": "Google Gemini",
+      "Jumlah Ulasan": 12600,
+      "Rating Play Store": 4.29,
+      "Rating Terkoreksi": 4.27,
+      "Proporsi Positif (%)": 81.71,
+      "Wilson 95% LB (%)": 81.02,
+      "Rasio Bintang 1 (%)": 12.04,
+      "Simpangan Baku": 1.37,
+      "Discrepancy (%)": 4.17,
+      "Like Keluhan / 1k Ulasan": 603.1,
+      "A1: Akurasi AI": 60.4,
+      "A2: Harga & Kuota": -30.7,
+      "A3: Performa & Server": -15.9,
+      "A4: Bahasa Indonesia": -16.0,
+      "Rata-rata NSS 4 Aspek (%)": -0.55,
+      "Jumlah Aspek Positif": "1/4",
+      "Skor Indeks Komposit": 72.1
+    },
+    {
+      "Peringkat": 6,
+      "Nama Aplikasi": "DeepSeek - AI Assistant",
+      "Jumlah Ulasan": 5374,
+      "Rating Play Store": 3.77,
+      "Rating Terkoreksi": 3.65,
+      "Proporsi Positif (%)": 66.58,
+      "Wilson 95% LB (%)": 65.31,
+      "Rasio Bintang 1 (%)": 20.75,
+      "Simpangan Baku": 1.64,
+      "Discrepancy (%)": 7.26,
+      "Like Keluhan / 1k Ulasan": 1080.9,
+      "A1: Akurasi AI": 33.1,
+      "A2: Harga & Kuota": 13.7,
+      "A3: Performa & Server": -24.6,
+      "A4: Bahasa Indonesia": -0.8,
+      "Rata-rata NSS 4 Aspek (%)": 5.35,
+      "Jumlah Aspek Positif": "2/4",
+      "Skor Indeks Komposit": 64.63
+    },
+    {
+      "Peringkat": 7,
+      "Nama Aplikasi": "Claude by Anthropic",
+      "Jumlah Ulasan": 4009,
+      "Rating Play Store": 3.85,
+      "Rating Terkoreksi": 3.74,
+      "Proporsi Positif (%)": 69.34,
+      "Wilson 95% LB (%)": 67.9,
+      "Rasio Bintang 1 (%)": 21.43,
+      "Simpangan Baku": 1.66,
+      "Discrepancy (%)": 5.84,
+      "Like Keluhan / 1k Ulasan": 725.4,
+      "A1: Akurasi AI": 53.1,
+      "A2: Harga & Kuota": -25.8,
+      "A3: Performa & Server": -50.5,
+      "A4: Bahasa Indonesia": -2.0,
+      "Rata-rata NSS 4 Aspek (%)": -6.3,
+      "Jumlah Aspek Positif": "1/4",
+      "Skor Indeks Komposit": 63.78
+    },
+    {
+      "Peringkat": 8,
+      "Nama Aplikasi": "Character.AI",
+      "Jumlah Ulasan": 12000,
+      "Rating Play Store": 1.58,
+      "Rating Terkoreksi": 1.5,
+      "Proporsi Positif (%)": 11.36,
+      "Wilson 95% LB (%)": 10.8,
+      "Rasio Bintang 1 (%)": 77.55,
+      "Simpangan Baku": 1.24,
+      "Discrepancy (%)": 5.97,
+      "Like Keluhan / 1k Ulasan": 2736.5,
+      "A1: Akurasi AI": -81.3,
+      "A2: Harga & Kuota": -87.9,
+      "A3: Performa & Server": -91.1,
+      "A4: Bahasa Indonesia": -75.3,
+      "Rata-rata NSS 4 Aspek (%)": -83.9,
+      "Jumlah Aspek Positif": "0/4",
+      "Skor Indeks Komposit": 18.09
+    }
+  ],
+  "yearly_stability": [
+    {
+      "Tahun": 2023,
+      "Jumlah Ulasan": 16,
+      "Rata-rata Bintang": 4.75,
+      "Proporsi Bintang 4-5 (%)": 93.8,
+      "Proporsi Bintang 1-2 (%)": 6.2
+    },
+    {
+      "Tahun": 2024,
+      "Jumlah Ulasan": 2554,
+      "Rata-rata Bintang": 4.65,
+      "Proporsi Bintang 4-5 (%)": 91.7,
+      "Proporsi Bintang 1-2 (%)": 5.9
+    },
+    {
+      "Tahun": 2025,
+      "Jumlah Ulasan": 2259,
+      "Rata-rata Bintang": 4.7,
+      "Proporsi Bintang 4-5 (%)": 93.2,
+      "Proporsi Bintang 1-2 (%)": 4.7
+    },
+    {
+      "Tahun": 2026,
+      "Jumlah Ulasan": 630,
+      "Rata-rata Bintang": 4.52,
+      "Proporsi Bintang 4-5 (%)": 88.1,
+      "Proporsi Bintang 1-2 (%)": 9.4
+    }
+  ],
+  "satisfaction_drivers": [
+    {
+      "Faktor Keunggulan Utama": "Kecepatan Respons, UI Ringan & Stabilitas Server",
+      "Dimensi ABSA": "A3: Performa, UI/UX & Server",
+      "Jumlah Ulasan Eksplisit": 252,
+      "% dari Ulasan Substantif (>=4 Kata)": 11.9
+    },
+    {
+      "Faktor Keunggulan Utama": "Akurasi Jawaban, Penalaran GPT-4 & Referensi Web",
+      "Dimensi ABSA": "A1: Akurasi & Kecerdasan AI",
+      "Jumlah Ulasan Eksplisit": 258,
+      "% dari Ulasan Substantif (>=4 Kata)": 12.2
+    },
+    {
+      "Faktor Keunggulan Utama": "Dukungan Tugas Kuliah, Skripsi, Koding & Produktivitas Kerja",
+      "Dimensi ABSA": "A1: Akurasi & Kecerdasan AI",
+      "Jumlah Ulasan Eksplisit": 172,
+      "% dari Ulasan Substantif (>=4 Kata)": 8.1
+    },
+    {
+      "Faktor Keunggulan Utama": "Pembuatan Gambar / Desain AI & Multimodalitas",
+      "Dimensi ABSA": "A1 & A2 (Fitur Kreatif Gratis)",
+      "Jumlah Ulasan Eksplisit": 142,
+      "% dari Ulasan Substantif (>=4 Kata)": 6.7
+    },
+    {
+      "Faktor Keunggulan Utama": "Pemahaman Bahasa Indonesia Luwes & Natural",
+      "Dimensi ABSA": "A4: Bahasa Indonesia & Konteks Lokal",
+      "Jumlah Ulasan Eksplisit": 67,
+      "% dari Ulasan Substantif (>=4 Kata)": 3.2
+    },
+    {
+      "Faktor Keunggulan Utama": "Akses Fitur Premium Gratis Tanpa Paywall Agresif",
+      "Dimensi ABSA": "A2: Harga & Limitasi Kuota",
+      "Jumlah Ulasan Eksplisit": 59,
+      "% dari Ulasan Substantif (>=4 Kata)": 2.8
+    }
+  ],
+  "verified_quotes": [
+    {
+      "Tanggal": "2024-10-07",
+      "Bintang": 5,
+      "Thumbs Up": 82,
+      "Kutipan Ulasan Asli": "Sangat Terbantu Untuk Masalah Tertentu, Termasuk Masalah Pencairan Dengan Ai Yang Sebelumnya menggunakan Microsoft Edge dan SwiftKey, sekarang sudah di proses dengan baik dan cepat. Terimakasih banyak Microsoft©"
+    },
+    {
+      "Tanggal": "2024-11-26",
+      "Bintang": 5,
+      "Thumbs Up": 59,
+      "Kutipan Ulasan Asli": "Sangat membantu untuk mencari informasi, bukan memecahkan masalah. Anggaplah ini seperti bicara dengan mesin pencari, dia akan menjawab dengan hasil pencarian. Jangan sampai salah guna hingga menganggapnya bisa menggantikan kita atau orang lain mengerjakan tugas."
+    },
+    {
+      "Tanggal": "2024-05-30",
+      "Bintang": 5,
+      "Thumbs Up": 59,
+      "Kutipan Ulasan Asli": "Kita jangan pernah dukung perkembangan AI milik google, karena google bakal menggunakan buat mesin perang. Microsoft Copilot ini menjaga kuat etika penggunaan AI untuk hal positif. Microsoft Copilot inilah yang harus kita dukung supaya bisa merajai dunia AI"
+    },
+    {
+      "Tanggal": "2025-03-10",
+      "Bintang": 5,
+      "Thumbs Up": 57,
+      "Kutipan Ulasan Asli": "Aplikasi ini keren banget woiiii sumpah😱😱😱😱...bikin cinta...pokonya kalian yg mau berbicara atau sekedar chat doang itu bagus banget krna bisa berbagai bahasa,, terutama untuk kalian yg pengen latihan bahasa apa pun bisa pakai aplikasi ini...."
+    },
+    {
+      "Tanggal": "2024-05-13",
+      "Bintang": 5,
+      "Thumbs Up": 51,
+      "Kutipan Ulasan Asli": "sangat kreatif dan pintar dalam menjawab persoalan gambar dan soal lainnya tapi mohon jadikan Microsoft copilot sebagai asisten AI di semua ponsel Android karena ketika lagi sibuk tidak sempat untuk membuka APPS nya makanya tolong sediakan asisten AI NYA dong"
+    },
+    {
+      "Tanggal": "2025-04-14",
+      "Bintang": 5,
+      "Thumbs Up": 43,
+      "Kutipan Ulasan Asli": "Penalaran Ai Ini bagus, Layout Ui nya bagus, cuma font dari aplikasi ini tidak nyaman dibaca, dan pewarnaan Ui tidak enak dilihat lama, kalau bisa seperti grox dari X, latar belakang dark mode, warna textnya putih"
+    },
+    {
+      "Tanggal": "2024-04-20",
+      "Bintang": 5,
+      "Thumbs Up": 43,
+      "Kutipan Ulasan Asli": "Hebat, bagus, futur lengkap hingga bisa bikin lukisan. Dan yg pasti full gratis semua nya tanpa ada batasan. Dan hebatnya lagi kita bisa tanya tentang hal² yg di Ai lain jawabanya dibatasi atau terlarang. Misal cari software crack dsbnya. Goggle gemini dan Ai lain ke laut saja."
+    },
+    {
+      "Tanggal": "2024-02-06",
+      "Bintang": 5,
+      "Thumbs Up": 36,
+      "Kutipan Ulasan Asli": "Aplikasinya bagus, hanya saja ada hal yang masih kurang yaitu dalam hal nama atau tulisan, terkadang tidak sesuai. Ke depannya dimohon agar bisa menyesuaikan. Terima kasih."
+    }
+  ]
+}
