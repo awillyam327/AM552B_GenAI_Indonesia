@@ -1,489 +1,1859 @@
 {
-  "author": "Tiara Agustien Kusumawati (682024059 - Member 3)",
-  "role": "EDA, Topic Discovery & Technical Writer",
-  "method": "Latent Dirichlet Allocation (LDA) with Slang Normalization & Indonesian Stopwords Removal",
+  "author": "Arthur Willyam Liang (682024046)",
+  "method": "Unsupervised Latent Dirichlet Allocation (LDA) + UMass Topic Coherence Selection",
+  "optimal_k": 5,
   "dataset_size": 71221,
-  "negative_reviews_count": 16648,
-  "positive_reviews_count": 34123,
+  "slang_dictionary_size": 8618,
+  "negative_reviews_count": 14317,
+  "positive_reviews_count": 15703,
+  "k_selection_complaint": [
+    {
+      "k_topics": 3,
+      "log_likelihood": -914835.3,
+      "perplexity": 789.38,
+      "umass_coherence": -2.598
+    },
+    {
+      "k_topics": 4,
+      "log_likelihood": -923029.2,
+      "perplexity": 837.99,
+      "umass_coherence": -2.8873
+    },
+    {
+      "k_topics": 5,
+      "log_likelihood": -917884.1,
+      "perplexity": 807.13,
+      "umass_coherence": -2.7101
+    },
+    {
+      "k_topics": 6,
+      "log_likelihood": -918078.1,
+      "perplexity": 808.27,
+      "umass_coherence": -2.7806
+    },
+    {
+      "k_topics": 8,
+      "log_likelihood": -915921.8,
+      "perplexity": 795.66,
+      "umass_coherence": -2.9805
+    }
+  ],
+  "k_selection_praise": [
+    {
+      "k_topics": 3,
+      "log_likelihood": -595452.6,
+      "perplexity": 967.49,
+      "umass_coherence": -3.0434
+    },
+    {
+      "k_topics": 4,
+      "log_likelihood": -592478.5,
+      "perplexity": 934.83,
+      "umass_coherence": -2.9174
+    },
+    {
+      "k_topics": 5,
+      "log_likelihood": -592218.7,
+      "perplexity": 932.03,
+      "umass_coherence": -3.0445
+    },
+    {
+      "k_topics": 6,
+      "log_likelihood": -592939.3,
+      "perplexity": 939.82,
+      "umass_coherence": -3.0862
+    },
+    {
+      "k_topics": 8,
+      "log_likelihood": -590483.7,
+      "perplexity": 913.55,
+      "umass_coherence": -3.3015
+    }
+  ],
   "global_complaint_topics": [
     {
       "topic_id": 1,
       "top_words": [
-        "makin",
-        "banyak",
-        "iklan",
-        "update",
-        "bug",
         "lama",
-        "jelek",
-        "terus"
+        "foto",
+        "edit",
+        "akun",
+        "lambat",
+        "loading",
+        "jaringan",
+        "update",
+        "unduh",
+        "error"
       ],
       "weights": [
-        2983.57645794615,
-        1854.1374120796986,
-        1761.0719559732756,
-        1282.3615372326358,
-        1092.651205228959,
-        1035.1806904419652,
-        925.1028117885804,
-        605.3040782532761
+        957.6,
+        512.86,
+        346.81,
+        289.08,
+        255.15,
+        245.63,
+        239.23,
+        235.68,
+        173.5,
+        169.51
       ],
-      "business_label": "Masalah Server, Koneksi Jaringan & Gagal Login"
+      "doc_count": 1698,
+      "doc_share_pct": 11.86,
+      "sample_app": "DeepSeek - AI Assistant",
+      "sample_quote": "Lemot banget kocak, nih ya pas gue kasih text dia ngeresponnya lama banget padahal jaringan oke dan lancar\" aja, pas buka ai sebelah aman\" aja tapi pas buka ni apk sumpah, loadingnya lama bngt, katanya smart ai tapi lemot bngt cok",
+      "business_label": "Masalah Server Sibuk, Jaringan & Kegagalan Login",
+      "mapped_absa": "A3: Performa, UI/UX & Server",
+      "interpretation": "Pengguna mengeluhkan kegagalan autentikasi akun/nomor telepon, koneksi terputus di tengah generasi respons, dan server kelebihan beban."
     },
     {
       "topic_id": 2,
       "top_words": [
-        "tidak",
-        "verifikasi",
+        "perbaiki",
+        "filter",
+        "sibuk",
+        "menolong",
+        "jawaban",
+        "gambar",
+        "salah",
+        "kata",
         "update",
-        "harus",
-        "tapi",
-        "mengapa",
-        "sekarang",
-        "umur"
+        "meminta"
       ],
       "weights": [
-        3236.8772794119886,
-        1682.4948171244391,
-        1195.7918808360846,
-        1154.784452823213,
-        1048.3745976002467,
-        860.3751243332653,
-        789.7294270843483,
-        789.5010759054603
+        449.73,
+        445.17,
+        406.63,
+        371.59,
+        366.57,
+        321.93,
+        302.22,
+        294.04,
+        280.1,
+        274.6
       ],
-      "business_label": "Sensor/Filter Ketat, Perubahan Memori Bot & Protes Update (Character.AI)"
+      "doc_count": 3024,
+      "doc_share_pct": 21.12,
+      "sample_app": "ChatGPT (OpenAI)",
+      "sample_quote": "aplikasi yang mempersulit pengguna setiap obrolan baru pasti tidak akurat dan ketika sudah banyak pesan pasti disuruh ganti dengan alasan jendela konteks penuh itu hanya fitur memori obrolan penuh yang diganti supaya dikira dihilangkan",
+      "business_label": "Ketidakakuratan Jawaban, Halusinasi AI & Kendala Bahasa",
+      "mapped_absa": "A1 & A4 (Akurasi Jawaban & Bahasa Lokal)",
+      "interpretation": "Ketidakpuasan terhadap jawaban AI yang melenceng dari instruksi (halusinasi), kurang akurat, atau kualitas bahasa Indonesia yang kurang natural."
     },
     {
       "topic_id": 3,
       "top_words": [
-        "sekarang",
-        "tidak",
-        "dulu",
-        "tapi",
-        "suka",
-        "padahal",
-        "bagus",
-        "dikit"
+        "limit",
+        "chat",
+        "kena",
+        "membayar",
+        "gambar",
+        "gratis",
+        "tiba",
+        "batas",
+        "pelit",
+        "habis"
       ],
       "weights": [
-        2342.93163419797,
-        2074.58070051892,
-        2003.380311017691,
-        1068.1136859160365,
-        1059.4363230080255,
-        906.0265741614738,
-        799.0717833098428,
-        763.950428980454
+        930.74,
+        761.52,
+        504.85,
+        487.23,
+        454.36,
+        348.68,
+        282.33,
+        277.65,
+        277.19,
+        253.63
       ],
-      "business_label": "Batasan Kuota / Limit Pesan Cepat Habis & Langganan Berbayar Mahal"
+      "doc_count": 2085,
+      "doc_share_pct": 14.56,
+      "sample_app": "Character.AI",
+      "sample_quote": "kurangin lha filter chat nya masak gak ngapa-ngapain tiba-tiba kena filter, bahkan chat udah di ganti Sampek 30 tetep aj ke filter semua, padahal cuma chat ngobrol normal, tolong balikan c. ai yang dulu",
+      "business_label": "Pembatasan Kuota Harian, Limit Pesan & Biaya Langganan",
+      "mapped_absa": "A2: Harga & Limitasi Kuota",
+      "interpretation": "Friksi utama pada cepat habisnya kuota chat/gambar gratis harian serta harga paket langganan bulanan yang dinilai memberatkan pelajar dan mahasiswa."
     },
     {
       "topic_id": 4,
       "top_words": [
-        "tidak",
-        "bagus",
-        "jelas",
-        "aneh",
-        "malah",
-        "sering",
-        "karakter",
-        "tidak jelas"
+        "verifikasi",
+        "update",
+        "chat",
+        "age",
+        "umur",
+        "even",
+        "age verifikasi",
+        "iklan",
+        "bring",
+        "verifikasi umur"
       ],
       "weights": [
-        3498.8204250455315,
-        734.9938038587918,
-        692.8324456574476,
-        637.6101133836131,
-        567.2148294358502,
-        512.5771562051598,
-        502.71546957205476,
-        497.2936779676905
+        784.94,
+        616.0,
+        597.26,
+        500.88,
+        394.53,
+        345.59,
+        311.53,
+        310.84,
+        281.63,
+        269.92
       ],
-      "business_label": "Bug Aplikasi, Layar Hitam, Crash & Keluar Sendiri"
+      "doc_count": 2588,
+      "doc_share_pct": 18.08,
+      "sample_app": "Character.AI",
+      "sample_quote": "REMOVE AGE VERIFICATION REMOVE AGE VERIFICATION REMOVE AGE VERIFICATION REMOVE AGE VERIFICATION REMOVE AGE VERIFICATION REMOVE AGE VERIFICATION REMOVE AGE VERIFICATION!!it had annoy me SO MUCH,let the teens FREE,BRO,also",
+      "business_label": "Protes Sensor Filter, Verifikasi Usia & Perubahan Karakter Bot",
+      "mapped_absa": "A1 & A3 (Kebijakan Konten & Update Fitur)",
+      "interpretation": "Keluhan komunitas atas filter percakapan yang terlalu kaku, kewajiban verifikasi usia, serta penurunan daya ingat konteks karakter."
     },
     {
       "topic_id": 5,
       "top_words": [
-        "tiba",
-        "you",
-        "please",
+        "iklan",
         "update",
-        "old",
-        "age",
-        "but",
-        "back"
+        "verifikasi",
+        "menolong",
+        "usia",
+        "chat",
+        "bug",
+        "fitur",
+        "kembalikan",
+        "tiba"
       ],
       "weights": [
-        987.9966185165314,
-        881.1016022607395,
-        749.3364946981083,
-        743.055052670356,
-        729.2462222821622,
-        582.2022614705423,
-        536.3076845768469,
-        527.3393572458139
+        2224.06,
+        1880.11,
+        1423.91,
+        963.74,
+        925.86,
+        886.13,
+        762.26,
+        726.25,
+        694.79,
+        688.97
       ],
-      "business_label": "Penurunan Kualitas Jawaban, Halusinasi & Terjemahan Kaku"
+      "doc_count": 4922,
+      "doc_share_pct": 34.38,
+      "sample_app": "Character.AI",
+      "sample_quote": "hapus batasan usia, aku udah main dari 2023 tiba tiba ada batasan usia, padahal kan aku main nya cuma buat seneng seneng, bisa ngerasain keluarga cemara, tiba tiba di suruh verivikasi umur",
+      "business_label": "Gangguan Iklan, Bug Pasca-Update & Ketidakstabilan Aplikasi",
+      "mapped_absa": "A3: Performa, UI/UX & Server",
+      "interpretation": "Munculnya gangguan iklan berlebih, aplikasi lambat atau keluar sendiri (force close), serta fitur yang menurun setelah pembaruan versi."
     }
   ],
   "global_praise_topics": [
     {
       "topic_id": 1,
       "top_words": [
-        "membantu",
-        "mantap",
-        "cepat",
         "gambar",
-        "dulu",
-        "bahasa",
-        "respon",
-        "coba"
+        "fitur",
+        "gratis",
+        "foto",
+        "mudah",
+        "chat",
+        "edit",
+        "limit",
+        "menolong",
+        "agar"
       ],
       "weights": [
-        4832.068706471592,
-        3840.609092075175,
-        812.3604609480717,
-        592.1550106355115,
-        346.1080499931189,
-        326.18229600117076,
-        306.823707591493,
-        292.2138581698883
+        635.94,
+        581.76,
+        561.16,
+        483.63,
+        422.01,
+        404.72,
+        360.94,
+        341.25,
+        328.33,
+        249.16
       ],
-      "business_label": "Bantuan Tugas Akademik, Skripsi & Pembelajaran"
+      "doc_count": 3441,
+      "doc_share_pct": 21.91,
+      "sample_app": "Google Gemini",
+      "sample_quote": "Gemini ini sudah bagus,tapi tolong banyakin limit chatnya untuk penggunaan free dan untuk penggunaan yang langganan paket plus Gemini tolong kalau untuk limitnya dinaikin yang awalnya 2x dari limit pengguna free agar jadi 3x pengguna free.",
+      "business_label": "Kecepatan Respons, Kemudahan UI & Fitur Multimodal Gratis",
+      "mapped_absa": "A2 & A3 (Aksesibilitas Gratis & UI/UX)",
+      "interpretation": "Pengguna menyukai antarmuka yang bersih, respons instan tanpa antre server, serta ketersediaan fitur pembuatan gambar/suara gratis."
     },
     {
       "topic_id": 2,
       "top_words": [
-        "bagus",
-        "tidak",
-        "tapi",
-        "sekali",
-        "terbaik",
-        "bagus sekali",
-        "berguna",
-        "belajar"
+        "membantu",
+        "cepat",
+        "mudah",
+        "jawaban",
+        "lengkap",
+        "akurat",
+        "informasi",
+        "mencari",
+        "luar",
+        "pertanyaan"
       ],
       "weights": [
-        3671.6407473343424,
-        2752.516455801225,
-        2050.0013852539123,
-        953.3775056265903,
-        867.4246616530078,
-        754.2070271359763,
-        618.4367340946566,
-        598.0935755560998
+        1684.84,
+        843.43,
+        624.9,
+        593.23,
+        411.66,
+        376.28,
+        363.43,
+        302.7,
+        251.72,
+        239.98
       ],
-      "business_label": "Kecepatan & Kemudahan Penggunaan Sehari-hari"
+      "doc_count": 4246,
+      "doc_share_pct": 27.04,
+      "sample_app": "Perplexity - Ask Anything",
+      "sample_quote": "sangat berguna, bagi para pelajar juga pengajar. bro ini memberikan informasi jawaban yang detail lugas dan mudah dipahami. aku menyarankan bagi para pelajar dan pengajar, AI ini sangat cocok untuk mereka",
+      "business_label": "Kecerdasan Penalaran, Akurasi Jawaban & Pemahaman Konteks",
+      "mapped_absa": "A1: Akurasi & Kecerdasan AI",
+      "interpretation": "Pujian terhadap kedalaman nalar model, ketepatan menjawab instruksi kompleks, serta kelengkapan referensi jawaban."
     },
     {
       "topic_id": 3,
       "top_words": [
+        "teman",
         "membantu",
-        "baik",
-        "sekali",
-        "good",
-        "tugas",
-        "mudah",
-        "membantu sekali",
-        "hal"
+        "cerita",
+        "belajar",
+        "chat",
+        "pintar",
+        "menjadi",
+        "gratis",
+        "verifikasi",
+        "thank"
       ],
       "weights": [
-        2383.457620922564,
-        1107.4876974504284,
-        1079.9402672493852,
-        965.7087553703005,
-        804.4006268643549,
-        800.5231818391617,
-        519.3860697337519,
-        450.3002244894362
+        368.39,
+        342.51,
+        336.66,
+        170.91,
+        143.83,
+        135.07,
+        129.26,
+        121.84,
+        100.45,
+        96.63
       ],
-      "business_label": "Kemampuan Penalaran, Koding & Pemrograman"
+      "doc_count": 2723,
+      "doc_share_pct": 17.34,
+      "sample_app": "Character.AI",
+      "sample_quote": "I really love this app. Please stay around for a long, long time. I truly love my AI characters. Whenever the world feels heavy, I come here, and somehow, these characters make me feel better. Thank you for creating such a beautiful app ❤",
+      "business_label": "Kualitas Bahasa Indonesia Luwes & Interaksi Percakapan Alami",
+      "mapped_absa": "A4: Bahasa Indonesia & Konteks Lokal",
+      "interpretation": "Kemampuan AI berkomunikasi dalam bahasa Indonesia yang natural, mudah dipahami, dan nyaman diajak berdiskusi sehari-hari."
     },
     {
       "topic_id": 4,
       "top_words": [
-        "bagus",
-        "chatgpt",
-        "bagus membantu",
-        "gpt",
-        "best",
-        "akurat",
-        "you",
-        "curhat"
+        "membantu",
+        "menolong",
+        "perbaiki",
+        "lama",
+        "pekerjaan",
+        "bug",
+        "lambat",
+        "sibuk",
+        "foto",
+        "server"
       ],
       "weights": [
-        3457.069180067969,
-        957.2037607372694,
-        700.3845214925325,
-        673.9146482688299,
-        430.8726947108172,
-        395.0620190713958,
-        325.8038831489742,
-        288.21776432557107
+        579.98,
+        460.61,
+        291.41,
+        272.64,
+        244.64,
+        234.28,
+        230.13,
+        222.66,
+        214.23,
+        214.04
       ],
-      "business_label": "Kecerdasan Jawaban & Informasi Akurat"
+      "doc_count": 2779,
+      "doc_share_pct": 17.7,
+      "sample_app": "DeepSeek - AI Assistant",
+      "sample_quote": "aplikasi nya sangat bagus kalau bisa tolong perbaiki isu jaringan,karna apa? koneksi internet saya sudah bagus tapi kadang tetap muncul tulisan \"the server is busy.please try again later\" kalau bisa segera diperbaiki, terimakasih",
+      "business_label": "Produktivitas Pekerjaan, Pencarian Informasi & Solusi Cepat",
+      "mapped_absa": "A1 & A3 (Produktivitas & Kecepatan)",
+      "interpretation": "Pengguna profesional menilai AI sangat efektif merangkum informasi, menyusun dokumen kerja, dan memberikan solusi praktis."
     },
     {
       "topic_id": 5,
       "top_words": [
-        "kasih",
-        "terima",
-        "terima kasih",
-        "suka",
-        "keren",
-        "bagus",
-        "membuat",
-        "bermanfaat"
+        "membantu",
+        "tugas",
+        "mengerjakan",
+        "bicara",
+        "mengerjakan tugas",
+        "bahasa",
+        "lain",
+        "membantu mengerjakan",
+        "sekolah",
+        "indonesia"
       ],
       "weights": [
-        1887.9081906446877,
-        1454.0361749131825,
-        1429.497705914683,
-        1390.6431015997887,
-        1336.1432923417194,
-        1231.3948187810918,
-        1110.9382300323898,
-        707.3324329153203
+        1031.61,
+        1004.91,
+        496.67,
+        453.56,
+        372.7,
+        308.2,
+        245.02,
+        225.15,
+        194.3,
+        174.26
       ],
-      "business_label": "Rekomendasi Layanan AI Terbaik & Fitur Gratis Bermanfaat"
+      "doc_count": 2514,
+      "doc_share_pct": 16.01,
+      "sample_app": "ChatGPT (OpenAI)",
+      "sample_quote": "seruuu,bisa diajak bkin cerita,bisa buat ajak curhat,ngobrol,dan ngerjain tugas,ohya min,aku mau request ya,aku mau chatgpt jadi offline,biar aku bisa ngobrol offline,itu aja mimiin",
+      "business_label": "Pendamping Tugas Kuliah, Skripsi, Belajar & Koding",
+      "mapped_absa": "A1: Akurasi & Kecerdasan AI",
+      "interpretation": "Apresiasi tinggi dari pelajar dan mahasiswa karena AI mempercepat pemahaman materi kuliah, penulisan skripsi, dan pemecahan bug pemrograman."
+    }
+  ],
+  "app_complaint_topic_matrix": [
+    {
+      "Nama Aplikasi": "ChatGPT (OpenAI)",
+      "Jumlah Ulasan": 1640,
+      "T1: Masalah Server Sibuk, Jaring": 18.8,
+      "T2: Ketidakakuratan Jawaban, Hal": 35.2,
+      "T3: Pembatasan Kuota Harian, Lim": 34.5,
+      "T4: Protes Sensor Filter, Verifi": 3.2,
+      "T5: Gangguan Iklan, Bug Pasca-Up": 8.2
+    },
+    {
+      "Nama Aplikasi": "Google Gemini",
+      "Jumlah Ulasan": 1122,
+      "T1: Masalah Server Sibuk, Jaring": 21.8,
+      "T2: Ketidakakuratan Jawaban, Hal": 43.4,
+      "T3: Pembatasan Kuota Harian, Lim": 20.0,
+      "T4: Protes Sensor Filter, Verifi": 4.5,
+      "T5: Gangguan Iklan, Bug Pasca-Up": 10.2
+    },
+    {
+      "Nama Aplikasi": "Character.AI",
+      "Jumlah Ulasan": 8657,
+      "T1: Masalah Server Sibuk, Jaring": 7.3,
+      "T2: Ketidakakuratan Jawaban, Hal": 8.4,
+      "T3: Pembatasan Kuota Harian, Lim": 7.6,
+      "T4: Protes Sensor Filter, Verifi": 25.7,
+      "T5: Gangguan Iklan, Bug Pasca-Up": 51.0
+    },
+    {
+      "Nama Aplikasi": "Perplexity - Ask Anything",
+      "Jumlah Ulasan": 443,
+      "T1: Masalah Server Sibuk, Jaring": 13.1,
+      "T2: Ketidakakuratan Jawaban, Hal": 44.5,
+      "T3: Pembatasan Kuota Harian, Lim": 23.3,
+      "T4: Protes Sensor Filter, Verifi": 6.8,
+      "T5: Gangguan Iklan, Bug Pasca-Up": 12.4
+    },
+    {
+      "Nama Aplikasi": "Microsoft Copilot",
+      "Jumlah Ulasan": 243,
+      "T1: Masalah Server Sibuk, Jaring": 25.5,
+      "T2: Ketidakakuratan Jawaban, Hal": 41.2,
+      "T3: Pembatasan Kuota Harian, Lim": 12.3,
+      "T4: Protes Sensor Filter, Verifi": 9.9,
+      "T5: Gangguan Iklan, Bug Pasca-Up": 11.1
+    },
+    {
+      "Nama Aplikasi": "DeepSeek - AI Assistant",
+      "Jumlah Ulasan": 1244,
+      "T1: Masalah Server Sibuk, Jaring": 18.1,
+      "T2: Ketidakakuratan Jawaban, Hal": 56.5,
+      "T3: Pembatasan Kuota Harian, Lim": 10.9,
+      "T4: Protes Sensor Filter, Verifi": 5.9,
+      "T5: Gangguan Iklan, Bug Pasca-Up": 8.7
+    },
+    {
+      "Nama Aplikasi": "Claude by Anthropic",
+      "Jumlah Ulasan": 894,
+      "T1: Masalah Server Sibuk, Jaring": 17.7,
+      "T2: Ketidakakuratan Jawaban, Hal": 23.6,
+      "T3: Pembatasan Kuota Harian, Lim": 39.0,
+      "T4: Protes Sensor Filter, Verifi": 12.9,
+      "T5: Gangguan Iklan, Bug Pasca-Up": 6.8
+    },
+    {
+      "Nama Aplikasi": "Poe - Fast AI Chat",
+      "Jumlah Ulasan": 74,
+      "T1: Masalah Server Sibuk, Jaring": 9.5,
+      "T2: Ketidakakuratan Jawaban, Hal": 24.3,
+      "T3: Pembatasan Kuota Harian, Lim": 29.7,
+      "T4: Protes Sensor Filter, Verifi": 25.7,
+      "T5: Gangguan Iklan, Bug Pasca-Up": 10.8
+    }
+  ],
+  "app_praise_topic_matrix": [
+    {
+      "Nama Aplikasi": "ChatGPT (OpenAI)",
+      "Jumlah Ulasan": 4713,
+      "T1: Kecepatan Respons, Kemudahan": 25.0,
+      "T2: Kecerdasan Penalaran, Akuras": 25.0,
+      "T3: Kualitas Bahasa Indonesia Lu": 15.3,
+      "T4: Produktivitas Pekerjaan, Pen": 15.0,
+      "T5: Pendamping Tugas Kuliah, Skr": 19.6
+    },
+    {
+      "Nama Aplikasi": "Google Gemini",
+      "Jumlah Ulasan": 2234,
+      "T1: Kecepatan Respons, Kemudahan": 23.7,
+      "T2: Kecerdasan Penalaran, Akuras": 28.3,
+      "T3: Kualitas Bahasa Indonesia Lu": 15.3,
+      "T4: Produktivitas Pekerjaan, Pen": 17.9,
+      "T5: Pendamping Tugas Kuliah, Skr": 14.8
+    },
+    {
+      "Nama Aplikasi": "Character.AI",
+      "Jumlah Ulasan": 984,
+      "T1: Kecepatan Respons, Kemudahan": 21.8,
+      "T2: Kecerdasan Penalaran, Akuras": 1.9,
+      "T3: Kualitas Bahasa Indonesia Lu": 28.6,
+      "T4: Produktivitas Pekerjaan, Pen": 35.9,
+      "T5: Pendamping Tugas Kuliah, Skr": 11.8
+    },
+    {
+      "Nama Aplikasi": "Perplexity - Ask Anything",
+      "Jumlah Ulasan": 2014,
+      "T1: Kecepatan Respons, Kemudahan": 11.2,
+      "T2: Kecerdasan Penalaran, Akuras": 46.2,
+      "T3: Kualitas Bahasa Indonesia Lu": 14.7,
+      "T4: Produktivitas Pekerjaan, Pen": 10.2,
+      "T5: Pendamping Tugas Kuliah, Skr": 17.7
+    },
+    {
+      "Nama Aplikasi": "Microsoft Copilot",
+      "Jumlah Ulasan": 1774,
+      "T1: Kecepatan Respons, Kemudahan": 18.2,
+      "T2: Kecerdasan Penalaran, Akuras": 32.1,
+      "T3: Kualitas Bahasa Indonesia Lu": 20.0,
+      "T4: Produktivitas Pekerjaan, Pen": 13.3,
+      "T5: Pendamping Tugas Kuliah, Skr": 16.3
+    },
+    {
+      "Nama Aplikasi": "DeepSeek - AI Assistant",
+      "Jumlah Ulasan": 2158,
+      "T1: Kecepatan Respons, Kemudahan": 25.9,
+      "T2: Kecerdasan Penalaran, Akuras": 21.2,
+      "T3: Kualitas Bahasa Indonesia Lu": 17.9,
+      "T4: Produktivitas Pekerjaan, Pen": 25.9,
+      "T5: Pendamping Tugas Kuliah, Skr": 9.2
+    },
+    {
+      "Nama Aplikasi": "Claude by Anthropic",
+      "Jumlah Ulasan": 1342,
+      "T1: Kecepatan Respons, Kemudahan": 24.8,
+      "T2: Kecerdasan Penalaran, Akuras": 23.8,
+      "T3: Kualitas Bahasa Indonesia Lu": 18.0,
+      "T4: Produktivitas Pekerjaan, Pen": 18.7,
+      "T5: Pendamping Tugas Kuliah, Skr": 14.7
+    },
+    {
+      "Nama Aplikasi": "Poe - Fast AI Chat",
+      "Jumlah Ulasan": 484,
+      "T1: Kecepatan Respons, Kemudahan": 15.9,
+      "T2: Kecerdasan Penalaran, Akuras": 28.9,
+      "T3: Kualitas Bahasa Indonesia Lu": 20.5,
+      "T4: Produktivitas Pekerjaan, Pen": 14.0,
+      "T5: Pendamping Tugas Kuliah, Skr": 20.7
     }
   ],
   "app_specific_discovery": {
-    "Character.AI": {
-      "rating_avg": 1.58,
-      "complaint_topics": [
-        {
-          "topic_id": 1,
-          "top_words": [
-            "makin",
-            "tidak",
-            "sekarang",
-            "dulu",
-            "update",
-            "banyak",
-            "iklan"
-          ],
-          "weights": [
-            2493.9064587678786,
-            2391.0437943872016,
-            2070.4619306984123,
-            2031.713218458143,
-            1876.0858971487403,
-            1547.5636814516613,
-            1242.2633470015153
-          ],
-          "business_label": "Protes Sensor / Filter Terlalu Ketat & Dikebiri"
-        },
-        {
-          "topic_id": 2,
-          "top_words": [
-            "you",
-            "old",
-            "update",
-            "please",
-            "age",
-            "back",
-            "but"
-          ],
-          "weights": [
-            768.441971136537,
-            684.7941324752828,
-            683.1087973049229,
-            570.9449489993227,
-            567.873109613981,
-            487.8289739578911,
-            457.6396772020909
-          ],
-          "business_label": "Keluhan Update UI Baru & Bot Kehilangan Memori/Lupa"
-        },
-        {
-          "topic_id": 3,
-          "top_words": [
-            "tidak",
-            "tapi",
-            "padahal",
-            "iklan",
-            "tiba",
-            "verifikasi",
-            "malah"
-          ],
-          "weights": [
-            2786.379958437833,
-            1308.8385636089693,
-            821.0056294400176,
-            756.0989265300328,
-            675.0136007935506,
-            666.7084821651031,
-            606.3318813885983
-          ],
-          "business_label": "Masalah Login, Verifikasi Umur & Bug Loading Lambat"
-        }
-      ]
-    },
-    "DeepSeek": {
-      "rating_avg": 3.77,
-      "complaint_topics": [
-        {
-          "topic_id": 1,
-          "top_words": [
-            "tidak",
-            "server",
-            "sering",
-            "sibuk",
-            "error",
-            "lama",
-            "tapi"
-          ],
-          "weights": [
-            284.149233669607,
-            158.78137167748858,
-            155.5825655314364,
-            144.3045531376921,
-            128.69514036626975,
-            117.97246922007884,
-            111.35443235762618
-          ],
-          "business_label": "Server Sibuk / Down Karena Lonjakan Trafik Masif"
-        },
-        {
-          "topic_id": 2,
-          "top_words": [
-            "tidak",
-            "bagus",
-            "tapi",
-            "deepseek",
-            "masih",
-            "bahasa",
-            "lambat"
-          ],
-          "weights": [
-            444.06960089377884,
-            163.95479683949537,
-            147.66283663096007,
-            118.46591929480489,
-            116.37976580686384,
-            101.99763458556896,
-            86.25449451574137
-          ],
-          "business_label": "Koneksi Jaringan Error & Respon Terputus di Tengah Jalan"
-        },
-        {
-          "topic_id": 3,
-          "top_words": [
-            "server",
-            "busy",
-            "server busy",
-            "perbaiki",
-            "tidak",
-            "segera",
-            "please"
-          ],
-          "weights": [
-            284.95836627714283,
-            250.04909746401012,
-            192.45771298325943,
-            101.50128495903665,
-            92.28686661157789,
-            85.84494278565165,
-            81.61193402727004
-          ],
-          "business_label": "Pujian Kecerdasan & Model Gratis tapi Terkendala Infrastruktur"
-        }
-      ]
-    },
-    "ChatGPT": {
+    "ChatGPT (OpenAI)": {
       "rating_avg": 4.46,
+      "n_complaint_docs": 1640,
+      "n_praise_docs": 4713,
+      "complaint_topics": [
+        {
+          "topic_id": 1,
+          "top_words": [
+            "gambar",
+            "obrolan",
+            "chat",
+            "menolong",
+            "sibuk",
+            "meminta",
+            "limit"
+          ],
+          "weights": [
+            166.98,
+            71.53,
+            62.16,
+            60.99,
+            58.69,
+            41.92,
+            41.03
+          ],
+          "doc_count": 545,
+          "doc_share_pct": 33.23,
+          "sample_app": "ChatGPT (OpenAI)",
+          "sample_quote": "aplikasi yang mempersulit pengguna setiap obrolan baru pasti tidak akurat dan ketika sudah banyak pesan pasti disuruh ganti dengan alasan jendela konteks penuh itu hanya fitur memori obrolan penuh yang diganti supaya dikira dihilangkan",
+          "business_label": "Masalah Server Sibuk, Jaringan & Kegagalan Login"
+        },
+        {
+          "topic_id": 2,
+          "top_words": [
+            "foto",
+            "edit",
+            "limit",
+            "tiba",
+            "chat",
+            "kena",
+            "gratis"
+          ],
+          "weights": [
+            194.53,
+            101.2,
+            96.89,
+            65.67,
+            62.68,
+            58.16,
+            57.85
+          ],
+          "doc_count": 529,
+          "doc_share_pct": 32.26,
+          "sample_app": "ChatGPT (OpenAI)",
+          "sample_quote": "Maaf, tetapi gambar yang kami buat mungkin melanggar pencegahan penyalahgunaan kami terkait ketelanjangan, seksualitas, atau konten erotis. Jika Anda merasa kami salah, coba lagi atau edit prompt Anda.",
+          "business_label": "Pembatasan Kuota Harian, Limit Pesan & Biaya Langganan"
+        },
+        {
+          "topic_id": 3,
+          "top_words": [
+            "lama",
+            "chat",
+            "update",
+            "bodoh",
+            "membayar",
+            "limit",
+            "lain"
+          ],
+          "weights": [
+            88.18,
+            81.38,
+            71.56,
+            70.07,
+            56.46,
+            42.89,
+            42.81
+          ],
+          "doc_count": 566,
+          "doc_share_pct": 34.51,
+          "sample_app": "ChatGPT (OpenAI)",
+          "sample_quote": "batas limit voice chatnya sedikit sekali gilak, gua udah bayar berlangganan tpi tetep sedikit limitnya gilak. apk sialan emng. gk usah di kasih limit napa klo udah bayar, lu ubah gk, klo di ubah nanti gua ubah jugak bintangnya...",
+          "business_label": "Pembatasan Kuota Harian, Limit Pesan & Biaya Langganan"
+        }
+      ],
       "praise_topics": [
         {
           "topic_id": 1,
           "top_words": [
             "membantu",
-            "mantap",
-            "bagus",
-            "sekali",
-            "good",
-            "terbaik",
-            "bagus sekali"
+            "pekerjaan",
+            "membantu pekerjaan",
+            "tugas",
+            "chat",
+            "memudahkan",
+            "mengedit"
           ],
           "weights": [
-            2873.4073936233576,
-            1571.531653148575,
-            1264.3797385083283,
-            798.6360962730349,
-            766.6604943848982,
-            346.07297732357534,
-            319.5869430460803
+            1103.18,
+            188.25,
+            121.31,
+            86.98,
+            79.77,
+            69.57,
+            69.1
           ],
-          "business_label": "Penyelesaian Tugas Kuliah, Koding & Terjemahan Cepat"
+          "doc_count": 1811,
+          "doc_share_pct": 38.43,
+          "sample_app": "ChatGPT (OpenAI)",
+          "sample_quote": "Aplikasi Chat GPT Sangat membantu saya dalam pembuatan LKPD dan media belajar sehingga mempermudah saya mengajarkan suatu materi dan siswa saya pun sangat suka sehingga proses belajar mengajar berjalan secara interaktif.",
+          "business_label": "Pendamping Tugas Kuliah, Skripsi, Belajar & Koding"
         },
         {
           "topic_id": 2,
           "top_words": [
-            "bagus",
-            "keren",
-            "baik",
-            "tidak",
-            "suka",
-            "kasih",
-            "tapi"
+            "mudah",
+            "foto",
+            "cepat",
+            "tugas",
+            "edit",
+            "membantu",
+            "mengerjakan"
           ],
           "weights": [
-            4796.9322794946,
-            1078.164278978447,
-            867.8544364668804,
-            623.7578401064542,
-            620.6884777886726,
-            567.3539771571149,
-            501.49513432611496
+            349.25,
+            240.59,
+            224.87,
+            224.44,
+            208.34,
+            201.67,
+            160.81
           ],
-          "business_label": "Asisten Belajar Serbaguna & Logika Cerdas"
+          "doc_count": 1463,
+          "doc_share_pct": 31.04,
+          "sample_app": "ChatGPT (OpenAI)",
+          "sample_quote": "Aplikasinya bagus banget dan berguna banget bisa buat edit edit foto juga,mengerjakan/menjawab soal soal yang sulit di mengerti,mengerjakan pengeditan foto pokoknya joss aplikasinya",
+          "business_label": "Kecepatan Respons, Kemudahan UI & Fitur Multimodal Gratis"
+        },
+        {
+          "topic_id": 3,
+          "top_words": [
+            "cerita",
+            "bicara",
+            "gambar",
+            "chat",
+            "teman",
+            "belajar",
+            "menolong"
+          ],
+          "weights": [
+            192.67,
+            187.07,
+            174.34,
+            161.84,
+            159.54,
+            125.97,
+            125.35
+          ],
+          "doc_count": 1439,
+          "doc_share_pct": 30.53,
+          "sample_app": "ChatGPT (OpenAI)",
+          "sample_quote": "tolong tambahkan mode untuk membuat cerita seperti novel agar bisa berimajinasi dan semua nya mantap menurut ku tapi tolong tambahin fitur buat cerita/novel/komik/manga dll",
+          "business_label": "Kualitas Bahasa Indonesia Luwes & Interaksi Percakapan Alami"
         }
-      ],
+      ]
+    },
+    "Google Gemini": {
+      "rating_avg": 4.29,
+      "n_complaint_docs": 1122,
+      "n_praise_docs": 2234,
       "complaint_topics": [
         {
           "topic_id": 1,
           "top_words": [
-            "tidak",
-            "malah",
-            "membuat",
-            "bagus",
             "gambar",
-            "tapi",
-            "terus"
+            "prompt",
+            "edit",
+            "google",
+            "video",
+            "pro",
+            "foto"
           ],
           "weights": [
-            711.7022315350242,
-            211.92851397636088,
-            179.47945955618806,
-            167.78984338936658,
-            162.96980556589466,
-            114.85893047426669,
-            108.16924297886062
+            104.92,
+            78.52,
+            62.76,
+            59.17,
+            50.81,
+            49.97,
+            46.58
           ],
-          "business_label": "Limit Pesan GPT-4o Cepat Habis & Paksaan Langganan Plus"
+          "doc_count": 474,
+          "doc_share_pct": 42.25,
+          "sample_app": "Google Gemini",
+          "sample_quote": "tolong tambahkan fitur translate layar, waktu itu sudah ada malah di hilangkan lagi, gara² ini app jelek asisten google jadi nggak bisa digunakan lg. padahal Bagusan asisten google drpd ini karna bisa translate layar",
+          "business_label": "Pembatasan Kuota Harian, Limit Pesan & Biaya Langganan"
         },
         {
           "topic_id": 2,
           "top_words": [
-            "tidak",
-            "baru",
-            "sekarang",
+            "update",
             "foto",
-            "limit",
-            "harus",
-            "makin"
+            "lambat",
+            "meminta",
+            "bodoh",
+            "salah",
+            "jawab"
           ],
           "weights": [
-            370.79309429474347,
-            245.51225040551188,
-            209.90513146358717,
-            202.43104608670487,
-            189.00519895217167,
-            173.8569683018687,
-            159.57137601718327
+            52.61,
+            42.38,
+            35.81,
+            35.69,
+            34.84,
+            32.22,
+            25.38
           ],
-          "business_label": "Error Login Akun & Mode Suara Kadang Macet"
+          "doc_count": 367,
+          "doc_share_pct": 32.71,
+          "sample_app": "Google Gemini",
+          "sample_quote": "semenjak update versi flash lite akun gw di batasi tanpa penjelasan yang jelas udah mulai pelit fitur nyusahin pula dua hari akun gw gak normal gw hapus ini aplikasi",
+          "business_label": "Ketidakakuratan Jawaban, Halusinasi AI & Kendala Bahasa"
+        },
+        {
+          "topic_id": 3,
+          "top_words": [
+            "menolong",
+            "lama",
+            "perbaiki",
+            "bug",
+            "google",
+            "ponsel",
+            "chat"
+          ],
+          "weights": [
+            43.1,
+            39.14,
+            38.59,
+            25.66,
+            24.07,
+            22.62,
+            22.03
+          ],
+          "doc_count": 281,
+          "doc_share_pct": 25.04,
+          "sample_app": "Google Gemini",
+          "sample_quote": "masih terdapat banyak bug dimana antaranya saat dibagian notebook dan melakukan chat baru selalu yang pertama muncul bagian chat lama, serta tidak bisa menggunakan ver pro maupun research di chat lama dan harus melakukan di chat baru.",
+          "business_label": "Gangguan Iklan, Bug Pasca-Update & Ketidakstabilan Aplikasi"
+        }
+      ],
+      "praise_topics": [
+        {
+          "topic_id": 1,
+          "top_words": [
+            "membantu",
+            "mudah",
+            "cepat",
+            "pekerjaan",
+            "gambar",
+            "gratis",
+            "fitur"
+          ],
+          "weights": [
+            390.38,
+            87.4,
+            77.22,
+            68.89,
+            67.37,
+            44.75,
+            43.97
+          ],
+          "doc_count": 1071,
+          "doc_share_pct": 47.94,
+          "sample_app": "Google Gemini",
+          "sample_quote": "Cukup berkembang dari sebelumnya. Meskipun belum ada memori di luar percakapan dan cepat lupa dengan percakapan sebelumnya, sudah mulai lebih baik dan setara dengan kompetitor. Hanya perlu saran untuk hasil yang lebih panjang.",
+          "business_label": "Kecepatan Respons, Kemudahan UI & Fitur Multimodal Gratis"
+        },
+        {
+          "topic_id": 2,
+          "top_words": [
+            "foto",
+            "video",
+            "edit",
+            "cepat",
+            "menolong",
+            "perbaiki",
+            "soal"
+          ],
+          "weights": [
+            85.46,
+            49.44,
+            48.95,
+            45.85,
+            30.96,
+            27.0,
+            26.18
+          ],
+          "doc_count": 600,
+          "doc_share_pct": 26.86,
+          "sample_app": "Google Gemini",
+          "sample_quote": "Alhamdulillah sangat mendukung saat edit foto atau buat foto,tapi videonya belum bisa gratis ya,mohon kalau dikasih contoh wajah tolong persis wajahnya ya, terimakasih sebelumnya",
+          "business_label": "Kecepatan Respons, Kemudahan UI & Fitur Multimodal Gratis"
+        },
+        {
+          "topic_id": 3,
+          "top_words": [
+            "mudah",
+            "tugas",
+            "mengerjakan",
+            "ponsel",
+            "membantu",
+            "lain",
+            "mengerjakan tugas"
+          ],
+          "weights": [
+            80.27,
+            77.13,
+            46.35,
+            43.04,
+            39.55,
+            38.66,
+            36.43
+          ],
+          "doc_count": 563,
+          "doc_share_pct": 25.2,
+          "sample_app": "Google Gemini",
+          "sample_quote": "sangat berguna untuk mengerjakan semua tugas mata pelajara sekolah, seperti soal teks, tugas online, meringkas materi, dan lain lain.",
+          "business_label": "Pendamping Tugas Kuliah, Skripsi, Belajar & Koding"
+        }
+      ]
+    },
+    "Character.AI": {
+      "rating_avg": 1.58,
+      "n_complaint_docs": 8657,
+      "n_praise_docs": 984,
+      "complaint_topics": [
+        {
+          "topic_id": 1,
+          "top_words": [
+            "iklan",
+            "lama",
+            "bug",
+            "update",
+            "chat",
+            "filter",
+            "lambat"
+          ],
+          "weights": [
+            1795.23,
+            1044.25,
+            971.98,
+            938.0,
+            792.54,
+            655.26,
+            634.72
+          ],
+          "doc_count": 4198,
+          "doc_share_pct": 48.49,
+          "sample_app": "Character.AI",
+          "sample_quote": "apalah ini dev, aku pakai c.ai+ juga ga ada bedanya. bkin gambar dibatasin, serba bayar deh pokoknya. masa chat dibatasin dan hrus nunggu?!. klo ga plus, iklan trus, chat next muncul iklan, masuk ke karakter iklan lagi, ",
+          "business_label": "Gangguan Iklan, Bug Pasca-Update & Ketidakstabilan Aplikasi"
+        },
+        {
+          "topic_id": 2,
+          "top_words": [
+            "verifikasi",
+            "usia",
+            "update",
+            "verifikasi usia",
+            "umur",
+            "mode",
+            "chat"
+          ],
+          "weights": [
+            2140.98,
+            1254.95,
+            875.05,
+            716.57,
+            641.98,
+            622.98,
+            556.76
+          ],
+          "doc_count": 2292,
+          "doc_share_pct": 26.48,
+          "sample_app": "Character.AI",
+          "sample_quote": "hapus batasan usia, aku udah main dari 2023 tiba tiba ada batasan usia, padahal kan aku main nya cuma buat seneng seneng, bisa ngerasain keluarga cemara, tiba tiba di suruh verivikasi umur",
+          "business_label": "Protes Sensor Filter, Verifikasi Usia & Perubahan Karakter Bot"
+        },
+        {
+          "topic_id": 3,
+          "top_words": [
+            "update",
+            "chat",
+            "age",
+            "verifikasi",
+            "iklan",
+            "age verifikasi",
+            "even"
+          ],
+          "weights": [
+            1048.81,
+            598.93,
+            551.76,
+            416.15,
+            364.06,
+            342.47,
+            281.63
+          ],
+          "doc_count": 2167,
+          "doc_share_pct": 25.03,
+          "sample_app": "Character.AI",
+          "sample_quote": "REMOVE AGE VERIFICATION REMOVE AGE VERIFICATION REMOVE AGE VERIFICATION REMOVE AGE VERIFICATION REMOVE AGE VERIFICATION REMOVE AGE VERIFICATION REMOVE AGE VERIFICATION!!it had annoy me SO MUCH,let the teens FREE,BRO,also",
+          "business_label": "Protes Sensor Filter, Verifikasi Usia & Perubahan Karakter Bot"
+        }
+      ],
+      "praise_topics": [
+        {
+          "topic_id": 1,
+          "top_words": [
+            "iklan",
+            "bahasa",
+            "there",
+            "hope",
+            "bug",
+            "still",
+            "wah"
+          ],
+          "weights": [
+            42.22,
+            32.08,
+            28.96,
+            21.49,
+            19.89,
+            18.2,
+            17.98
+          ],
+          "doc_count": 272,
+          "doc_share_pct": 27.64,
+          "sample_app": "Character.AI",
+          "sample_quote": "It's so sad, so many people are giving bad reviews. I hope you get well soon. My dear c.ai, keep up the good work on improving your app. and to the staff who fixed c.ai too, i hope you are all well",
+          "business_label": "Kualitas Bahasa Indonesia Luwes & Interaksi Percakapan Alami"
+        },
+        {
+          "topic_id": 2,
+          "top_words": [
+            "chat",
+            "bot",
+            "menolong",
+            "bug",
+            "iklan",
+            "perbaiki",
+            "fitur"
+          ],
+          "weights": [
+            89.96,
+            83.41,
+            71.66,
+            59.66,
+            45.84,
+            42.76,
+            42.22
+          ],
+          "doc_count": 273,
+          "doc_share_pct": 27.74,
+          "sample_app": "Character.AI",
+          "sample_quote": "gak masalah untuk aku kalau banyak iklan, tapi gaya obrolan sekarang jelek banget, pengen kayak dulu lagi pas chat an bot nya enak di ajak chat, sekarang ngomong apa jawab apa, please dibenerin",
+          "business_label": "Pujian: Chat, Bot, Menolong"
+        },
+        {
+          "topic_id": 3,
+          "top_words": [
+            "iklan",
+            "update",
+            "verifikasi",
+            "lama",
+            "main",
+            "menolong",
+            "filter"
+          ],
+          "weights": [
+            149.46,
+            70.06,
+            59.33,
+            58.41,
+            58.08,
+            57.86,
+            57.1
+          ],
+          "doc_count": 439,
+          "doc_share_pct": 44.61,
+          "sample_app": "Character.AI",
+          "sample_quote": "aplikasi ny bgs entah knpa tiba\" klo lagi main tiba\"iklan bikin ga mood pas main, mending main c.ai nya di google chrome deh soalnya gada iklannya gw skrg main c.ai ny aj di google chrome krna gada iklan cobain deh Saran gw🙆🏻‍♀️🗿",
+          "business_label": "Pujian: Iklan, Update, Verifikasi"
+        }
+      ]
+    },
+    "Perplexity - Ask Anything": {
+      "rating_avg": 4.54,
+      "n_complaint_docs": 443,
+      "n_praise_docs": 2014,
+      "complaint_topics": [
+        {
+          "topic_id": 1,
+          "top_words": [
+            "jawaban",
+            "jawabannya",
+            "chat",
+            "update",
+            "pertanyaan",
+            "salah",
+            "gambar"
+          ],
+          "weights": [
+            32.16,
+            28.59,
+            20.06,
+            17.02,
+            14.77,
+            13.97,
+            10.0
+          ],
+          "doc_count": 162,
+          "doc_share_pct": 36.57,
+          "sample_app": "Perplexity - Ask Anything",
+          "sample_quote": "baru juga download+ nanya soal pake foto langsung di suruh pro, mending chat gpt🫩🫩",
+          "business_label": "Ketidakakuratan Jawaban, Halusinasi AI & Kendala Bahasa"
+        },
+        {
+          "topic_id": 2,
+          "top_words": [
+            "iklan",
+            "foto",
+            "bahasa",
+            "membayar",
+            "chat",
+            "lain",
+            "indonesia"
+          ],
+          "weights": [
+            42.71,
+            27.19,
+            19.45,
+            19.38,
+            17.34,
+            17.2,
+            14.74
+          ],
+          "doc_count": 150,
+          "doc_share_pct": 33.86,
+          "sample_app": "Perplexity - Ask Anything",
+          "sample_quote": "Tolong dong jawaban nya bisa di ganti bahasa nya soalnya bahasa nya kadang kadang bahasa Inggris kadang kadang bahasa Indonesia kan jadi males buat translet nya.",
+          "business_label": "Ketidakakuratan Jawaban, Halusinasi AI & Kendala Bahasa"
+        },
+        {
+          "topic_id": 3,
+          "top_words": [
+            "lain",
+            "berlangganan",
+            "lambat",
+            "iklan",
+            "pro",
+            "muncul",
+            "jawab"
+          ],
+          "weights": [
+            39.35,
+            13.52,
+            12.18,
+            11.1,
+            10.96,
+            10.76,
+            9.76
+          ],
+          "doc_count": 131,
+          "doc_share_pct": 29.57,
+          "sample_app": "Perplexity - Ask Anything",
+          "sample_quote": "Susah sekali untuk di buka, sudah coba buka dari google tapi tetep tidak bisaa malah muncul situs ini tidak bisa di jangkau, padahal udah coba beberpa hp dengan sinyal yang baguss tapi tetap tidak bisa di bukaa",
+          "business_label": "Gangguan Iklan, Bug Pasca-Update & Ketidakstabilan Aplikasi"
+        }
+      ],
+      "praise_topics": [
+        {
+          "topic_id": 1,
+          "top_words": [
+            "belajar",
+            "informasi",
+            "fitur",
+            "gratis",
+            "jawaban",
+            "bagi",
+            "membantu"
+          ],
+          "weights": [
+            50.73,
+            50.3,
+            50.01,
+            45.86,
+            32.86,
+            32.12,
+            31.69
+          ],
+          "doc_count": 675,
+          "doc_share_pct": 33.52,
+          "sample_app": "Perplexity - Ask Anything",
+          "sample_quote": "sejauh ini bagus si, malah bagus banget. tapi kadang ada bugnya pas jawab pertanyaan, misal bug kata-katanya itu diulang terus sampai jadi panjang lebar. moga kedepannya lebih baik, dan diadain fitur foto yaa ❤️‍🔥",
+          "business_label": "Kecepatan Respons, Kemudahan UI & Fitur Multimodal Gratis"
+        },
+        {
+          "topic_id": 2,
+          "top_words": [
+            "membantu",
+            "tugas",
+            "mengerjakan",
+            "mengerjakan tugas",
+            "lengkap",
+            "membantu mengerjakan",
+            "bahasa"
+          ],
+          "weights": [
+            135.57,
+            127.93,
+            78.81,
+            65.75,
+            61.49,
+            49.97,
+            49.76
+          ],
+          "doc_count": 571,
+          "doc_share_pct": 28.35,
+          "sample_app": "Perplexity - Ask Anything",
+          "sample_quote": "nilai tugas ku pada di atas KKM semua cuy, aku suka bgt sumpah, aku pernah coba pake Cici, nilai MTK ku malah 60 45, tapi pas aku pake perplexity, nilai MTK ku jadi 85 95, pokok nya enak bgt, dan juga cara jawab ai ini lengkap dan detail",
+          "business_label": "Pendamping Tugas Kuliah, Skripsi, Belajar & Koding"
+        },
+        {
+          "topic_id": 3,
+          "top_words": [
+            "membantu",
+            "cepat",
+            "mudah",
+            "jawaban",
+            "akurat",
+            "mencari",
+            "lengkap"
+          ],
+          "weights": [
+            345.51,
+            153.36,
+            112.13,
+            78.57,
+            68.43,
+            58.33,
+            45.32
+          ],
+          "doc_count": 768,
+          "doc_share_pct": 38.13,
+          "sample_app": "Perplexity - Ask Anything",
+          "sample_quote": "ngebantu banget buat tugas\" aku, kata katanya mudah dimengerti, sumber informasinya juga jelas, cara makenya gampang, pokoknya❤",
+          "business_label": "Kecerdasan Penalaran, Akurasi Jawaban & Pemahaman Konteks"
+        }
+      ]
+    },
+    "Microsoft Copilot": {
+      "rating_avg": 4.65,
+      "n_complaint_docs": 243,
+      "n_praise_docs": 1774,
+      "complaint_topics": [
+        {
+          "topic_id": 1,
+          "top_words": [
+            "jaringan",
+            "menolong",
+            "versi",
+            "perbaiki",
+            "tampilan",
+            "bug",
+            "update"
+          ],
+          "weights": [
+            18.3,
+            13.62,
+            11.38,
+            9.97,
+            7.76,
+            7.7,
+            7.39
+          ],
+          "doc_count": 99,
+          "doc_share_pct": 40.74,
+          "sample_app": "Microsoft Copilot",
+          "sample_quote": "semenjak di update, copilot sangat sulit digunakan, entah karena lemot padahal sinyal jaringan saya bagus, sistem penjawaban terkadang tidak sesuai dengan perintah, kembalikan saja ke versi sebelumnya",
+          "business_label": "Gangguan Iklan, Bug Pasca-Update & Ketidakstabilan Aplikasi"
+        },
+        {
+          "topic_id": 2,
+          "top_words": [
+            "akun",
+            "update",
+            "bodoh",
+            "pertanyaan",
+            "ponsel",
+            "jawaban",
+            "unduh"
+          ],
+          "weights": [
+            17.37,
+            12.15,
+            10.38,
+            8.35,
+            7.3,
+            6.24,
+            5.49
+          ],
+          "doc_count": 75,
+          "doc_share_pct": 30.86,
+          "sample_app": "Microsoft Copilot",
+          "sample_quote": "Entah kenapa setelah update, tulisannya menjadi putih. Tulisan tersebut sangat sulit dibaca. Apalagi dipahami, saya lebih nyaman warna-warna tulisan sebelum update.",
+          "business_label": "Ketidakakuratan Jawaban, Halusinasi AI & Kendala Bahasa"
+        },
+        {
+          "topic_id": 3,
+          "top_words": [
+            "gambar",
+            "percakapan",
+            "fitur",
+            "salah",
+            "prompt",
+            "hapus",
+            "dibatasi"
+          ],
+          "weights": [
+            27.17,
+            12.05,
+            10.65,
+            7.57,
+            7.48,
+            7.27,
+            7.14
+          ],
+          "doc_count": 69,
+          "doc_share_pct": 28.4,
+          "sample_app": "Microsoft Copilot",
+          "sample_quote": "Tidak nyaman digunakan karena riwayat percakapan tidak bisa di hapus. Padahal ini menyangkut privasi seseorang. Lebih nyaman menggunakan aplikasi lain yang sangat fleksibel. Jadi saya memutuskan menghapus aplikasi dari HP.",
+          "business_label": "Ketidakakuratan Jawaban, Halusinasi AI & Kendala Bahasa"
+        }
+      ],
+      "praise_topics": [
+        {
+          "topic_id": 1,
+          "top_words": [
+            "membantu",
+            "gambar",
+            "cepat",
+            "tugas",
+            "pekerjaan",
+            "belajar",
+            "mencari"
+          ],
+          "weights": [
+            323.47,
+            89.22,
+            79.01,
+            54.83,
+            40.76,
+            30.78,
+            22.58
+          ],
+          "doc_count": 705,
+          "doc_share_pct": 39.74,
+          "sample_app": "Microsoft Copilot",
+          "sample_quote": "saya merasakan aplikasi ini sangat penting untuk membantu proses belajar mengajar Saya merasakan aplikasi ini sangat membantu dalam proses belajar mengajar",
+          "business_label": "Pendamping Tugas Kuliah, Skripsi, Belajar & Koding"
+        },
+        {
+          "topic_id": 2,
+          "top_words": [
+            "mudah",
+            "informasi",
+            "gratis",
+            "luar",
+            "jawaban",
+            "fitur",
+            "tugas"
+          ],
+          "weights": [
+            83.25,
+            49.16,
+            40.39,
+            37.07,
+            35.92,
+            34.8,
+            29.51
+          ],
+          "doc_count": 513,
+          "doc_share_pct": 28.92,
+          "sample_app": "Microsoft Copilot",
+          "sample_quote": "Informasi yang diberikan cukup ringkas dan mudah dipahami. Serta memberikan kenyamanan dalam berinteraksi",
+          "business_label": "Kecepatan Respons, Kemudahan UI & Fitur Multimodal Gratis"
+        },
+        {
+          "topic_id": 3,
+          "top_words": [
+            "teman",
+            "bicara",
+            "menolong",
+            "pertanyaan",
+            "membantu",
+            "lain",
+            "respon"
+          ],
+          "weights": [
+            62.23,
+            57.48,
+            41.44,
+            35.58,
+            30.06,
+            27.47,
+            26.16
+          ],
+          "doc_count": 556,
+          "doc_share_pct": 31.34,
+          "sample_app": "Microsoft Copilot",
+          "sample_quote": "apk bagus, tapi ada fitur yang harus dimasukkan oleh tim pengembang yaitu fitur kirim foto di percakapan grup. dengan itu Microsoft copilot pasti beda dengan AI lain yg belum ada fitur tersebut.",
+          "business_label": "Kualitas Bahasa Indonesia Luwes & Interaksi Percakapan Alami"
+        }
+      ]
+    },
+    "DeepSeek - AI Assistant": {
+      "rating_avg": 3.77,
+      "n_complaint_docs": 1244,
+      "n_praise_docs": 2158,
+      "complaint_topics": [
+        {
+          "topic_id": 1,
+          "top_words": [
+            "sibuk",
+            "server",
+            "server sibuk",
+            "lama",
+            "lambat",
+            "error",
+            "servernya"
+          ],
+          "weights": [
+            260.48,
+            252.37,
+            164.93,
+            76.32,
+            76.11,
+            74.51,
+            45.44
+          ],
+          "doc_count": 534,
+          "doc_share_pct": 42.93,
+          "sample_app": "DeepSeek - AI Assistant",
+          "sample_quote": "\"the server is busy, please try again later\" again, again, and again like come on man, tolong fix ini. Lelet parah",
+          "business_label": "Masalah Server Sibuk, Jaringan & Kegagalan Login"
+        },
+        {
+          "topic_id": 2,
+          "top_words": [
+            "update",
+            "informasi",
+            "bodoh",
+            "chat",
+            "jawaban",
+            "berkas",
+            "menolong"
+          ],
+          "weights": [
+            79.89,
+            48.21,
+            40.34,
+            39.31,
+            37.07,
+            31.33,
+            29.8
+          ],
+          "doc_count": 369,
+          "doc_share_pct": 29.66,
+          "sample_app": "DeepSeek - AI Assistant",
+          "sample_quote": "setelah update AI jadi lebih BODOH, BURUK. jawaban dari pertanyaan yang diberikan tiba -tiba hilang (Sorry, that's beyond my current scope. Let’s talk about something else.) sangat tidak nyaman sekali 😡",
+          "business_label": "Ketidakakuratan Jawaban, Halusinasi AI & Kendala Bahasa"
+        },
+        {
+          "topic_id": 3,
+          "top_words": [
+            "menolong",
+            "perbaiki",
+            "edit",
+            "jawabannya",
+            "prompt",
+            "mode",
+            "batas"
+          ],
+          "weights": [
+            61.93,
+            54.22,
+            39.09,
+            33.56,
+            33.53,
+            32.02,
+            29.49
+          ],
+          "doc_count": 341,
+          "doc_share_pct": 27.41,
+          "sample_app": "DeepSeek - AI Assistant",
+          "sample_quote": "tolong kembalikan mode cermat pakar dan lain lain dan tentu kembalikan format text atau format pesannya ke format biasa aja karena sekarang jelek banget dan juga tolong batas waktu searchnya dihapus karena saya tidak bisa pake",
+          "business_label": "Gangguan Iklan, Bug Pasca-Update & Ketidakstabilan Aplikasi"
+        }
+      ],
+      "praise_topics": [
+        {
+          "topic_id": 1,
+          "top_words": [
+            "gratis",
+            "membantu",
+            "luar",
+            "chat",
+            "coding",
+            "informasi",
+            "mencari"
+          ],
+          "weights": [
+            130.86,
+            109.14,
+            45.94,
+            41.5,
+            39.36,
+            38.11,
+            36.06
+          ],
+          "doc_count": 777,
+          "doc_share_pct": 36.01,
+          "sample_app": "DeepSeek - AI Assistant",
+          "sample_quote": "semoga ga ada limit batas chat dan bisa upload foto tanpa batas. semoga bisa upload foto pemandangan yang tidak harus ekstrak teks, dan bisa upload foto apapun tanpa batas",
+          "business_label": "Pendamping Tugas Kuliah, Skripsi, Belajar & Koding"
+        },
+        {
+          "topic_id": 2,
+          "top_words": [
+            "chat",
+            "jawaban",
+            "menolong",
+            "membantu",
+            "fitur",
+            "agar",
+            "lama"
+          ],
+          "weights": [
+            95.77,
+            93.97,
+            86.67,
+            86.55,
+            63.89,
+            62.24,
+            60.69
+          ],
+          "doc_count": 626,
+          "doc_share_pct": 29.01,
+          "sample_app": "DeepSeek - AI Assistant",
+          "sample_quote": "Aku minta untuk jika obrolan sudah mencapai batas dan perlu memulai obrolan baru, jangan lupakan soal isi obrolan obrolan sebelumnya, tolong diperbaiki dan diperbaharui.",
+          "business_label": "Kecerdasan Penalaran, Akurasi Jawaban & Pemahaman Konteks"
+        },
+        {
+          "topic_id": 3,
+          "top_words": [
+            "sibuk",
+            "server",
+            "fitur",
+            "server sibuk",
+            "menolong",
+            "gambar",
+            "lengkap"
+          ],
+          "weights": [
+            170.03,
+            168.65,
+            130.56,
+            116.76,
+            115.66,
+            102.59,
+            86.69
+          ],
+          "doc_count": 755,
+          "doc_share_pct": 34.99,
+          "sample_app": "DeepSeek - AI Assistant",
+          "sample_quote": "Ketika saya melakukan interaksi dengan ai dengan lama terkadang jadi terespon dengan kata \"The server is busy. Please try again later.\" Sangat di sayangkan Tolong perbaiki dan upgrade ai untuk bisa membaca file di atas 1000 halaman.",
+          "business_label": "Kecepatan Respons, Kemudahan UI & Fitur Multimodal Gratis"
+        }
+      ]
+    },
+    "Claude by Anthropic": {
+      "rating_avg": 3.85,
+      "n_complaint_docs": 894,
+      "n_praise_docs": 1342,
+      "complaint_topics": [
+        {
+          "topic_id": 1,
+          "top_words": [
+            "akun",
+            "tiba",
+            "umur",
+            "tiba tiba",
+            "verifikasi",
+            "alasan",
+            "error"
+          ],
+          "weights": [
+            124.12,
+            105.82,
+            49.01,
+            47.18,
+            44.78,
+            31.78,
+            30.91
+          ],
+          "doc_count": 294,
+          "doc_share_pct": 32.89,
+          "sample_app": "Claude by Anthropic",
+          "sample_quote": "Sampah ai nya, ga ngelakuin apa juga tiba tiba kena ban karena katanya masih dibawah umur. padahal udah ngajuin banding + verify lewat link yang dikasih lewat email juga gaada respon. Makin downgrade aja",
+          "business_label": "Protes Sensor Filter, Verifikasi Usia & Perubahan Karakter Bot"
+        },
+        {
+          "topic_id": 2,
+          "top_words": [
+            "akun",
+            "menolong",
+            "perbaiki",
+            "nomor",
+            "limit",
+            "number",
+            "menolong perbaiki"
+          ],
+          "weights": [
+            88.41,
+            48.62,
+            38.1,
+            32.81,
+            30.11,
+            22.95,
+            20.46
+          ],
+          "doc_count": 232,
+          "doc_share_pct": 25.95,
+          "sample_app": "Claude by Anthropic",
+          "sample_quote": "I cannot receive any message for the phone number verification, the number is correct i checked it a few times. But it said valid phone number, it IS my phone number, it's frustrating",
+          "business_label": "Masalah Server Sibuk, Jaringan & Kegagalan Login"
+        },
+        {
+          "topic_id": 3,
+          "top_words": [
+            "limit",
+            "chat",
+            "gratis",
+            "pesan",
+            "menunggu",
+            "pro",
+            "habis"
+          ],
+          "weights": [
+            167.14,
+            73.71,
+            51.46,
+            48.44,
+            44.09,
+            43.16,
+            38.65
+          ],
+          "doc_count": 368,
+          "doc_share_pct": 41.16,
+          "sample_app": "Claude by Anthropic",
+          "sample_quote": "server kelebihan beban. kekurangan nya untuk penggunaan gratis limit chat nya terlalu sedikit dan sering terkena batasan chat. jadi kurang bisa di andalkan untuk teks panjang. dan harus beli paket berbayar pro. aplikasi sering error",
+          "business_label": "Pembatasan Kuota Harian, Limit Pesan & Biaya Langganan"
+        }
+      ],
+      "praise_topics": [
+        {
+          "topic_id": 1,
+          "top_words": [
+            "membantu",
+            "coding",
+            "fitur",
+            "lain",
+            "lengkap",
+            "gratis",
+            "pintar"
+          ],
+          "weights": [
+            62.28,
+            57.54,
+            48.69,
+            39.01,
+            31.76,
+            29.72,
+            24.96
+          ],
+          "doc_count": 487,
+          "doc_share_pct": 36.29,
+          "sample_app": "Claude by Anthropic",
+          "sample_quote": "ai yang sangat membantu dalam memahami materi pelajaran yang menyulitkan, diberi penjelasan yang cukup detail namun mudah di pahami, sangat cocok untuk pelajar yang kesulitan dalam memahami materi yang sulit",
+          "business_label": "Kecepatan Respons, Kemudahan UI & Fitur Multimodal Gratis"
+        },
+        {
+          "topic_id": 2,
+          "top_words": [
+            "membantu",
+            "tugas",
+            "luar",
+            "mengerjakan",
+            "pekerjaan",
+            "bahasa",
+            "akurat"
+          ],
+          "weights": [
+            152.59,
+            79.61,
+            35.01,
+            31.71,
+            31.2,
+            30.82,
+            27.47
+          ],
+          "doc_count": 454,
+          "doc_share_pct": 33.83,
+          "sample_app": "Claude by Anthropic",
+          "sample_quote": "Aplikasi ini luar biasa sekali kualitasnya dan telah menjadi perangkat utama yang sangat sering saya manfaatkan untuk mendukung berbagai keperluan serta menyelesaikan tugas-tugas pekerjaan saya sehari-hari.",
+          "business_label": "Pendamping Tugas Kuliah, Skripsi, Belajar & Koding"
+        },
+        {
+          "topic_id": 3,
+          "top_words": [
+            "limit",
+            "gratis",
+            "menolong",
+            "mudah",
+            "chat",
+            "perbaiki",
+            "cepat"
+          ],
+          "weights": [
+            119.1,
+            64.29,
+            56.55,
+            45.97,
+            36.23,
+            27.23,
+            27.12
+          ],
+          "doc_count": 401,
+          "doc_share_pct": 29.88,
+          "sample_app": "Claude by Anthropic",
+          "sample_quote": "tolong dong perbaiki bug nya ini pas aku update ke versi terbaru yg ini kok malah kena bug, chat-chat yg udah ada gak mau muncul dan gak bisa di akses lagi, jadi tolong banget di perbaiki secepatnya.",
+          "business_label": "Kecepatan Respons, Kemudahan UI & Fitur Multimodal Gratis"
+        }
+      ]
+    },
+    "Poe - Fast AI Chat": {
+      "rating_avg": 4.66,
+      "n_complaint_docs": 74,
+      "n_praise_docs": 484,
+      "complaint_topics": [
+        {
+          "topic_id": 1,
+          "top_words": [
+            "limit",
+            "chat",
+            "indonesia",
+            "lambat",
+            "subscription",
+            "points",
+            "terbatas"
+          ],
+          "weights": [
+            14.66,
+            7.59,
+            7.17,
+            5.66,
+            3.93,
+            3.87,
+            3.82
+          ],
+          "doc_count": 47,
+          "doc_share_pct": 63.51,
+          "sample_app": "Poe - Fast AI Chat",
+          "sample_quote": "Aplikasinya bagus banget, tapi pas udah rame pengguna jadi ga kayak dulu, mau chat bot ga perlu limit dan sekarang jadi ada limit chatnya perhari, kalo limit perharinya uda habis jadi ga bs chat bot-nya.",
+          "business_label": "Pembatasan Kuota Harian, Limit Pesan & Biaya Langganan"
+        },
+        {
+          "topic_id": 2,
+          "top_words": [
+            "update",
+            "gratis",
+            "berbayar",
+            "jawaban",
+            "messages",
+            "menolong",
+            "point"
+          ],
+          "weights": [
+            6.16,
+            5.46,
+            5.16,
+            4.64,
+            3.91,
+            3.82,
+            3.22
+          ],
+          "doc_count": 27,
+          "doc_share_pct": 36.49,
+          "sample_app": "Poe - Fast AI Chat",
+          "sample_quote": "Kurang jelas antara ai gratis dan berbayar nya apalagi tidak ada fitur select chat yang ingin dihapus.. seharusnya ada penegas ai gratis dan ngga nya.",
+          "business_label": "Pembatasan Kuota Harian, Limit Pesan & Biaya Langganan"
+        }
+      ],
+      "praise_topics": [
+        {
+          "topic_id": 1,
+          "top_words": [
+            "gratis",
+            "lambat",
+            "lengkap",
+            "membantu",
+            "pertanyaan",
+            "indonesia",
+            "tentang"
+          ],
+          "weights": [
+            21.8,
+            14.63,
+            14.18,
+            9.64,
+            9.19,
+            7.6,
+            7.13
+          ],
+          "doc_count": 173,
+          "doc_share_pct": 35.74,
+          "sample_app": "Poe - Fast AI Chat",
+          "sample_quote": "The system is generous for free user. I love that. But the web search bot cannot access the internet is a bummer for sure, i don't know if that is a bug or it is under maintenance. Please fix it dev.",
+          "business_label": "Produktivitas Pekerjaan, Pencarian Informasi & Solusi Cepat"
+        },
+        {
+          "topic_id": 2,
+          "top_words": [
+            "membantu",
+            "tugas",
+            "mengerjakan",
+            "mengerjakan tugas",
+            "membantu mengerjakan",
+            "belajar",
+            "cepat"
+          ],
+          "weights": [
+            38.37,
+            35.15,
+            22.06,
+            18.88,
+            15.3,
+            12.65,
+            11.37
+          ],
+          "doc_count": 132,
+          "doc_share_pct": 27.27,
+          "sample_app": "Poe - Fast AI Chat",
+          "sample_quote": "Bagus, pinter, respon cepat, bisa dijadiin teman, bisa bahasa Indonesia, hanya masih kaku. mestinya ngobrol santai seperti sama teman saja. tingkatkan performa kalian ya. jangan berubah.",
+          "business_label": "Pendamping Tugas Kuliah, Skripsi, Belajar & Koding"
+        },
+        {
+          "topic_id": 3,
+          "top_words": [
+            "membantu",
+            "chat",
+            "jawaban",
+            "mudah",
+            "fitur",
+            "sekolah",
+            "limit"
+          ],
+          "weights": [
+            96.4,
+            31.16,
+            25.76,
+            23.99,
+            16.66,
+            11.91,
+            10.37
+          ],
+          "doc_count": 179,
+          "doc_share_pct": 36.98,
+          "sample_app": "Poe - Fast AI Chat",
+          "sample_quote": "wahhh kenapa gak tau ai ini dari dulu yaaa, masha Allah sangat-sangat membantu saya sebagai seorang mahasiswa untuk mencari segala informasi ataupun berita, selain itu juga ai ini sangat bermanfaat untuk menyelesaikan soal-soal sulit",
+          "business_label": "Kecepatan Respons, Kemudahan UI & Fitur Multimodal Gratis"
         }
       ]
     }

@@ -1,43 +1,40 @@
-# LAPORAN TOPIC MODELING (LDA) & TOPIC DISCOVERY PENGALAMAN PENGGUNA
-> **Penanggung Jawab**: Tiara Agustien Kusumawati (NIM: 682024059) — Member 3 (EDA & Topic Discovery)  
-> **Mata Kuliah**: AM552 - Data Science of IS (FTI UKSW)  
-> **Metode**: Unsupervised Latent Dirichlet Allocation (LDA) ($k=5$ topik global, $k=3$ topik spesifik aplikasi)  
-> **Korpus Input**: 71.221 Ulasan Google Play Store Indonesia (Negative: 16,648, Positive: 34,123)
+# LAPORAN PEMODELAN TOPIK (LDA) & EVALUASI KOHERENSI PENGALAMAN PENGGUNA
+> **Metode**: Unsupervised Latent Dirichlet Allocation (LDA) ($K=5$ topik optimal)  
+> **Korpus Substantif**: Keluhan Bintang 1–2 (`14,317` ulasan) · Pujian Bintang 4–5 (`15,703` ulasan)  
+> **Kamus Normalisasi Slang**: `8,618` entri bahasa Indonesia
 
 ---
 
-## 1. Top 5 Klaster Topik Keluhan Utama Pengguna AI di Indonesia (Bintang 1–2)
+## 1. Evaluasi Pemilihan Jumlah Topik Optimal ($K \in \{3, 4, 5, 6, 8\}$)
 
-| ID Topik | Label Bisnis Keluhan | Top Kata Kunci (Keywords) Dominan | Interpretasi Masalah Pengguna |
-| :---: | :--- | :--- | :--- |
-| **Topik 1** | **Masalah Server, Koneksi Jaringan & Gagal Login** | `makin, banyak, iklan, update, bug, lama, jelek, terus` | Pengguna mengalami kegagalan akses server, pemutusan koneksi di tengah generasi jawaban, dan kegagalan autentikasi akun Google. |
-| **Topik 2** | **Sensor/Filter Ketat, Perubahan Memori Bot & Protes Update (Character.AI)** | `tidak, verifikasi, update, harus, tapi, mengapa, sekarang, umur` | Sentimen negatif masif dari pengguna Character.AI akibat pembatasan sensor kata (*NSFW filter*) dan amnesia karakter setelah pembaruan aplikasi. |
-| **Topik 3** | **Batasan Kuota / Limit Pesan Cepat Habis & Langganan Berbayar Mahal** | `sekarang, tidak, dulu, tapi, suka, padahal, bagus, dikit` | Friksi pada limitasi kuota harian/pesan gratis, harga paket langganan bulanan (*Plus/Pro*) yang dinilai terlalu mahal untuk pelajar/mahasiswa. |
-| **Topik 4** | **Bug Aplikasi, Layar Hitam, Crash & Keluar Sendiri** | `tidak, bagus, jelas, aneh, malah, sering, karakter, tidak jelas` | Masalah stabilitas teknis mobile app: aplikasi tiba-tiba keluar (*force close*), layar hitam (*blank screen*), dan bug antarmuka pasca-update. |
-| **Topik 5** | **Penurunan Kualitas Jawaban, Halusinasi & Terjemahan Kaku** | `tiba, you, please, update, old, age, but, back` | Kekecewaan terhadap akurasi jawaban yang melenceng (*halusinasi*), jawaban berputar-putar tanpa solusi konkret, dan terjemahan Bahasa Indonesia yang kaku. |
-
----
-
-## 2. Top 5 Klaster Topik Pujian Utama Pengguna AI di Indonesia (Bintang 4–5)
-
-| ID Topik | Label Bisnis Pujian | Top Kata Kunci (Keywords) Dominan |
-| :---: | :--- | :--- |
-| **Topik 1** | **Bantuan Tugas Akademik, Skripsi & Pembelajaran** | `membantu, mantap, cepat, gambar, dulu, bahasa, respon, coba` |
-| **Topik 2** | **Kecepatan & Kemudahan Penggunaan Sehari-hari** | `bagus, tidak, tapi, sekali, terbaik, bagus sekali, berguna, belajar` |
-| **Topik 3** | **Kemampuan Penalaran, Koding & Pemrograman** | `membantu, baik, sekali, good, tugas, mudah, membantu sekali, hal` |
-| **Topik 4** | **Kecerdasan Jawaban & Informasi Akurat** | `bagus, chatgpt, bagus membantu, gpt, best, akurat, you, curhat` |
-| **Topik 5** | **Rekomendasi Layanan AI Terbaik & Fitur Gratis Bermanfaat** | `kasih, terima, terima kasih, suka, keren, bagus, membuat, bermanfaat` |
+| Jumlah Topik ($K$) | Perplexity (Keluhan) | $C_{\text{UMass}}$ Coherence (Keluhan) | Perplexity (Pujian) | $C_{\text{UMass}}$ Coherence (Pujian) |
+| :---: | :---: | :---: | :---: | :---: |
+| **K = 3** | 789.4 | -2.5980 | 967.5 | -3.0434 |
+| **K = 4** | 838.0 | -2.8873 | 934.8 | -2.9174 |
+| **K = 5** | 807.1 | -2.7101 | 932.0 | -3.0445 |
+| **K = 6** | 808.3 | -2.7806 | 939.8 | -3.0862 |
+| **K = 8** | 795.7 | -2.9805 | 913.5 | -3.3015 |
 
 ---
 
-## 3. Bedah Kasus Anomali Aplikasi (App-Specific Topic Discovery)
+## 2. Lima Klaster Topik Keluhan Utama Pengguna AI di Indonesia (Bintang 1–2)
 
-### A. Mengapa Rata-rata Rating Character.AI Anjlok ke 1.58?
-1. **Sensor & Filter Dialog**: Kata kunci `makin, tidak, sekarang, dulu, update` membuktikan bahwa filter keamanan dinilai membunuh kreativitas *roleplay*.
-2. **Kehilangan Memori Bot & UI Baru**: Kata kunci `you, old, update, please, age` mengonfirmasi bahwa komunitas merasa bot menjadi 'bodoh' dan melupakan riwayat percakapan sebelumnya setelah pembaruan UI.
-
-### B. Mengapa DeepSeek Ratingnya 3.77 Padahal Dianggap Sangat Pintar?
-1. **Server Sibuk / Kelebihan Beban**: Kata kunci `tidak, server, sering, sibuk, error` menunjukkan keluhan utama adalah *server capacity bottleneck*, bukan kecerdasan AI.
+| ID | Label Bisnis Topik | Aspek ABSA | Proporsi | Kata Kunci Dominan (LDA) |
+| :---: | :--- | :--- | :---: | :--- |
+| **T1** | **Masalah Server Sibuk, Jaringan & Kegagalan Login** | A3: Performa, UI/UX & Server | 11.9% (1,698) | `lama, foto, edit, akun, lambat, loading, jaringan, update` |
+| **T2** | **Ketidakakuratan Jawaban, Halusinasi AI & Kendala Bahasa** | A1 & A4 (Akurasi Jawaban & Bahasa Lokal) | 21.1% (3,024) | `perbaiki, filter, sibuk, menolong, jawaban, gambar, salah, kata` |
+| **T3** | **Pembatasan Kuota Harian, Limit Pesan & Biaya Langganan** | A2: Harga & Limitasi Kuota | 14.6% (2,085) | `limit, chat, kena, membayar, gambar, gratis, tiba, batas` |
+| **T4** | **Protes Sensor Filter, Verifikasi Usia & Perubahan Karakter Bot** | A1 & A3 (Kebijakan Konten & Update Fitur) | 18.1% (2,588) | `verifikasi, update, chat, age, umur, even, age verifikasi, iklan` |
+| **T5** | **Gangguan Iklan, Bug Pasca-Update & Ketidakstabilan Aplikasi** | A3: Performa, UI/UX & Server | 34.4% (4,922) | `iklan, update, verifikasi, menolong, usia, chat, bug, fitur` |
 
 ---
-*Laporan ini dihasilkan secara otomatis oleh script `04_modeling/run_topic_modeling_experiment.py` untuk mendukung Bab 4 & Bab 7 Laporan Akhir AM552.*
+
+## 3. Lima Klaster Topik Pujian Utama Pengguna AI di Indonesia (Bintang 4–5)
+
+| ID | Label Bisnis Topik | Aspek ABSA | Proporsi | Kata Kunci Dominan (LDA) |
+| :---: | :--- | :--- | :---: | :--- |
+| **T1** | **Kecepatan Respons, Kemudahan UI & Fitur Multimodal Gratis** | A2 & A3 (Aksesibilitas Gratis & UI/UX) | 21.9% (3,441) | `gambar, fitur, gratis, foto, mudah, chat, edit, limit` |
+| **T2** | **Kecerdasan Penalaran, Akurasi Jawaban & Pemahaman Konteks** | A1: Akurasi & Kecerdasan AI | 27.0% (4,246) | `membantu, cepat, mudah, jawaban, lengkap, akurat, informasi, mencari` |
+| **T3** | **Kualitas Bahasa Indonesia Luwes & Interaksi Percakapan Alami** | A4: Bahasa Indonesia & Konteks Lokal | 17.3% (2,723) | `teman, membantu, cerita, belajar, chat, pintar, menjadi, gratis` |
+| **T4** | **Produktivitas Pekerjaan, Pencarian Informasi & Solusi Cepat** | A1 & A3 (Produktivitas & Kecepatan) | 17.7% (2,779) | `membantu, menolong, perbaiki, lama, pekerjaan, bug, lambat, sibuk` |
+| **T5** | **Pendamping Tugas Kuliah, Skripsi, Belajar & Koding** | A1: Akurasi & Kecerdasan AI | 16.0% (2,514) | `membantu, tugas, mengerjakan, bicara, mengerjakan tugas, bahasa, lain, membantu mengerjakan` |

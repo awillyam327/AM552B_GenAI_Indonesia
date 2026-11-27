@@ -336,6 +336,7 @@ AUDIT_JSON_PATH = os.path.join(ROOT_DIR, "05_evaluation", "audit_results.json")
 DAILY_METRICS_PATH = os.path.join(ROOT_DIR, "models", "dashboard_daily_metrics.csv")
 DATED_COMPLAINTS_PATH = os.path.join(ROOT_DIR, "models", "dashboard_dated_complaints.csv")
 COPILOT_ANALYSIS_PATH = os.path.join(ROOT_DIR, "models", "copilot_excellence_analysis.json")
+TOPIC_MODEL_JSON_PATH = os.path.join(ROOT_DIR, "04_modeling", "topic_modeling_results.json")
 
 
 @st.cache_data
@@ -375,6 +376,14 @@ def get_dated_complaints() -> Optional[pd.DataFrame]:
 def get_copilot_analysis() -> Optional[Dict[str, Any]]:
     if os.path.exists(COPILOT_ANALYSIS_PATH):
         with open(COPILOT_ANALYSIS_PATH, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return None
+
+
+@st.cache_data
+def get_topic_modeling_results() -> Optional[Dict[str, Any]]:
+    if os.path.exists(TOPIC_MODEL_JSON_PATH):
+        with open(TOPIC_MODEL_JSON_PATH, "r", encoding="utf-8") as f:
             return json.load(f)
     return None
 
@@ -784,6 +793,94 @@ def plot_copilot_vs_peers_absa(df_comp_rank: pd.DataFrame) -> Any:
     return _style_plotly_fig(fig, height=340, show_legend=True)
 
 
+def plot_lda_k_coherence(k_neg: List[Dict[str, Any]], k_pos: List[Dict[str, Any]]) -> Any:
+    """Grafik kurva evaluasi koherensi topik C_UMass lintas kandidat K."""
+    fig = go.Figure()
+    if k_neg:
+        fig.add_trace(go.Scatter(
+            name="Korpus Keluhan (Bintang 1–2)",
+            x=[f"K={r['k_topics']}" for r in k_neg],
+            y=[float(r["umass_coherence"]) for r in k_neg],
+            mode="lines+markers",
+            line=dict(color=RED_MUTED, width=2.5),
+            marker=dict(size=8),
+        ))
+    if k_pos:
+        fig.add_trace(go.Scatter(
+            name="Korpus Pujian (Bintang 4–5)",
+            x=[f"K={r['k_topics']}" for r in k_pos],
+            y=[float(r["umass_coherence"]) for r in k_pos],
+            mode="lines+markers",
+            line=dict(color=BLUE_PRIMARY, width=2.5),
+            marker=dict(size=8),
+        ))
+    fig.update_layout(yaxis_title="Skor Koherensi Topik (C_UMass)", xaxis_title="Jumlah Klaster Topik (K)")
+    return _style_plotly_fig(fig, height=300, show_legend=True)
+
+
+def plot_topic_prevalence(topics: List[Dict[str, Any]], is_complaint: bool = True) -> Any:
+    """Grafik batang horizontal proporsi dokumen (%) per klaster topik LDA."""
+    sorted_t = sorted(topics, key=lambda x: float(x.get("doc_share_pct", 0.0)), reverse=False)
+    labels = [f"T{t['topic_id']}: {t.get('business_label', '')[:34]}" for t in sorted_t]
+    shares = [float(t.get("doc_share_pct", 0.0)) for t in sorted_t]
+    bar_col = RED_MUTED if is_complaint else BLUE_PRIMARY
+    fig = go.Figure(go.Bar(
+        x=shares,
+        y=labels,
+        orientation="h",
+        marker_color=bar_col,
+        text=[f"{s:.1f}%" for s in shares],
+        textposition="outside",
+        hovertemplate="%{y}<br>Proporsi Dokumen: %{x:.2f}%<extra></extra>",
+    ))
+    max_s = max(shares) if shares else 50.0
+    fig.update_layout(xaxis_range=[0, max_s * 1.22], xaxis_title="Proporsi Ulasan (%)")
+    return _style_plotly_fig(fig, height=300, show_legend=False)
+
+
+def plot_topic_keywords(topic: Dict[str, Any], is_complaint: bool = True) -> Any:
+    """Grafik batang horizontal Top 10 kata kunci dominan beserta bobot LDA."""
+    words = list(reversed(topic.get("top_words", [])[:10]))
+    weights = list(reversed([float(w) for w in topic.get("weights", [])[:10]]))
+    bar_col = RED_MUTED if is_complaint else BLUE_MID
+    fig = go.Figure(go.Bar(
+        x=weights,
+        y=words,
+        orientation="h",
+        marker_color=bar_col,
+        text=[f"{w:.1f}" for w in weights],
+        textposition="outside",
+    ))
+    max_w = max(weights) if weights else 100.0
+    fig.update_layout(xaxis_range=[0, max_w * 1.22], xaxis_title="Bobot Kata Kunci pada Topik (LDA)")
+    return _style_plotly_fig(fig, height=320, show_legend=False)
+
+
+def plot_app_topic_heatmap(df_mat: pd.DataFrame, is_complaint: bool = True) -> Any:
+    """Heatmap distribusi proporsi 5 topik LDA (%) lintas 8 aplikasi."""
+    topic_cols = [c for c in df_mat.columns if c not in ("Nama Aplikasi", "Jumlah Ulasan")]
+    df_hm = df_mat.set_index("Nama Aplikasi")[topic_cols]
+    cscale = (
+        [[0.0, "#F8FAFC"], [0.5, "#E29595"], [1.0, "#991B1B"]]
+        if is_complaint
+        else [[0.0, "#F8FAFC"], [0.5, BLUE_LIGHT], [1.0, BLUE_PRIMARY]]
+    )
+    fig = go.Figure(data=go.Heatmap(
+        z=df_hm.values,
+        x=topic_cols,
+        y=list(df_hm.index),
+        colorscale=cscale,
+        text=df_hm.values,
+        texttemplate="%{z:.1f}%",
+        textfont=dict(size=11),
+        hovertemplate="Aplikasi: %{y}<br>%{x}<br>Proporsi: %{z:.1f}%<extra></extra>",
+        colorbar=dict(title="% Ulasan"),
+    ))
+    fig.update_yaxes(autorange="reversed")
+    fig.update_xaxes(tickangle=-15)
+    return _style_plotly_fig(fig, height=360, show_legend=False)
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 #  MAIN
 # ══════════════════════════════════════════════════════════════════════════════
@@ -799,11 +896,12 @@ def main():
         st.stop()
         return
 
-    # ── State navigasi sidebar (4 menu) ──────────────────────────────────────
+    # ── State navigasi sidebar (5 menu) ──────────────────────────────────────
     MENU_ITEMS = [
         ("Dashboard Komparasi",     ":material/bar_chart:"),
         ("Analisis Ulasan Tunggal", ":material/search:"),
         ("Prediksi Batch",          ":material/folder_open:"),
+        ("Pemodelan Topik (LDA)",   ":material/hub:"),
         ("Detail Metodologi",       ":material/menu_book:"),
     ]
     if "active_menu" not in st.session_state:
@@ -1492,7 +1590,212 @@ def main():
                             )
 
     # =========================================================================
-    # MENU 4: DETAIL METODOLOGI
+    # MENU 4: PEMODELAN TOPIK (LDA)
+    # =========================================================================
+    elif active_menu == "Pemodelan Topik (LDA)":
+        st.subheader("Pemodelan Topik Pengalaman Pengguna (Unsupervised Latent Dirichlet Allocation)")
+        st.write(
+            "Ekstraksi otomatis tema-tema laten keluhan dan pujian pengguna lintas 8 aplikasi Generative AI "
+            "menggunakan *Latent Dirichlet Allocation* (LDA) serta evaluasi koherensi topik $C_{\\text{UMass}}$."
+        )
+
+        lda_data = get_topic_modeling_results()
+        if not lda_data:
+            st.info("Artefak hasil pemodelan topik sedang dimuat.")
+        else:
+            n_tot_lda = int(lda_data.get("dataset_size", 71221))
+            n_neg_lda = int(lda_data.get("negative_reviews_count", 0))
+            n_pos_lda = int(lda_data.get("positive_reviews_count", 0))
+            opt_k = int(lda_data.get("optimal_k", 5))
+            slang_cnt = int(lda_data.get("slang_dictionary_size", 8618))
+
+            m_l1, m_l2, m_l3, m_l4 = st.columns(4)
+            with m_l1:
+                st.markdown(
+                    f'<div class="metric-card-clean">'
+                    f'<div class="metric-card-label">Jumlah Topik Optimal</div>'
+                    f'<div class="metric-card-value">K = {opt_k}</div>'
+                    f'<div class="metric-card-note">Dipilih melalui Perplexity &amp; C_UMass</div>'
+                    f'</div>',
+                    unsafe_allow_html=True,
+                )
+            with m_l2:
+                st.markdown(
+                    f'<div class="metric-card-clean">'
+                    f'<div class="metric-card-label">Korpus Keluhan Substantif</div>'
+                    f'<div class="metric-card-value">{n_neg_lda:,}</div>'
+                    f'<div class="metric-card-note">Ulasan Bintang 1–2 bermuatan topik</div>'
+                    f'</div>',
+                    unsafe_allow_html=True,
+                )
+            with m_l3:
+                st.markdown(
+                    f'<div class="metric-card-clean">'
+                    f'<div class="metric-card-label">Korpus Pujian Substantif</div>'
+                    f'<div class="metric-card-value">{n_pos_lda:,}</div>'
+                    f'<div class="metric-card-note">Ulasan Bintang 4–5 bermuatan topik</div>'
+                    f'</div>',
+                    unsafe_allow_html=True,
+                )
+            with m_l4:
+                st.markdown(
+                    f'<div class="metric-card-clean">'
+                    f'<div class="metric-card-label">Kamus Normalisasi Slang</div>'
+                    f'<div class="metric-card-value">{slang_cnt:,}</div>'
+                    f'<div class="metric-card-note">Entri baku dari {n_tot_lda:,} ulasan</div>'
+                    f'</div>',
+                    unsafe_allow_html=True,
+                )
+
+            # 1. Evaluasi Pemilihan Jumlah Topik Optimal K
+            k_neg = lda_data.get("k_selection_complaint", [])
+            k_pos = lda_data.get("k_selection_praise", [])
+            if k_neg and k_pos:
+                st.markdown("#### 1. Evaluasi Statistik Pemilihan Jumlah Topik Optimal ($K \\in \\{3, 4, 5, 6, 8\\}$)")
+                st.caption(
+                    "Jumlah topik $K=5$ memberikan titik keseimbangan terbaik antara nilai koherensi semantik "
+                    "$C_{\\text{UMass}}$ dan keterpisahan interpretasi bisnis tanpa tumpang tindih klaster."
+                )
+                ck1, ck2 = st.columns([1.15, 1.25])
+                with ck1:
+                    if HAS_PLOTLY:
+                        st.plotly_chart(plot_lda_k_coherence(k_neg, k_pos), use_container_width=True)
+                with ck2:
+                    k_rows = []
+                    for rn, rp in zip(k_neg, k_pos):
+                        k_rows.append({
+                            "Kandidat K": f"K = {rn['k_topics']}",
+                            "Perplexity (Keluhan)": rn["perplexity"],
+                            "C_UMass (Keluhan)": rn["umass_coherence"],
+                            "Perplexity (Pujian)": rp["perplexity"],
+                            "C_UMass (Pujian)": rp["umass_coherence"],
+                        })
+                    st.dataframe(pd.DataFrame(k_rows), use_container_width=True, hide_index=True)
+
+            st.markdown("---")
+
+            # 2. Eksplorasi 5 Klaster Topik Global
+            st.markdown("#### 2. Eksplorasi 5 Klaster Topik Global (Keluhan vs Pujian)")
+            polarity_mode = st.radio(
+                "Pilih Kategori Polaritas Korpus LDA:",
+                ["Topik Keluhan Utama (Ulasan Negatif Bintang 1–2)", "Topik Pujian Utama (Ulasan Positif Bintang 4–5)"],
+                horizontal=True,
+                key="lda_polarity_toggle",
+            )
+            is_comp_mode = polarity_mode.startswith("Topik Keluhan")
+            active_topics = (
+                lda_data.get("global_complaint_topics", [])
+                if is_comp_mode
+                else lda_data.get("global_praise_topics", [])
+            )
+
+            if active_topics:
+                ct_left, ct_right = st.columns([1.05, 1.25])
+                with ct_left:
+                    st.markdown("**Proporsi Dokumen per Klaster Topik (%):**")
+                    if HAS_PLOTLY:
+                        st.plotly_chart(plot_topic_prevalence(active_topics, is_complaint=is_comp_mode), use_container_width=True)
+
+                    topic_opts = [
+                        f"Topik {t['topic_id']}: {t.get('business_label', '')} ({t.get('doc_share_pct', 0.0):.1f}%)"
+                        for t in active_topics
+                    ]
+                    sel_topic_lbl = st.selectbox("Pilih Klaster Topik untuk Bedah Kata Kunci:", topic_opts, key="lda_topic_sel")
+                    sel_idx = topic_opts.index(sel_topic_lbl)
+                    sel_t = active_topics[sel_idx]
+
+                with ct_right:
+                    st.markdown(f"**Top 10 Kata Kunci Dominan — Topik {sel_t['topic_id']}:**")
+                    if HAS_PLOTLY:
+                        st.plotly_chart(plot_topic_keywords(sel_t, is_complaint=is_comp_mode), use_container_width=True)
+
+                st.markdown(
+                    f'<div class="info-panel-clean">'
+                    f'<i class="fa-solid fa-tag"></i><b>Label Bisnis Topik {sel_t["topic_id"]}:</b> {sel_t.get("business_label", "-")}<br>'
+                    f'<i class="fa-solid fa-layer-group"></i><b>Keterkaitan Dimensi ABSA:</b> {sel_t.get("mapped_absa", "-")} '
+                    f'&middot; <b>Cakupan:</b> {sel_t.get("doc_count", 0):,} ulasan ({sel_t.get("doc_share_pct", 0.0):.1f}%)<br>'
+                    f'<i class="fa-solid fa-circle-info"></i><b>Interpretasi Temuan:</b> {sel_t.get("interpretation", "-")}<br>'
+                    f'<i class="fa-solid fa-quote-left"></i><b>Contoh Ulasan Representatif ({sel_t.get("sample_app", "-")}):</b> '
+                    f'<i>&ldquo;{sel_t.get("sample_quote", "-")}&rdquo;</i>'
+                    f'</div>',
+                    unsafe_allow_html=True,
+                )
+
+                summary_t_rows = []
+                for t in active_topics:
+                    summary_t_rows.append({
+                        "ID Topik": f"Topik {t['topic_id']}",
+                        "Label Bisnis Topik": t.get("business_label", "-"),
+                        "Pemetaan ABSA": t.get("mapped_absa", "-"),
+                        "Jumlah Ulasan": t.get("doc_count", 0),
+                        "Proporsi (%)": t.get("doc_share_pct", 0.0),
+                        "Kata Kunci Utama (LDA)": ", ".join(t.get("top_words", [])[:8]),
+                    })
+                st.dataframe(pd.DataFrame(summary_t_rows), use_container_width=True, hide_index=True)
+
+            st.markdown("---")
+
+            # 3. Distribusi Topik Lintas 8 Aplikasi & Topic Discovery Spesifik Aplikasi
+            st.markdown("#### 3. Peta Distribusi Topik Lintas 8 Aplikasi & Bedah Spesifik Aplikasi")
+            mat_key = "app_complaint_topic_matrix" if is_comp_mode else "app_praise_topic_matrix"
+            mat_rows = lda_data.get(mat_key, [])
+            if mat_rows:
+                df_mat = pd.DataFrame(mat_rows)
+                if HAS_PLOTLY:
+                    st.plotly_chart(plot_app_topic_heatmap(df_mat, is_complaint=is_comp_mode), use_container_width=True)
+                st.dataframe(df_mat, use_container_width=True, hide_index=True)
+
+            app_disc = lda_data.get("app_specific_discovery", {})
+            if app_disc:
+                st.markdown("#### 4. Penemuan Topik Spesifik per Aplikasi (App-Specific Topic Discovery)")
+                sel_app_lda = st.selectbox(
+                    "Pilih Aplikasi Generative AI untuk Melihat Klaster Topik Spesifiknya:",
+                    list(app_disc.keys()),
+                    key="lda_app_specific_sel",
+                )
+                app_info = app_disc[sel_app_lda]
+                st.caption(
+                    f"Rata-rata Bintang: **{app_info.get('rating_avg', 0):.2f}** · "
+                    f"Ulasan Pujian Substantif: **{app_info.get('n_praise_docs', 0):,}** · "
+                    f"Ulasan Keluhan Substantif: **{app_info.get('n_complaint_docs', 0):,}**"
+                )
+                ca_pos, ca_neg = st.columns(2)
+                with ca_pos:
+                    st.markdown(f"**Klaster Topik Pujian — {sel_app_lda}:**")
+                    p_list = app_info.get("praise_topics", [])
+                    if p_list:
+                        df_p_app = pd.DataFrame([
+                            {
+                                "Klaster": f"P{pt['topic_id']}",
+                                "Tema Pujian": pt.get("business_label", "-"),
+                                "Proporsi (%)": pt.get("doc_share_pct", "-"),
+                                "Kata Kunci": ", ".join(pt.get("top_words", [])[:6]),
+                            }
+                            for pt in p_list
+                        ])
+                        st.dataframe(df_p_app, use_container_width=True, hide_index=True)
+                    else:
+                        st.caption("Data pujian substantif tidak mencukupi untuk pemodelan klaster terpisah.")
+
+                with ca_neg:
+                    st.markdown(f"**Klaster Topik Keluhan — {sel_app_lda}:**")
+                    c_list = app_info.get("complaint_topics", [])
+                    if c_list:
+                        df_c_app = pd.DataFrame([
+                            {
+                                "Klaster": f"K{ct['topic_id']}",
+                                "Tema Keluhan": ct.get("business_label", "-"),
+                                "Proporsi (%)": ct.get("doc_share_pct", "-"),
+                                "Kata Kunci": ", ".join(ct.get("top_words", [])[:6]),
+                            }
+                            for ct in c_list
+                        ])
+                        st.dataframe(df_c_app, use_container_width=True, hide_index=True)
+                    else:
+                        st.caption("Data keluhan substantif sangat minim pada aplikasi ini.")
+
+    # =========================================================================
+    # MENU 5: DETAIL METODOLOGI
     # =========================================================================
     elif active_menu == "Detail Metodologi":
         st.subheader("Detail Metodologi & Performa Model Penelitian")
